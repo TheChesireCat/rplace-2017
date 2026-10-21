@@ -1,0 +1,28 @@
+# Groups {#sec-groups}
+
+::: {.callout-note}
+This chapter is planned: it states the question and the method. Results will replace the plan as the
+analysis is done.
+:::
+
+r/place is famous for its communities, the subreddits and alliances behind each artwork. But the log has no
+group labels. How many groups does it take to explain what we see?
+
+## The question
+
+Step 1: **are groups needed at all?** Build a null where accounts act independently, each with its own activity and
+spatial preference, and no coordination. If it already reproduces the canvas's spatial statistics (colour
+correlations over distance, clustering of overwrites), groups are unnecessary, and that is a finding.
+
+Step 2: if not, **how many close the gap?** Add K latent groups, each with a spatial footprint and colour preference,
+and choose K with a criterion that penalises complexity (description length, as in nonparametric stochastic block
+models; see @sec-reading).
+
+## Cautions
+
+- K is not one number. A flag inside a country inside a region is a hierarchy, so K is reported as a curve against
+  resolution.
+- Groups are found among accounts, not in the image: artworks can be scattered, and one white background can be
+  painted by many groups.
+- The community Atlas of artworks is only partial ground truth: it describes the final canvas and misses groups
+  whose work was erased.

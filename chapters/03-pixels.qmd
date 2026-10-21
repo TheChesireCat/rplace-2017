@@ -1,0 +1,28 @@
+# Pixels {#sec-pixels}
+
+::: {.callout-note}
+This chapter is planned: it states the question and the method. Results will replace the plan as the
+analysis is done.
+:::
+
+A pixel is the smallest place on the canvas where people meet. Its history is a sequence of colours, each
+placed by someone, each lasting until someone else paints over it.
+
+## The question
+
+How long does a colour survive on a pixel, and what decides it? A placement that repairs an artwork should last;
+an attack should be undone quickly. The survival time of a colour is the simplest measure of conflict that needs no
+labels.
+
+## Why it matters
+
+Survival times are the r/place version of *revert* statistics in Wikipedia edit wars (*studied under another name*;
+Yasseri et al. 2012, see @sec-reading), where reverts signal conflict and their timing shows memory and burstiness.
+If pixel overwrites behave like reverts, r/place becomes a spatial member of a well-studied family.
+
+## Plan
+
+- For each placement, the time until the pixel next changes colour (censored at the end of the event).
+- Kaplan–Meier survival curves, split by whether the new colour matches the colour two steps back (an "undo").
+- **Null:** the same placements with times shuffled within each pixel, which keeps how busy each pixel is and removes
+  any memory.

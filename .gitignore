@@ -1,0 +1,14 @@
+# Data are never committed: `make data` regenerates them (see README).
+data/*
+!data/README.md
+!data/02-parity.json
+# Quarto build output (the site lives on the gh-pages branch); _freeze/ IS committed so the site rebuilds without data
+_site/
+.quarto/
+/.venv/
+__pycache__/
+*.egg-info/
+.ipynb_checkpoints/
+.DS_Store
+
+/.quarto/

@@ -1,0 +1,48 @@
+# Preface {.unnumbered}
+
+In April 2017 Reddit ran an experiment called **r/place**: a blank 1000 × 1000 canvas that anyone with an account
+could paint, one pixel at a time, with a wait between pixels (five minutes for most of the event, longer for part
+of it, as @sec-actors finds). Over three days, about 1.17
+million accounts placed 16.5 million pixels. Nobody was in charge, yet the canvas filled with flags, logos and murals,
+defended for days against people trying to paint over them.
+
+Reddit later released the full log: for every placement, *when*, *who* (a hashed account id), *where* and *which
+colour*. That makes r/place unusual. It is a system of a million interacting people where **every interaction is
+recorded**, at the resolution of a single action, and the rules are simple enough to write on one line.
+
+## Why a complex-systems lens
+
+Complex-systems science and network science have many ideas about how systems of many simple interacting parts behave:
+heavy-tailed bursts of activity, domains and moving borders, cascades, coordination through a shared environment,
+the emergence of groups. Testing those ideas on human systems is usually hard, because the data are partial, coarse,
+or missing the interactions. r/place has none of those problems, at the cost of being a game. This book uses the game
+as a **laboratory**: each chapter takes one idea, says what it predicts, and checks it against the log.
+
+## How the book is built: bottom up
+
+The chapters climb a ladder, from single actors to properties of the whole canvas. Each rung uses the one below it.
+
+| Rung | Question | Chapter |
+|---|---|---|
+| Data | What exactly is in the log, and what is odd about it? | @sec-data |
+| Actors | How active are people, and how does the waiting rule shape them? | @sec-actors |
+| Pixels | How long does a colour survive on a pixel? | @sec-pixels |
+| Interactions | Who works with, and against, whom? | @sec-interactions |
+| Domains and borders | Where do colour regions meet, and do their borders move like physical interfaces? | @sec-borders |
+| Cascades | Do overwrites come in avalanches of all sizes? | @sec-cascades |
+| Groups | How many groups does it take to explain the canvas? | @sec-groups |
+| Baselines | What would a model with no strategy at all already produce? | @sec-baselines |
+
+## How to read the results
+
+Every chapter shows the code that made its figures, so you can run it yourself (@sec-regenerate). Three habits run
+through the book:
+
+- **A baseline first.** A pattern means little until we know what a simple null model (shuffled times, independent
+  users, random positions) would produce. Each claim is stated against one.
+- **Say how far a result goes.** A figure that looks striking is the start of a question, not an answer. We say
+  whether a result is a description, beats a null, or survives changes to arbitrary choices.
+- **Ideas carry a label.** *Established* (with a citation), *studied under another name*, *speculative but
+  testable* (with the test), or *possibly new* (only after a literature search, and saying what was searched).
+
+The first chapters are written; later ones state the question and the plan, and fill in as the analysis is done.

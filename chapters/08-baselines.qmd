@@ -1,0 +1,26 @@
+# Baselines {#sec-baselines}
+
+::: {.callout-note}
+This chapter is planned: it states the question and the method. Results will replace the plan as the
+analysis is done.
+:::
+
+Every chapter compares data with a null. This chapter collects the simplest *models* of competing territories
+and asks how much of r/place they already explain.
+
+## The question
+
+Minimal models from statistical physics predict how competing regions behave with no strategy at all: the **voter
+model** (copy a neighbour), the **Potts model** (many colours, local alignment), and **Axelrod's model** of cultural
+dissemination. If one of them reproduces the canvas's statistics, the social story is thinner than it looks. If they
+fail, we can say exactly where human behaviour departs from them.
+
+## Why it matters
+
+These baselines are what turn a description into an explanation. A model that reproduces the measurements of the
+earlier chapters, with few parameters, is a candidate mechanism; prediction alone is not.
+
+## Cautions
+
+- r/place is not a clean relaxation to equilibrium: 16 colours, three days, a canvas that fills from blank.
+- A failure to see textbook behaviour is informative only if we can say why the conditions differ.

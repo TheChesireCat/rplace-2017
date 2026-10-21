@@ -1,0 +1,52 @@
+# Reading list {#sec-reading}
+
+Works the chapters lean on. Every entry's metadata was checked against its DOI record; **none has yet been read in
+full for this book**, so the chapters' summaries of them are provisional until they are.
+
+## r/place
+
+- Rappaz, J., Catasta, M., West, R., Aberer, K. (2018). Latent structure in collaboration: the case of Reddit
+  r/place. *ICWSM* 12(1). [doi:10.1609/icwsm.v12i1.15013](https://doi.org/10.1609/icwsm.v12i1.15013)
+- Wu, Y., Silva, A. (2024). How millions coordinate at scale: engagement, collaboration, and conflict in three
+  editions of Reddit r/place. arXiv:2408.13236. [doi:10.48550/arXiv.2408.13236](https://doi.org/10.48550/arXiv.2408.13236)
+  (venue not yet verified)
+
+## Activity and conflict in online systems
+
+- Goh, K.-I., Barabási, A.-L. (2008). Burstiness and memory in complex systems. *EPL* 81(4), 48002.
+  [doi:10.1209/0295-5075/81/48002](https://doi.org/10.1209/0295-5075/81/48002)
+- Yasseri, T., Sumi, R., Rung, A., Kornai, A., Kertész, J. (2012). Dynamics of conflicts in Wikipedia. *PLoS ONE*
+  7(6), e38869. [doi:10.1371/journal.pone.0038869](https://doi.org/10.1371/journal.pone.0038869)
+
+## Coordination through the environment
+
+- Grassé, P.-P. (1959). La reconstruction du nid et les coordinations interindividuelles chez *Bellicositermes
+  natalensis* et *Cubitermes* sp. La théorie de la stigmergie. *Insectes Sociaux* 6(1), 41–80.
+  [doi:10.1007/BF02223791](https://doi.org/10.1007/BF02223791)
+- Heylighen, F. (2016). Stigmergy as a universal coordination mechanism I: definition and components. *Cognitive
+  Systems Research* 38, 4–13. [doi:10.1016/j.cogsys.2015.12.002](https://doi.org/10.1016/j.cogsys.2015.12.002)
+
+## Criticality and heavy tails
+
+- Bak, P., Tang, C., Wiesenfeld, K. (1987). Self-organized criticality: an explanation of the 1/f noise. *Physical
+  Review Letters* 59(4), 381–384. [doi:10.1103/PhysRevLett.59.381](https://doi.org/10.1103/PhysRevLett.59.381)
+- Clauset, A., Shalizi, C. R., Newman, M. E. J. (2009). Power-law distributions in empirical data. *SIAM Review*
+  51(4), 661–703. [doi:10.1137/070710111](https://doi.org/10.1137/070710111)
+- Touboul, J., Destexhe, A. (2010). Can power-law scaling and neuronal avalanches arise from stochastic dynamics?
+  *PLoS ONE* 5(2), e8982. [doi:10.1371/journal.pone.0008982](https://doi.org/10.1371/journal.pone.0008982)
+
+## Domains, borders and voter models
+
+- Dornic, I., Chaté, H., Chave, J., Hinrichsen, H. (2001). Critical coarsening without surface tension: the
+  universality class of the voter model. *Physical Review Letters* 87(4), 045701.
+  [doi:10.1103/PhysRevLett.87.045701](https://doi.org/10.1103/PhysRevLett.87.045701)
+- Fernández-Gracia, J., Suchecki, K., Ramasco, J. J., San Miguel, M., Eguíluz, V. M. (2014). Is the voter model a
+  model for voters? *Physical Review Letters* 112(15), 158701.
+  [doi:10.1103/PhysRevLett.112.158701](https://doi.org/10.1103/PhysRevLett.112.158701)
+- Axelrod, R. (1997). The dissemination of culture: a model with local convergence and global polarization.
+  *Journal of Conflict Resolution* 41(2), 203–226. [doi:10.1177/0022002797041002001](https://doi.org/10.1177/0022002797041002001)
+
+## How many groups
+
+- Peixoto, T. P. (2014). Hierarchical block structures and high-resolution model selection in large networks.
+  *Physical Review X* 4(1), 011047. [doi:10.1103/PhysRevX.4.011047](https://doi.org/10.1103/PhysRevX.4.011047)

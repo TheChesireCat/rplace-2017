@@ -1,0 +1,32 @@
+{
+ "compression_ratio": 7.07,
+ "csv_bytes": 1041641746,
+ "exact_duplicate_rows": 304,
+ "original_deleted": true,
+ "parity": {
+  "holds": true,
+  "mismatched_sorted_lines": 0,
+  "rows_csv": 16567567,
+  "rows_parquet": 16567567,
+  "sha256_sorted_lines_csv": "3f69d0d8aea12c9d85fb09f038cd3712e4a19c43c276eb8b4cf2625f9d325462",
+  "sha256_sorted_lines_parquet": "3f69d0d8aea12c9d85fb09f038cd3712e4a19c43c276eb8b4cf2625f9d325462"
+ },
+ "parquet_bytes": {
+  "palette": 1444,
+  "placements": 129103556,
+  "users": 18177462
+ },
+ "rows": 16567567,
+ "rows_without_coordinates": 3,
+ "t_first_us": 1490118935548000,
+ "t_last_us": 1493331340025000,
+ "users": 1166940,
+ "x_range": [
+  0,
+  1000
+ ],
+ "y_range": [
+  0,
+  1000
+ ]
+}

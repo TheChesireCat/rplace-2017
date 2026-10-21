@@ -1,0 +1,23 @@
+[project]
+name = "rplace17"
+version = "0.1.0"
+description = "Exploring the r/place 2017 placement log as a complex system, bottom up"
+requires-python = ">=3.12"
+dependencies = [
+    "polars>=1.30",
+    "pyarrow>=18",
+    "numpy>=2.0",
+    "scipy>=1.14",
+    "matplotlib>=3.9",
+    "ipykernel>=6.29",
+    "nbclient>=0.10",
+    "nbformat>=5.10",
+    "pyyaml>=6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rplace17"]

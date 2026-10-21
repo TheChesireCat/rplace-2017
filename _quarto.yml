@@ -1,0 +1,57 @@
+project:
+  type: book
+  output-dir: _site
+
+book:
+  title: "r/place 2017 as a complex system"
+  subtitle: "From one pixel to the whole canvas, with the data and the code"
+  author: "Ankit Ramakrishnan"
+  date: last-modified
+  repo-url: https://github.com/TheChesireCat/rplace-2017
+  repo-actions: [source, issue]
+  search: true
+  page-navigation: true
+  chapters:
+    - index.qmd
+    - part: "The data"
+      chapters:
+        - chapters/01-data.qmd
+    - part: "Actors"
+      chapters:
+        - chapters/02-actors.qmd
+    - part: "Pixels"
+      chapters:
+        - chapters/03-pixels.qmd
+    - part: "Interactions"
+      chapters:
+        - chapters/04-interactions.qmd
+    - part: "Domains and borders"
+      chapters:
+        - chapters/05-borders.qmd
+    - part: "The whole canvas"
+      chapters:
+        - chapters/06-cascades.qmd
+        - chapters/07-groups.qmd
+        - chapters/08-baselines.qmd
+  appendices:
+    - chapters/a1-regenerate.qmd
+    - chapters/a2-reading.qmd
+
+execute:
+  freeze: auto      # results are stored in _freeze/ (committed), so the site rebuilds without the data
+  echo: true        # show the code, d2l-style
+  warning: false
+
+jupyter: python3
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    code-copy: true
+    code-overflow: wrap
+    toc: true
+    number-sections: true
+    fig-dpi: 150
+    fig-format: png

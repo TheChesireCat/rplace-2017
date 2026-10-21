@@ -1,0 +1,132 @@
+# The log {#sec-data}
+
+Before asking how the canvas behaves, we need to know exactly what was recorded. This chapter loads the log, looks at
+what one record is, lists what is odd about it, and draws the canvas from it. Nothing here is a finding about people
+yet; it is the ground the rest of the book stands on.
+
+## One placement is one row
+
+```{python}
+import numpy as np
+import polars as pl
+import matplotlib.pyplot as plt
+import rplace17 as r
+
+d = r.load()   # sorted by time; the 3 rows without coordinates are dropped (see below)
+d.head()
+```
+
+Each row is one pixel placement:
+
+- `t_us`: the time, in microseconds since 1970 (UTC). The release records milliseconds.
+- `user_id`: who placed it. The release gives a hashed account id; we replaced each hash by a small integer.
+- `x`, `y`: where, with `(0, 0)` at the top left.
+- `color`: which of the 16 colours, as an index into the palette.
+
+```{python}
+pal = r.palette()
+fig, ax = plt.subplots(figsize=(8, 0.9))
+ax.imshow(r.palette_rgb()[None, :, :], aspect="auto")
+ax.set_xticks(range(16)); ax.set_yticks([])
+ax.set_title("the 16 colours, by index")
+plt.show()
+```
+
+```{python}
+n_rows, n_users = d.height, d["user_id"].n_unique()
+print(f"{n_rows:,} placements by {n_users:,} accounts")
+```
+
+So there are `{python} f"{n_rows:,}"` placements by `{python} f"{n_users:,}"` accounts, on average
+`{python} f"{n_rows / n_users:.1f}"` placements each. How that average hides a very uneven spread is the subject of
+@sec-actors.
+
+## What is odd about the log
+
+A dataset should be checked before it is trusted. These checks compare the log with what the rules say should be
+possible.
+
+```{python}
+full = r.load(drop_missing=False)
+dup = full.height - full.unique().height
+missing = full["x"].null_count()
+edge = d.filter((pl.col("x") == 1000) | (pl.col("y") == 1000)).height
+print(f"rows without coordinates: {missing}")
+print(f"exact duplicate rows:     {dup}")
+print(f"x or y equal to 1000:     {edge:,}  (the canvas is 1000 x 1000, so 0..999)")
+print(f"x range {d['x'].min()}..{d['x'].max()}, y range {d['y'].min()}..{d['y'].max()}")
+```
+
+- **`{python} missing` rows have no coordinates** or colour. They are dated weeks after the event; we drop them.
+- **`{python} dup` rows are exact duplicates** (same time, account, pixel and colour). We keep them, because we cannot
+  tell a logging artefact from a real double click.
+- **`{python} f"{edge:,}"` rows sit at coordinate 1000**, one past the edge of a 1000 × 1000 canvas. We keep them and
+  draw a 1001 × 1001 canvas.
+
+## When it happened
+
+```{python}
+hourly = (d.with_columns(pl.from_epoch("t_us", time_unit="us").dt.truncate("1h").alias("hour"))
+            .group_by("hour").len().sort("hour"))
+launch = hourly.filter(pl.col("len") > 10_000)["hour"].min()   # the first hour with more than 10,000 placements
+assert hourly.filter(pl.col("hour") == launch)["hour"].dt.epoch("us")[0] == r.LAUNCH_US  # = rplace17.LAUNCH
+end = hourly["hour"].max()
+pre = d.filter(pl.from_epoch("t_us", time_unit="us") < launch)
+print("launch hour:", launch, " last hour:", end)
+print(f"before launch: {pre.height:,} placements by {pre['user_id'].n_unique()} accounts")
+```
+
+```{python}
+#| label: fig-hourly
+#| fig-cap: "Placements per hour. The dashed line is the launch hour (the first hour with more than 10,000 placements)."
+fig, ax = plt.subplots(figsize=(8, 3))
+ax.plot(hourly["hour"], hourly["len"], lw=1.2)
+ax.axvline(launch, ls="--", color="grey")
+ax.set_yscale("log")
+ax.set_ylabel("placements per hour")
+plt.show()
+```
+
+The crowd arrives on `{python} str(launch)[:16]` UTC and stays until the canvas closes on `{python} str(end)[:10]`.
+Before that there are `{python} f"{pre.height:,}"` placements by `{python} pre["user_id"].n_unique()` accounts,
+spread over the previous ten days: most likely testing before launch. We keep them in the files, but later chapters
+start their clock at the launch hour (`rplace17.LAUNCH_US`).
+
+## The canvas, drawn from the log
+
+The canvas at any moment is just each pixel's latest colour. `canvas_at` keeps, for every pixel, the last placement up
+to a time and paints it; pixels nobody touched stay white.
+
+```{python}
+#| label: fig-final
+#| fig-cap: "The canvas after the last placement, rebuilt from the log."
+fig, ax = plt.subplots(figsize=(7, 7))
+ax.imshow(r.canvas_at(d))
+ax.set_axis_off()
+plt.show()
+```
+
+The same function, called at earlier times, shows the canvas filling in.
+
+```{python}
+#| label: fig-snapshots
+#| fig-cap: "The canvas 1, 6, 24 and 48 hours after launch."
+t0 = r.LAUNCH_US
+fig, axes = plt.subplots(1, 4, figsize=(12, 3.3))
+for ax, hours in zip(axes, [1, 6, 24, 48]):
+    ax.imshow(r.canvas_at(d, t0 + hours * 3_600_000_000))
+    ax.set_title(f"+{hours} h"); ax.set_axis_off()
+plt.show()
+```
+
+## How much of the history survives
+
+```{python}
+touched = d.select("x", "y").unique().height
+print(f"pixels ever placed: {touched:,} of {1001 * 1001:,}")
+print(f"placements still visible at the end: at most {touched / n_rows:.1%} (one per pixel)")
+```
+
+Only one placement per pixel can be visible at the end, so at most `{python} f"{touched / n_rows:.1%}"` of all
+placements survive into the final picture. The final image is the tip of the log; almost everything people did was
+later painted over. That is why the rest of the book works from the full sequence and not from snapshots.

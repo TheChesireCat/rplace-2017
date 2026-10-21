@@ -1,0 +1,28 @@
+# Interactions {#sec-interactions}
+
+::: {.callout-note}
+This chapter is planned: it states the question and the method. Results will replace the plan as the
+analysis is done.
+:::
+
+Up to here every account acted alone. The next rung asks who works with whom, and who against whom, using
+only where and when people placed.
+
+## The question
+
+Two accounts that keep placing the same colour on the same pixels are probably working together; two that keep
+undoing each other are probably not. Can the log alone recover a network of collaboration and conflict?
+
+## Why it matters
+
+The canvas is a shared environment that people both read and write: what you see is what others did. Coordination
+through a shared environment is called **stigmergy** (*established*; Grassé 1959 for termite nests, generalised by
+Heylighen 2016, see @sec-reading). A network built from co-placement is the most direct way to see who coordinates
+with whom without anyone talking.
+
+## Plan
+
+- A bipartite network of accounts and pixels (an edge when an account places the pixel's current colour).
+- Its projection onto accounts, with weights that discount very busy pixels.
+- **Null:** the configuration model (same degrees, random wiring), so that structure is only read in where it beats
+  degree alone.

@@ -1,0 +1,34 @@
+# Domains and borders {#sec-borders}
+
+::: {.callout-note}
+This chapter is planned: it states the question and the method. Results will replace the plan as the
+analysis is done.
+:::
+
+Where two colour regions meet is where most of the action is. In physics, the boundaries between regions
+(magnetic domains, soap foam, alloys) move by simple rules, and the rules differ between systems.
+
+## The question
+
+Do borders on the canvas behave like physical interfaces? Two textbook pictures predict different things
+(*established* theory; see @sec-reading):
+
+- In the **voter model**, where each site copies a random neighbour, borders stay rough and move without regard to
+  their shape.
+- In **curvature-driven** systems (Ising-like), sharp convex corners erode and concave notches fill in.
+
+## Why it matters
+
+Flags make this testable. Their intended shapes are known (straight edges, right angles, a few curves), so damage can
+be measured against the intended outline. Two questions follow, both *speculative but testable*:
+
+1. Does border motion depend on local curvature?
+2. Does geometry change **maintenance cost**, the placements per unit time per unit border length needed to hold a
+   shape? On a pixel grid a diagonal is a staircase of exposed corners, so it may cost more than a straight edge.
+
+## Plan and cautions
+
+- Colour domains as connected regions of one colour; border length and border velocity over time.
+- Curvature on a pixel grid is noisy and angle-dependent, so borders are smoothed and results checked against the
+  smoothing scale.
+- Popular artworks attract defenders whatever their shape; comparisons control for size and neighbours.

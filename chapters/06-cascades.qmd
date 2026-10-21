@@ -1,0 +1,29 @@
+# Cascades {#sec-cascades}
+
+::: {.callout-note}
+This chapter is planned: it states the question and the method. Results will replace the plan as the
+analysis is done.
+:::
+
+At the top of the ladder are properties of the whole canvas. The first is whether overwrites come in avalanches.
+
+## The question
+
+Add sand to a pile one grain at a time and mostly nothing happens, but sometimes a slide sweeps the pile. Earthquakes,
+neuronal activity and forest fires show events of all sizes with no typical scale. Do chains of overwrites on the
+canvas (one overwrite provoking nearby ones, which provoke more) have that kind of size distribution?
+
+## Why it matters
+
+If they do, the exponents place r/place next to other systems and can be compared directly. If they do not, that is
+equally informative. Either answer is a number other fields can reuse.
+
+## The main risk, built in from the start
+
+Heavy-tailed plots are easy to fake. Thresholded random processes can produce straight lines on log–log axes without
+anything critical going on (*established*; Touboul and Destexhe 2010, see @sec-reading). So:
+
+- fit distributions by maximum likelihood and compare against alternatives (log-normal, exponential, stretched
+  exponential), following Clauset, Shalizi and Newman (2009);
+- run the same cascade definition on time-shuffled and space-shuffled logs, which must not show the same tails;
+- report how the result depends on the space and time windows that link overwrites into a cascade.
