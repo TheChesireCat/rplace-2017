@@ -1,0 +1,460 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "r/place 2017 as a complex system",
+    "section": "",
+    "text": "Preface\nIn April 2017 Reddit ran an experiment called r/place: a blank 1000 × 1000 canvas that anyone with an account could paint, one pixel at a time, with a wait between pixels (five minutes for most of the event, longer for part of it, as 2  Actors finds). Over three days, about 1.17 million accounts placed 16.5 million pixels. Nobody was in charge, yet the canvas filled with flags, logos and murals, defended for days against people trying to paint over them.\nReddit later released the full log: for every placement, when, who (a hashed account id), where and which colour. That makes r/place unusual. It is a system of a million interacting people where every interaction is recorded, at the resolution of a single action, and the rules are simple enough to write on one line.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#why-a-complex-systems-lens",
+    "href": "index.html#why-a-complex-systems-lens",
+    "title": "r/place 2017 as a complex system",
+    "section": "Why a complex-systems lens",
+    "text": "Why a complex-systems lens\nComplex-systems science and network science have many ideas about how systems of many simple interacting parts behave: heavy-tailed bursts of activity, domains and moving borders, cascades, coordination through a shared environment, the emergence of groups. Testing those ideas on human systems is usually hard, because the data are partial, coarse, or missing the interactions. r/place has none of those problems, at the cost of being a game. This book uses the game as a laboratory: each chapter takes one idea, says what it predicts, and checks it against the log.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#how-the-book-is-built-bottom-up",
+    "href": "index.html#how-the-book-is-built-bottom-up",
+    "title": "r/place 2017 as a complex system",
+    "section": "How the book is built: bottom up",
+    "text": "How the book is built: bottom up\nThe chapters climb a ladder, from single actors to properties of the whole canvas. Each rung uses the one below it.\n\n\n\n\n\n\n\n\nRung\nQuestion\nChapter\n\n\n\n\nData\nWhat exactly is in the log, and what is odd about it?\n1  The log\n\n\nActors\nHow active are people, and how does the waiting rule shape them?\n2  Actors\n\n\nPixels\nHow long does a colour survive on a pixel?\n3  Pixels\n\n\nInteractions\nWho works with, and against, whom?\n4  Interactions\n\n\nDomains and borders\nWhere do colour regions meet, and do their borders move like physical interfaces?\n5  Domains and borders\n\n\nCascades\nDo overwrites come in avalanches of all sizes?\n6  Cascades\n\n\nGroups\nHow many groups does it take to explain the canvas?\n7  Groups\n\n\nBaselines\nWhat would a model with no strategy at all already produce?\n8  Baselines",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-read-the-results",
+    "href": "index.html#how-to-read-the-results",
+    "title": "r/place 2017 as a complex system",
+    "section": "How to read the results",
+    "text": "How to read the results\nEvery chapter shows the code that made its figures, so you can run it yourself (Appendix A — Regenerating the data). Three habits run through the book:\n\nA baseline first. A pattern means little until we know what a simple null model (shuffled times, independent users, random positions) would produce. Each claim is stated against one.\nSay how far a result goes. A figure that looks striking is the start of a question, not an answer. We say whether a result is a description, beats a null, or survives changes to arbitrary choices.\nIdeas carry a label. Established (with a citation), studied under another name, speculative but testable (with the test), or possibly new (only after a literature search, and saying what was searched).\n\nThe first chapters are written; later ones state the question and the plan, and fill in as the analysis is done.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "chapters/01-data.html",
+    "href": "chapters/01-data.html",
+    "title": "1  The log",
+    "section": "",
+    "text": "1.1 One placement is one row\nimport numpy as np\nimport polars as pl\nimport matplotlib.pyplot as plt\nimport rplace17 as r\n\nd = r.load()   # sorted by time; the 3 rows without coordinates are dropped (see below)\nd.head()\n\n\n\nshape: (5, 5)\n\n\n\nt_us\nuser_id\nx\ny\ncolor\n\n\ni64\ni32\ni16\ni16\ni8\n\n\n\n\n1490118935548000\n413864\n500\n504\n2\n\n\n1490118947515000\n413864\n508\n503\n2\n\n\n1490118959619000\n413864\n509\n504\n2\n\n\n1490118973689000\n413864\n509\n503\n2\n\n\n1490118985251000\n413864\n509\n502\n2\nEach row is one pixel placement:\npal = r.palette()\nfig, ax = plt.subplots(figsize=(8, 0.9))\nax.imshow(r.palette_rgb()[None, :, :], aspect=\"auto\")\nax.set_xticks(range(16)); ax.set_yticks([])\nax.set_title(\"the 16 colours, by index\")\nplt.show()\nn_rows, n_users = d.height, d[\"user_id\"].n_unique()\nprint(f\"{n_rows:,} placements by {n_users:,} accounts\")\n\n16,567,564 placements by 1,166,938 accounts\nSo there are 16,567,564 placements by 1,166,938 accounts, on average 14.2 placements each. How that average hides a very uneven spread is the subject of Chapter 2.",
+    "crumbs": [
+      "The data",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The log</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/01-data.html#one-placement-is-one-row",
+    "href": "chapters/01-data.html#one-placement-is-one-row",
+    "title": "1  The log",
+    "section": "",
+    "text": "t_us: the time, in microseconds since 1970 (UTC). The release records milliseconds.\nuser_id: who placed it. The release gives a hashed account id; we replaced each hash by a small integer.\nx, y: where, with (0, 0) at the top left.\ncolor: which of the 16 colours, as an index into the palette.",
+    "crumbs": [
+      "The data",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The log</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/01-data.html#what-is-odd-about-the-log",
+    "href": "chapters/01-data.html#what-is-odd-about-the-log",
+    "title": "1  The log",
+    "section": "1.2 What is odd about the log",
+    "text": "1.2 What is odd about the log\nA dataset should be checked before it is trusted. These checks compare the log with what the rules say should be possible.\n\nfull = r.load(drop_missing=False)\ndup = full.height - full.unique().height\nmissing = full[\"x\"].null_count()\nedge = d.filter((pl.col(\"x\") == 1000) | (pl.col(\"y\") == 1000)).height\nprint(f\"rows without coordinates: {missing}\")\nprint(f\"exact duplicate rows:     {dup}\")\nprint(f\"x or y equal to 1000:     {edge:,}  (the canvas is 1000 x 1000, so 0..999)\")\nprint(f\"x range {d['x'].min()}..{d['x'].max()}, y range {d['y'].min()}..{d['y'].max()}\")\n\nrows without coordinates: 3\nexact duplicate rows:     304\nx or y equal to 1000:     3,256  (the canvas is 1000 x 1000, so 0..999)\nx range 0..1000, y range 0..1000\n\n\n\n3 rows have no coordinates or colour. They are dated weeks after the event; we drop them.\n304 rows are exact duplicates (same time, account, pixel and colour). We keep them, because we cannot tell a logging artefact from a real double click.\n3,256 rows sit at coordinate 1000, one past the edge of a 1000 × 1000 canvas. We keep them and draw a 1001 × 1001 canvas.",
+    "crumbs": [
+      "The data",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The log</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/01-data.html#when-it-happened",
+    "href": "chapters/01-data.html#when-it-happened",
+    "title": "1  The log",
+    "section": "1.3 When it happened",
+    "text": "1.3 When it happened\n\nhourly = (d.with_columns(pl.from_epoch(\"t_us\", time_unit=\"us\").dt.truncate(\"1h\").alias(\"hour\"))\n            .group_by(\"hour\").len().sort(\"hour\"))\nlaunch = hourly.filter(pl.col(\"len\") &gt; 10_000)[\"hour\"].min()   # the first hour with more than 10,000 placements\nassert hourly.filter(pl.col(\"hour\") == launch)[\"hour\"].dt.epoch(\"us\")[0] == r.LAUNCH_US  # = rplace17.LAUNCH\nend = hourly[\"hour\"].max()\npre = d.filter(pl.from_epoch(\"t_us\", time_unit=\"us\") &lt; launch)\nprint(\"launch hour:\", launch, \" last hour:\", end)\nprint(f\"before launch: {pre.height:,} placements by {pre['user_id'].n_unique()} accounts\")\n\nlaunch hour: 2017-03-31 17:00:00  last hour: 2017-04-03 16:00:00\nbefore launch: 8,266 placements by 768 accounts\n\n\n\nfig, ax = plt.subplots(figsize=(8, 3))\nax.plot(hourly[\"hour\"], hourly[\"len\"], lw=1.2)\nax.axvline(launch, ls=\"--\", color=\"grey\")\nax.set_yscale(\"log\")\nax.set_ylabel(\"placements per hour\")\nplt.show()\n\n\n\n\n\n\n\nFigure 1.1: Placements per hour. The dashed line is the launch hour (the first hour with more than 10,000 placements).\n\n\n\n\n\nThe crowd arrives on 2017-03-31 17:00 UTC and stays until the canvas closes on 2017-04-03. Before that there are 8,266 placements by 768 accounts, spread over the previous ten days: most likely testing before launch. We keep them in the files, but later chapters start their clock at the launch hour (rplace17.LAUNCH_US).",
+    "crumbs": [
+      "The data",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The log</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/01-data.html#the-canvas-drawn-from-the-log",
+    "href": "chapters/01-data.html#the-canvas-drawn-from-the-log",
+    "title": "1  The log",
+    "section": "1.4 The canvas, drawn from the log",
+    "text": "1.4 The canvas, drawn from the log\nThe canvas at any moment is just each pixel’s latest colour. canvas_at keeps, for every pixel, the last placement up to a time and paints it; pixels nobody touched stay white.\n\nfig, ax = plt.subplots(figsize=(7, 7))\nax.imshow(r.canvas_at(d))\nax.set_axis_off()\nplt.show()\n\n\n\n\n\n\n\nFigure 1.2: The canvas after the last placement, rebuilt from the log.\n\n\n\n\n\nThe same function, called at earlier times, shows the canvas filling in.\n\nt0 = r.LAUNCH_US\nfig, axes = plt.subplots(1, 4, figsize=(12, 3.3))\nfor ax, hours in zip(axes, [1, 6, 24, 48]):\n    ax.imshow(r.canvas_at(d, t0 + hours * 3_600_000_000))\n    ax.set_title(f\"+{hours} h\"); ax.set_axis_off()\nplt.show()\n\n\n\n\n\n\n\nFigure 1.3: The canvas 1, 6, 24 and 48 hours after launch.",
+    "crumbs": [
+      "The data",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The log</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/01-data.html#how-much-of-the-history-survives",
+    "href": "chapters/01-data.html#how-much-of-the-history-survives",
+    "title": "1  The log",
+    "section": "1.5 How much of the history survives",
+    "text": "1.5 How much of the history survives\n\ntouched = d.select(\"x\", \"y\").unique().height\nprint(f\"pixels ever placed: {touched:,} of {1001 * 1001:,}\")\nprint(f\"placements still visible at the end: at most {touched / n_rows:.1%} (one per pixel)\")\n\npixels ever placed: 998,779 of 1,002,001\nplacements still visible at the end: at most 6.0% (one per pixel)\n\n\nOnly one placement per pixel can be visible at the end, so at most 6.0% of all placements survive into the final picture. The final image is the tip of the log; almost everything people did was later painted over. That is why the rest of the book works from the full sequence and not from snapshots.",
+    "crumbs": [
+      "The data",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The log</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/02-actors.html",
+    "href": "chapters/02-actors.html",
+    "title": "2  Actors",
+    "section": "",
+    "text": "2.1 How much people place\nk = d.group_by(\"user_id\").len()[\"len\"].to_numpy()\nprint(f\"{len(k):,} accounts; mean {k.mean():.1f}, median {np.median(k):.0f}, max {k.max():,} placements\")\nprint(f\"placed exactly once: {(k == 1).mean():.1%};  100 or more: {(k &gt;= 100).mean():.1%}\")\n\n1,166,794 accounts; mean 14.2, median 3, max 656 placements\nplaced exactly once: 32.8%;  100 or more: 2.5%\nThe mean is 14.2 but the median is 3: a typical account placed a handful of pixels, while a few placed hundreds. A plot of the whole distribution shows how uneven this is. We plot the share of accounts with at least k placements (the complementary cumulative distribution, or CCDF), on log scales, because it needs no binning choices.\nt = d[\"t_us\"].to_numpy()\ngrid = np.arange(t.min(), t.max(), 1_000_000)               # one-second steps from launch to close\nceiling = (1 / r.cooldown_at(grid)).sum()                    # placements possible with no idle time at all\nxs = np.sort(k)\nccdf = 1 - np.arange(len(xs)) / len(xs)\nfig, ax = plt.subplots(figsize=(6, 4))\nax.step(xs, ccdf, where=\"post\")\nax.axvline(ceiling, ls=\"--\", color=\"grey\")\nax.set_xscale(\"log\"); ax.set_yscale(\"log\")\nax.set_xlabel(\"placements per account, k\"); ax.set_ylabel(\"share of accounts with ≥ k\")\nplt.show()\n\n\n\n\n\n\n\nFigure 2.1: Share of accounts with at least k placements (log scales). The dashed line is the most one account could have placed, placing the moment the cooldown allowed, from launch to close (computed in the next section).\nNo account reaches the dashed line at 720 placements, the most anyone could have made by placing the instant the cooldown allowed for the whole event; the busiest made 656. A natural guess is that the spread comes from how long people stayed rather than how fast they placed while there. That is a hypothesis; sessions (below) are the way to test it.\nHow concentrated is the work? Sort accounts from most to least active, and ask what share of all placements the top accounts made.\ndesc = np.sort(k)[::-1]\ncum = np.cumsum(desc) / desc.sum()\ntop = np.arange(1, len(desc) + 1) / len(desc)\nfig, ax = plt.subplots(figsize=(6, 4))\nax.plot(top, cum)\nax.set_xscale(\"log\")\nax.set_xlabel(\"most active share of accounts (log scale)\"); ax.set_ylabel(\"share of all placements\")\nplt.show()\nshare = lambda f: cum[int(f * len(desc)) - 1]\nprint(f\"top 1% of accounts: {share(0.01):.0%} of placements;  top 10%: {share(0.10):.0%}\")\n\n\n\n\n\n\n\nFigure 2.2: Share of all placements made by the most active accounts.\n\n\n\n\n\ntop 1% of accounts: 15% of placements;  top 10%: 60%\nThe top 1% of accounts made 15% of the placements, and the top 10% made 60%. The work is concentrated, but the cooldown puts a ceiling on it: no account can make more than 0.0043% of all placements. Whether r/place is less concentrated than a comparable system without a rate limit is a comparison we have not made.",
+    "crumbs": [
+      "Actors",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Actors</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/02-actors.html#the-rhythm-of-one-account",
+    "href": "chapters/02-actors.html#the-rhythm-of-one-account",
+    "title": "2  Actors",
+    "section": "2.2 The rhythm of one account",
+    "text": "2.2 The rhythm of one account\nThe cooldown should leave a fingerprint: no gap between an account’s consecutive placements should be shorter than the wait. Here are all the gaps.\n\ngaps = (d.sort(\"user_id\", \"t_us\")\n          .with_columns((pl.col(\"t_us\").diff().over(\"user_id\") / 1e6).alias(\"gap_s\"))\n          .drop_nulls(\"gap_s\"))\ng = gaps[\"gap_s\"].to_numpy()\nprint(f\"{len(g):,} gaps between consecutive placements of the same account\")\n\n15,392,504 gaps between consecutive placements of the same account\n\n\n\nfig, ax = plt.subplots(figsize=(8, 3.2))\nax.hist(g[g &lt; 1800] / 60, bins=np.arange(0, 30.01, 1 / 6))\nfor m in (5, 10, 20):\n    ax.axvline(m, ls=\"--\", color=\"grey\", lw=0.8)\nax.set_xlabel(\"gap (minutes)\"); ax.set_ylabel(\"count\")\nplt.show()\n\n\n\n\n\n\n\nFigure 2.3: Gaps between an account’s consecutive placements, in 10-second bins, up to 30 minutes. Dashed lines at 5, 10 and 20 minutes.\n\n\n\n\n\nThere is a sharp wall at five minutes, as expected, but also a second wall at ten minutes and a small one at twenty. Two explanations predict different things:\n\nThe rule changed over time. Then gaps near ten minutes should cluster in particular hours, and five-minute gaps should vanish from those hours.\nSome accounts had a longer wait (new accounts, say). Then ten-minute gaps should cluster in particular accounts, at all hours.\n\nThe check is to read the effective wait off the log in each 10-minute window: the 1st percentile of the gaps that end in it. The fastest 1% of placements are people placing the moment they are allowed.\n\nwin = (gaps.with_columns(pl.from_epoch(\"t_us\", time_unit=\"us\").dt.truncate(\"10m\").alias(\"w\"))\n           .group_by(\"w\").agg(pl.col(\"gap_s\").quantile(0.01).alias(\"q01\"), pl.len()).sort(\"w\"))\nw_us = win[\"w\"].dt.epoch(\"us\").to_numpy()\nfig, ax = plt.subplots(figsize=(8, 3.2))\nax.scatter(win[\"w\"], win[\"q01\"] / 60, s=4, label=\"1st percentile of gaps\")\nax.step(win[\"w\"], r.cooldown_at(w_us) / 60, where=\"post\", color=\"black\", lw=1, label=\"regimes\")\nax.set_ylabel(\"minutes\"); ax.set_ylim(0, 25); ax.legend(frameon=False, loc=\"upper right\")\nplt.show()\n\n\n\n\n\n\n\nFigure 2.4: The effective cooldown over time: the 1st percentile of gaps ending in each 10-minute window (dots), and the regimes read off it (line).\n\n\n\n\n\n\n\n\n\nshape: (7, 3)\n\n\n\nfrom (UTC)\nto (UTC)\nminutes\n\n\nstr\nstr\ni64\n\n\n\n\n\"2017-03-31 17:00\"\n\"2017-03-31 21:10\"\n5\n\n\n\"2017-03-31 21:10\"\n\"2017-03-31 22:40\"\n10\n\n\n\"2017-03-31 22:40\"\n\"2017-04-01 00:10\"\n5\n\n\n\"2017-04-01 00:10\"\n\"2017-04-01 03:10\"\n10\n\n\n\"2017-04-01 03:10\"\n\"2017-04-01 05:30\"\n20\n\n\n\"2017-04-01 05:30\"\n\"2017-04-01 21:30\"\n10\n\n\n\"2017-04-01 21:30\"\n\"end\"\n5\n\n\n\n\n\n\n\nThe rule changed over time. Between 2017-04-01 00:10 and 2017-04-01 21:30 UTC no gap was as short as five minutes; the wait was ten minutes, and twenty for a little over two hours. The other explanation fails its test:\n\nper = (gaps.group_by(\"user_id\")\n           .agg(pl.len().alias(\"n\"), ((pl.col(\"gap_s\") &gt;= 600) & (pl.col(\"gap_s\") &lt; 615)).mean().alias(\"f10\"))\n           .filter(pl.col(\"n\") &gt;= 20))\nprint(f\"accounts with ≥ 20 gaps: {per.height:,};  with over 30% of their gaps at 10 min: {(per['f10'] &gt; 0.3).sum():,}\")\n\naccounts with ≥ 20 gaps: 210,189;  with over 30% of their gaps at 10 min: 789\n\n\nOnly a few hundred accounts have most of their gaps at ten minutes; the ten-minute wall belongs to hours, not to people. We have not checked whether Reddit documented these changes. The regimes are stored in the package as rplace17.COOLDOWN_REGIMES, with rplace17.cooldown_at(t) giving the wait in force at any time, so later chapters can use them.\nThis matters beyond bookkeeping. A rule that changed mid-event, for everyone at once, is a natural experiment: the same people, the same canvas, a different speed limit. It is the “cooldown as a control parameter” idea in its cleanest form (speculative but testable: compare rates of conflict and repair just before and after each switch).",
+    "crumbs": [
+      "Actors",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Actors</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/02-actors.html#regular-or-bursty",
+    "href": "chapters/02-actors.html#regular-or-bursty",
+    "title": "2  Actors",
+    "section": "2.3 Regular or bursty?",
+    "text": "2.3 Regular or bursty?\nA gap distribution mixes people. To ask whether each person is regular or bursty, we use the burstiness coefficient \\(B = (\\sigma - \\mu) / (\\sigma + \\mu)\\), where \\(\\mu\\) and \\(\\sigma\\) are the mean and standard deviation of one person’s gaps (Goh and Barabási 2008). \\(B = -1\\) is a perfectly regular clock, \\(B = 0\\) is a Poisson process, and \\(B \\to 1\\) is extremely bursty.\nThe cooldown changes what “random” should mean. Someone who placed at random times subject to the rule would have gaps equal to the wait in force plus a random extra time. So our null model keeps each account’s own gaps’ waits (the cooldown in force when each gap ended) and its own mean gap, and replaces the extra time with an exponential draw. If real accounts are burstier than that, the burstiness is theirs, not the rule’s.\n\ngaps = gaps.with_columns(pl.Series(\"wait_s\", r.cooldown_at(gaps[\"t_us\"].to_numpy())))\nacc = (gaps.group_by(\"user_id\")\n           .agg(pl.col(\"gap_s\"), pl.col(\"wait_s\"))\n           .filter(pl.col(\"gap_s\").list.len() &gt;= 10))                    # at least 10 gaps, so B is not pure noise\n\ndef burstiness(x):\n    mu, sd = x.mean(), x.std(ddof=1)\n    return (sd - mu) / (sd + mu)\n\nrng = np.random.default_rng(0)\nB, B_null = [], []\nfor gs, ws in zip(acc[\"gap_s\"].to_list(), acc[\"wait_s\"].to_list()):\n    gs, ws = np.asarray(gs), np.asarray(ws)\n    extra = max(gs.mean() - ws.mean(), 1e-9)                             # mean time beyond the wait\n    B.append(burstiness(gs))\n    B_null.append(burstiness(ws + rng.exponential(extra, size=len(gs))))\nB, B_null = np.array(B), np.array(B_null)\nprint(f\"{len(B):,} accounts with ≥ 10 gaps;  median B: data {np.median(B):.2f}, null {np.median(B_null):.2f}\")\n\n324,330 accounts with ≥ 10 gaps;  median B: data 0.41, null -0.09\n\n\n\nfig, ax = plt.subplots(figsize=(6, 3.5))\nbins = np.linspace(-1, 1, 81)\nax.hist(B_null, bins=bins, alpha=0.6, label=\"null: cooldown + random extra time\")\nax.hist(B, bins=bins, alpha=0.6, label=\"data\")\nax.set_xlabel(\"burstiness B\"); ax.set_ylabel(\"accounts\"); ax.legend(frameon=False)\nplt.show()\nprint(f\"share of accounts burstier than their own null draw: {(B &gt; B_null).mean():.0%}\")\n\n\n\n\n\n\n\nFigure 2.5: Burstiness of accounts with at least 10 gaps, against a null of random extra time above the cooldown in force (same waits and same mean gap per account).\n\n\n\n\n\nshare of accounts burstier than their own null draw: 99%\n\n\nReal accounts are far burstier than random extra time above the cooldown would make them (median 0.41 against -0.09; 99% of accounts are burstier than their own null draw). People do not place steadily: they place quickly while engaged, then go quiet for long stretches. That is the familiar pattern of human activity, surviving a hard rate limit.\nHow far this goes. This is a description that beats one null (rung 3 of: runs → sane → beats a null → holds across subsets → robust to choices → mechanism). It has not been checked across subsets (heavy and light users, day and night, the three cooldown regimes) or against other choices (the 10-gap threshold). The obvious mechanism, sessions broken by sleep and the rest of life, is a hypothesis; the next step is to split each account’s history into sessions and look at session lengths and the gaps between them.",
+    "crumbs": [
+      "Actors",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Actors</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/02-actors.html#what-this-chapter-sets-up",
+    "href": "chapters/02-actors.html#what-this-chapter-sets-up",
+    "title": "2  Actors",
+    "section": "2.4 What this chapter sets up",
+    "text": "2.4 What this chapter sets up\n\nActivity is uneven but capped. No account can do much, so anything large on the canvas needs many accounts.\nPeople act in bursts. A pixel held “all day” is held by a relay of people, not by one person.\nThe speed limit changed three times for everyone. Later chapters can compare conflict and repair across those switches.",
+    "crumbs": [
+      "Actors",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Actors</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/03-pixels.html",
+    "href": "chapters/03-pixels.html",
+    "title": "3  Pixels",
+    "section": "",
+    "text": "3.1 The question\nHow long does a colour survive on a pixel, and what decides it? A placement that repairs an artwork should last; an attack should be undone quickly. The survival time of a colour is the simplest measure of conflict that needs no labels.",
+    "crumbs": [
+      "Pixels",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Pixels</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/03-pixels.html#why-it-matters",
+    "href": "chapters/03-pixels.html#why-it-matters",
+    "title": "3  Pixels",
+    "section": "3.2 Why it matters",
+    "text": "3.2 Why it matters\nSurvival times are the r/place version of revert statistics in Wikipedia edit wars (studied under another name; Yasseri et al. 2012, see Appendix B), where reverts signal conflict and their timing shows memory and burstiness. If pixel overwrites behave like reverts, r/place becomes a spatial member of a well-studied family.",
+    "crumbs": [
+      "Pixels",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Pixels</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/03-pixels.html#plan",
+    "href": "chapters/03-pixels.html#plan",
+    "title": "3  Pixels",
+    "section": "3.3 Plan",
+    "text": "3.3 Plan\n\nFor each placement, the time until the pixel next changes colour (censored at the end of the event).\nKaplan–Meier survival curves, split by whether the new colour matches the colour two steps back (an “undo”).\nNull: the same placements with times shuffled within each pixel, which keeps how busy each pixel is and removes any memory.",
+    "crumbs": [
+      "Pixels",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Pixels</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/04-interactions.html",
+    "href": "chapters/04-interactions.html",
+    "title": "4  Interactions",
+    "section": "",
+    "text": "4.1 The question\nTwo accounts that keep placing the same colour on the same pixels are probably working together; two that keep undoing each other are probably not. Can the log alone recover a network of collaboration and conflict?",
+    "crumbs": [
+      "Interactions",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Interactions</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/04-interactions.html#why-it-matters",
+    "href": "chapters/04-interactions.html#why-it-matters",
+    "title": "4  Interactions",
+    "section": "4.2 Why it matters",
+    "text": "4.2 Why it matters\nThe canvas is a shared environment that people both read and write: what you see is what others did. Coordination through a shared environment is called stigmergy (established; Grassé 1959 for termite nests, generalised by Heylighen 2016, see Appendix B). A network built from co-placement is the most direct way to see who coordinates with whom without anyone talking.",
+    "crumbs": [
+      "Interactions",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Interactions</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/04-interactions.html#plan",
+    "href": "chapters/04-interactions.html#plan",
+    "title": "4  Interactions",
+    "section": "4.3 Plan",
+    "text": "4.3 Plan\n\nA bipartite network of accounts and pixels (an edge when an account places the pixel’s current colour).\nIts projection onto accounts, with weights that discount very busy pixels.\nNull: the configuration model (same degrees, random wiring), so that structure is only read in where it beats degree alone.",
+    "crumbs": [
+      "Interactions",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Interactions</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/05-borders.html",
+    "href": "chapters/05-borders.html",
+    "title": "5  Domains and borders",
+    "section": "",
+    "text": "5.1 The question\nDo borders on the canvas behave like physical interfaces? Two textbook pictures predict different things (established theory; see Appendix B):",
+    "crumbs": [
+      "Domains and borders",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Domains and borders</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/05-borders.html#the-question",
+    "href": "chapters/05-borders.html#the-question",
+    "title": "5  Domains and borders",
+    "section": "",
+    "text": "In the voter model, where each site copies a random neighbour, borders stay rough and move without regard to their shape.\nIn curvature-driven systems (Ising-like), sharp convex corners erode and concave notches fill in.",
+    "crumbs": [
+      "Domains and borders",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Domains and borders</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/05-borders.html#why-it-matters",
+    "href": "chapters/05-borders.html#why-it-matters",
+    "title": "5  Domains and borders",
+    "section": "5.2 Why it matters",
+    "text": "5.2 Why it matters\nFlags make this testable. Their intended shapes are known (straight edges, right angles, a few curves), so damage can be measured against the intended outline. Two questions follow, both speculative but testable:\n\nDoes border motion depend on local curvature?\nDoes geometry change maintenance cost, the placements per unit time per unit border length needed to hold a shape? On a pixel grid a diagonal is a staircase of exposed corners, so it may cost more than a straight edge.",
+    "crumbs": [
+      "Domains and borders",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Domains and borders</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/05-borders.html#plan-and-cautions",
+    "href": "chapters/05-borders.html#plan-and-cautions",
+    "title": "5  Domains and borders",
+    "section": "5.3 Plan and cautions",
+    "text": "5.3 Plan and cautions\n\nColour domains as connected regions of one colour; border length and border velocity over time.\nCurvature on a pixel grid is noisy and angle-dependent, so borders are smoothed and results checked against the smoothing scale.\nPopular artworks attract defenders whatever their shape; comparisons control for size and neighbours.",
+    "crumbs": [
+      "Domains and borders",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Domains and borders</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/06-cascades.html",
+    "href": "chapters/06-cascades.html",
+    "title": "6  Cascades",
+    "section": "",
+    "text": "6.1 The question\nAdd sand to a pile one grain at a time and mostly nothing happens, but sometimes a slide sweeps the pile. Earthquakes, neuronal activity and forest fires show events of all sizes with no typical scale. Do chains of overwrites on the canvas (one overwrite provoking nearby ones, which provoke more) have that kind of size distribution?",
+    "crumbs": [
+      "The whole canvas",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Cascades</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/06-cascades.html#why-it-matters",
+    "href": "chapters/06-cascades.html#why-it-matters",
+    "title": "6  Cascades",
+    "section": "6.2 Why it matters",
+    "text": "6.2 Why it matters\nIf they do, the exponents place r/place next to other systems and can be compared directly. If they do not, that is equally informative. Either answer is a number other fields can reuse.",
+    "crumbs": [
+      "The whole canvas",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Cascades</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/06-cascades.html#the-main-risk-built-in-from-the-start",
+    "href": "chapters/06-cascades.html#the-main-risk-built-in-from-the-start",
+    "title": "6  Cascades",
+    "section": "6.3 The main risk, built in from the start",
+    "text": "6.3 The main risk, built in from the start\nHeavy-tailed plots are easy to fake. Thresholded random processes can produce straight lines on log–log axes without anything critical going on (established; Touboul and Destexhe 2010, see Appendix B). So:\n\nfit distributions by maximum likelihood and compare against alternatives (log-normal, exponential, stretched exponential), following Clauset, Shalizi and Newman (2009);\nrun the same cascade definition on time-shuffled and space-shuffled logs, which must not show the same tails;\nreport how the result depends on the space and time windows that link overwrites into a cascade.",
+    "crumbs": [
+      "The whole canvas",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Cascades</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/07-groups.html",
+    "href": "chapters/07-groups.html",
+    "title": "7  Groups",
+    "section": "",
+    "text": "7.1 The question\nStep 1: are groups needed at all? Build a null where accounts act independently, each with its own activity and spatial preference, and no coordination. If it already reproduces the canvas’s spatial statistics (colour correlations over distance, clustering of overwrites), groups are unnecessary, and that is a finding.\nStep 2: if not, how many close the gap? Add K latent groups, each with a spatial footprint and colour preference, and choose K with a criterion that penalises complexity (description length, as in nonparametric stochastic block models; see Appendix B).",
+    "crumbs": [
+      "The whole canvas",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Groups</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/07-groups.html#cautions",
+    "href": "chapters/07-groups.html#cautions",
+    "title": "7  Groups",
+    "section": "7.2 Cautions",
+    "text": "7.2 Cautions\n\nK is not one number. A flag inside a country inside a region is a hierarchy, so K is reported as a curve against resolution.\nGroups are found among accounts, not in the image: artworks can be scattered, and one white background can be painted by many groups.\nThe community Atlas of artworks is only partial ground truth: it describes the final canvas and misses groups whose work was erased.",
+    "crumbs": [
+      "The whole canvas",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Groups</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/08-baselines.html",
+    "href": "chapters/08-baselines.html",
+    "title": "8  Baselines",
+    "section": "",
+    "text": "8.1 The question\nMinimal models from statistical physics predict how competing regions behave with no strategy at all: the voter model (copy a neighbour), the Potts model (many colours, local alignment), and Axelrod’s model of cultural dissemination. If one of them reproduces the canvas’s statistics, the social story is thinner than it looks. If they fail, we can say exactly where human behaviour departs from them.",
+    "crumbs": [
+      "The whole canvas",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Baselines</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/08-baselines.html#why-it-matters",
+    "href": "chapters/08-baselines.html#why-it-matters",
+    "title": "8  Baselines",
+    "section": "8.2 Why it matters",
+    "text": "8.2 Why it matters\nThese baselines are what turn a description into an explanation. A model that reproduces the measurements of the earlier chapters, with few parameters, is a candidate mechanism; prediction alone is not.",
+    "crumbs": [
+      "The whole canvas",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Baselines</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/08-baselines.html#cautions",
+    "href": "chapters/08-baselines.html#cautions",
+    "title": "8  Baselines",
+    "section": "8.3 Cautions",
+    "text": "8.3 Cautions\n\nr/place is not a clean relaxation to equilibrium: 16 colours, three days, a canvas that fills from blank.\nA failure to see textbook behaviour is informative only if we can say why the conditions differ.",
+    "crumbs": [
+      "The whole canvas",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Baselines</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/a1-regenerate.html",
+    "href": "chapters/a1-regenerate.html",
+    "title": "Appendix A — Regenerating the data",
+    "section": "",
+    "text": "A.1 The files",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Regenerating the data</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/a1-regenerate.html#the-files",
+    "href": "chapters/a1-regenerate.html#the-files",
+    "title": "Appendix A — Regenerating the data",
+    "section": "",
+    "text": "File\nColumns\n\n\n\n\nplacements.parquet\nt_us (µs since epoch, UTC), user_id, x, y, color (palette index); sorted by time\n\n\nusers.parquet\nuser_id → user_hash (the release’s hashed account id)\n\n\npalette.parquet\ncolor → hex, name, from Reddit’s released Place client (client.js, DEFAULT_COLOR_PALETTE)",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Regenerating the data</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/a1-regenerate.html#building-the-book",
+    "href": "chapters/a1-regenerate.html#building-the-book",
+    "title": "Appendix A — Regenerating the data",
+    "section": "A.2 Building the book",
+    "text": "A.2 Building the book\nmake preview    # live preview while writing\nmake render     # run the chapters and build the site into _site/\nmake publish    # push the site to the gh-pages branch\nChapter results are cached in _freeze/, which is committed, so the site can be rebuilt without the data. A chapter is re-run only when its source changes.",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Regenerating the data</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/a2-reading.html",
+    "href": "chapters/a2-reading.html",
+    "title": "Appendix B — Reading list",
+    "section": "",
+    "text": "B.1 r/place",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Reading list</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/a2-reading.html#rplace",
+    "href": "chapters/a2-reading.html#rplace",
+    "title": "Appendix B — Reading list",
+    "section": "",
+    "text": "Rappaz, J., Catasta, M., West, R., Aberer, K. (2018). Latent structure in collaboration: the case of Reddit r/place. ICWSM 12(1). doi:10.1609/icwsm.v12i1.15013\nWu, Y., Silva, A. (2024). How millions coordinate at scale: engagement, collaboration, and conflict in three editions of Reddit r/place. arXiv:2408.13236. doi:10.48550/arXiv.2408.13236 (venue not yet verified)",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Reading list</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/a2-reading.html#activity-and-conflict-in-online-systems",
+    "href": "chapters/a2-reading.html#activity-and-conflict-in-online-systems",
+    "title": "Appendix B — Reading list",
+    "section": "B.2 Activity and conflict in online systems",
+    "text": "B.2 Activity and conflict in online systems\n\nGoh, K.-I., Barabási, A.-L. (2008). Burstiness and memory in complex systems. EPL 81(4), 48002. doi:10.1209/0295-5075/81/48002\nYasseri, T., Sumi, R., Rung, A., Kornai, A., Kertész, J. (2012). Dynamics of conflicts in Wikipedia. PLoS ONE 7(6), e38869. doi:10.1371/journal.pone.0038869",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Reading list</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/a2-reading.html#coordination-through-the-environment",
+    "href": "chapters/a2-reading.html#coordination-through-the-environment",
+    "title": "Appendix B — Reading list",
+    "section": "B.3 Coordination through the environment",
+    "text": "B.3 Coordination through the environment\n\nGrassé, P.-P. (1959). La reconstruction du nid et les coordinations interindividuelles chez Bellicositermes natalensis et Cubitermes sp. La théorie de la stigmergie. Insectes Sociaux 6(1), 41–80. doi:10.1007/BF02223791\nHeylighen, F. (2016). Stigmergy as a universal coordination mechanism I: definition and components. Cognitive Systems Research 38, 4–13. doi:10.1016/j.cogsys.2015.12.002",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Reading list</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/a2-reading.html#criticality-and-heavy-tails",
+    "href": "chapters/a2-reading.html#criticality-and-heavy-tails",
+    "title": "Appendix B — Reading list",
+    "section": "B.4 Criticality and heavy tails",
+    "text": "B.4 Criticality and heavy tails\n\nBak, P., Tang, C., Wiesenfeld, K. (1987). Self-organized criticality: an explanation of the 1/f noise. Physical Review Letters 59(4), 381–384. doi:10.1103/PhysRevLett.59.381\nClauset, A., Shalizi, C. R., Newman, M. E. J. (2009). Power-law distributions in empirical data. SIAM Review 51(4), 661–703. doi:10.1137/070710111\nTouboul, J., Destexhe, A. (2010). Can power-law scaling and neuronal avalanches arise from stochastic dynamics? PLoS ONE 5(2), e8982. doi:10.1371/journal.pone.0008982",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Reading list</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/a2-reading.html#domains-borders-and-voter-models",
+    "href": "chapters/a2-reading.html#domains-borders-and-voter-models",
+    "title": "Appendix B — Reading list",
+    "section": "B.5 Domains, borders and voter models",
+    "text": "B.5 Domains, borders and voter models\n\nDornic, I., Chaté, H., Chave, J., Hinrichsen, H. (2001). Critical coarsening without surface tension: the universality class of the voter model. Physical Review Letters 87(4), 045701. doi:10.1103/PhysRevLett.87.045701\nFernández-Gracia, J., Suchecki, K., Ramasco, J. J., San Miguel, M., Eguíluz, V. M. (2014). Is the voter model a model for voters? Physical Review Letters 112(15), 158701. doi:10.1103/PhysRevLett.112.158701\nAxelrod, R. (1997). The dissemination of culture: a model with local convergence and global polarization. Journal of Conflict Resolution 41(2), 203–226. doi:10.1177/0022002797041002001",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Reading list</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/a2-reading.html#how-many-groups",
+    "href": "chapters/a2-reading.html#how-many-groups",
+    "title": "Appendix B — Reading list",
+    "section": "B.6 How many groups",
+    "text": "B.6 How many groups\n\nPeixoto, T. P. (2014). Hierarchical block structures and high-resolution model selection in large networks. Physical Review X 4(1), 011047. doi:10.1103/PhysRevX.4.011047",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Reading list</span>"
+    ]
+  }
+]
