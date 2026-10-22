@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -71,6 +105,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -265,9 +328,18 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#the-question" id="toc-the-question" class="nav-link active" data-scroll-target="#the-question"><span class="header-section-number">3.1</span> The question</a></li>
-  <li><a href="#why-it-matters" id="toc-why-it-matters" class="nav-link" data-scroll-target="#why-it-matters"><span class="header-section-number">3.2</span> Why it matters</a></li>
-  <li><a href="#plan" id="toc-plan" class="nav-link" data-scroll-target="#plan"><span class="header-section-number">3.3</span> Plan</a></li>
+  <li><a href="#what-one-placement-does" id="toc-what-one-placement-does" class="nav-link active" data-scroll-target="#what-one-placement-does"><span class="header-section-number">3.1</span> What one placement does</a>
+  <ul class="collapse">
+  <li><a href="#which-placements-are-still-visible-at-the-end" id="toc-which-placements-are-still-visible-at-the-end" class="nav-link" data-scroll-target="#which-placements-are-still-visible-at-the-end"><span class="header-section-number">3.1.1</span> Which placements are still visible at the end?</a></li>
+  </ul></li>
+  <li><a href="#how-long-does-a-colour-last" id="toc-how-long-does-a-colour-last" class="nav-link" data-scroll-target="#how-long-does-a-colour-last"><span class="header-section-number">3.2</span> How long does a colour last?</a></li>
+  <li><a href="#did-a-longer-wait-change-how-people-placed" id="toc-did-a-longer-wait-change-how-people-placed" class="nav-link" data-scroll-target="#did-a-longer-wait-change-how-people-placed"><span class="header-section-number">3.3</span> Did a longer wait change how people placed?</a>
+  <ul class="collapse">
+  <li><a href="#the-positive-control" id="toc-the-positive-control" class="nav-link" data-scroll-target="#the-positive-control"><span class="header-section-number">3.3.1</span> The positive control</a></li>
+  <li><a href="#the-result" id="toc-the-result" class="nav-link" data-scroll-target="#the-result"><span class="header-section-number">3.3.2</span> The result</a></li>
+  <li><a href="#the-controls" id="toc-the-controls" class="nav-link" data-scroll-target="#the-controls"><span class="header-section-number">3.3.3</span> The controls</a></li>
+  <li><a href="#what-it-means-and-what-it-does-not" id="toc-what-it-means-and-what-it-does-not" class="nav-link" data-scroll-target="#what-it-means-and-what-it-does-not"><span class="header-section-number">3.3.4</span> What it means, and what it does not</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/TheChesireCat/rplace-2017/blob/main/chapters/03-pixels.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/TheChesireCat/rplace-2017/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -293,37 +365,750 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<p>A pixel is the smallest place on the canvas where people meet. Its history is a sequence of colours, each placed by someone, each lasting until someone paints over it. This chapter asks what single placements do to their pixel, how long a colour survives, and, using the changes in the waiting rule found in <a href="02-actors.html" class="quarto-xref"><span>Chapter 2</span></a>, whether a longer wait changed how people placed.</p>
+<div id="6e514ee1" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rplace17 <span class="im">as</span> r</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>h <span class="op">=</span> r.pixel_history(r.load())      <span class="co"># the whole log, so each pixel's state is right at every time</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>close_us <span class="op">=</span> h[<span class="st">"t_us"</span>].<span class="bu">max</span>()</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>live <span class="op">=</span> h.<span class="bu">filter</span>(pl.col(<span class="st">"t_us"</span>) <span class="op">&gt;=</span> r.LAUNCH_US)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This chapter is planned: it states the question and the method. Results will replace the plan as the analysis is done.</p>
-</div>
-</div>
-<p>A pixel is the smallest place on the canvas where people meet. Its history is a sequence of colours, each placed by someone, each lasting until someone else paints over it.</p>
-<section id="the-question" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="the-question"><span class="header-section-number">3.1</span> The question</h2>
-<p>How long does a colour survive on a pixel, and what decides it? A placement that repairs an artwork should last; an attack should be undone quickly. The survival time of a colour is the simplest measure of conflict that needs no labels.</p>
-</section>
-<section id="why-it-matters" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="why-it-matters"><span class="header-section-number">3.2</span> Why it matters</h2>
-<p>Survival times are the r/place version of <em>revert</em> statistics in Wikipedia edit wars (<em>studied under another name</em>; Yasseri et al.&nbsp;2012, see <a href="a2-reading.html" class="quarto-xref"><span>Appendix B</span></a>), where reverts signal conflict and their timing shows memory and burstiness. If pixel overwrites behave like reverts, r/place becomes a spatial member of a well-studied family.</p>
-</section>
-<section id="plan" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="plan"><span class="header-section-number">3.3</span> Plan</h2>
+<section id="what-one-placement-does" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="what-one-placement-does"><span class="header-section-number">3.1</span> What one placement does</h2>
+<p>Every placement lands on a pixel that already has a colour (white, if nobody has touched it). Relative to that, a placement can do one of a few things:</p>
 <ul>
-<li>For each placement, the time until the pixel next changes colour (censored at the end of the event).</li>
-<li>Kaplan–Meier survival curves, split by whether the new colour matches the colour two steps back (an “undo”).</li>
-<li><strong>Null:</strong> the same placements with times shuffled within each pixel, which keeps how busy each pixel is and removes any memory.</li>
+<li><strong>wasted:</strong> repaint the colour the pixel already has (Wu and Silva 2024, v3, §5.1: “an update that repaints a pixel with its current color”). Nothing visible changes.</li>
+<li><strong>first:</strong> the first placement ever on that pixel.</li>
+<li><strong>overwrite:</strong> change a colour that a <em>different</em> account placed last.</li>
+<li><strong>undo:</strong> restore the colour the pixel had just before its current one (the second A in A–B–A).</li>
 </ul>
+<p>Here is one pixel’s history, with these labels (accounts shown only as “same as the last placer or not”):</p>
+<div id="5875e8ac" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>one <span class="op">=</span> (h.<span class="bu">filter</span>((pl.col(<span class="st">"x"</span>) <span class="op">==</span> <span class="dv">500</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"y"</span>) <span class="op">==</span> <span class="dv">500</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"t_us"</span>) <span class="op">&gt;=</span> r.LAUNCH_US)).head(<span class="dv">8</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>         .with_columns(pl.from_epoch(<span class="st">"t_us"</span>, time_unit<span class="op">=</span><span class="st">"us"</span>).dt.strftime(<span class="st">"%m-</span><span class="sc">%d</span><span class="st"> %H:%M:%S"</span>).alias(<span class="st">"time"</span>),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                       (pl.col(<span class="st">"prev_user"</span>) <span class="op">==</span> pl.col(<span class="st">"user_id"</span>)).alias(<span class="st">"same account as last"</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>         .select(<span class="st">"time"</span>, <span class="st">"prev_color"</span>, <span class="st">"color"</span>, <span class="st">"same account as last"</span>, <span class="st">"wasted"</span>, <span class="st">"overwrite"</span>, <span class="st">"undo"</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>r.table(one)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="2">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>time</th>
+<th>prev_color</th>
+<th>color</th>
+<th>same account as last</th>
+<th>wasted</th>
+<th>overwrite</th>
+<th>undo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>03-31 17:00:27</td>
+<td>3</td>
+<td>6</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>03-31 17:00:27</td>
+<td>6</td>
+<td>13</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>03-31 17:05:24</td>
+<td>13</td>
+<td>11</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>03-31 17:05:56</td>
+<td>11</td>
+<td>5</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>03-31 17:07:03</td>
+<td>5</td>
+<td>10</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>03-31 17:07:36</td>
+<td>10</td>
+<td>3</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>03-31 17:08:31</td>
+<td>3</td>
+<td>5</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>03-31 17:10:46</td>
+<td>5</td>
+<td>0</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>False</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Across the event:</p>
+<div id="f152021b" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>changes <span class="op">=</span> live.<span class="bu">filter</span>(<span class="op">~</span>pl.col(<span class="st">"wasted"</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"placements"</span>: <span class="ss">f"</span><span class="sc">{</span>live<span class="sc">.</span>height<span class="sc">:,}</span><span class="ss">"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"wasted"</span>: <span class="ss">f"</span><span class="sc">{</span>live[<span class="st">'wasted'</span>]<span class="sc">.</span>mean()<span class="sc">:.1%}</span><span class="ss">"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"first on the pixel"</span>: <span class="ss">f"</span><span class="sc">{</span>live[<span class="st">'first'</span>]<span class="sc">.</span>mean()<span class="sc">:.1%}</span><span class="ss">"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"overwrite, of colour changes after the first"</span>: <span class="ss">f"</span><span class="sc">{</span>changes<span class="sc">.</span><span class="bu">filter</span>(<span class="op">~</span>pl.col(<span class="st">'first'</span>))[<span class="st">'overwrite'</span>]<span class="sc">.</span>mean()<span class="sc">:.1%}</span><span class="ss">"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"undo, of colour changes"</span>: <span class="ss">f"</span><span class="sc">{</span>changes[<span class="st">'undo'</span>]<span class="sc">.</span>drop_nulls()<span class="sc">.</span>mean()<span class="sc">:.1%}</span><span class="ss">"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame([summary]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>placements</th>
+<th>wasted</th>
+<th>first on the pixel</th>
+<th>overwrite, of colour changes after the first</th>
+<th>undo, of colour changes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>16,559,298</td>
+<td>26.4%</td>
+<td>6.0%</td>
+<td>99.7%</td>
+<td>61.6%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Two things stand out. About a quarter of all placements change nothing at all. And when a placement does change a colour, it almost always changes one that someone else placed, and about half the time it puts back the colour from just before. A pixel that changes is usually being fought over, often by the same two colours going back and forth.</p>
+<section id="which-placements-are-still-visible-at-the-end" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="which-placements-are-still-visible-at-the-end"><span class="header-section-number">3.1.1</span> Which placements are still visible at the end?</h3>
+<p>Wu and Silva (2024, v3, §4.1) sort placements by their relation to the final picture: <strong>Final</strong> (persists to the close), <strong>Match</strong> (the colour of the final picture, but later overwritten) and <strong>Adversarial</strong> (a colour that differs from the final picture). Their final picture is an artwork; ours is simply each pixel’s last colour, so these are pixel-level versions of their categories.</p>
+<div id="7176f553" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>final <span class="op">=</span> h.group_by(<span class="st">"x"</span>, <span class="st">"y"</span>).agg(pl.col(<span class="st">"color"</span>).last().alias(<span class="st">"final_color"</span>), pl.col(<span class="st">"t_us"</span>).<span class="bu">max</span>().alias(<span class="st">"t_last"</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cat <span class="op">=</span> (live.join(final, on<span class="op">=</span>[<span class="st">"x"</span>, <span class="st">"y"</span>])</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>           .with_columns(pl.when(pl.col(<span class="st">"t_us"</span>) <span class="op">==</span> pl.col(<span class="st">"t_last"</span>)).then(pl.lit(<span class="st">"Final"</span>))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                           .when(pl.col(<span class="st">"color"</span>) <span class="op">==</span> pl.col(<span class="st">"final_color"</span>)).then(pl.lit(<span class="st">"Match"</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                           .otherwise(pl.lit(<span class="st">"Adversarial"</span>)).alias(<span class="st">"category"</span>)))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>shares <span class="op">=</span> cat.group_by(<span class="st">"category"</span>).<span class="bu">len</span>().with_columns((pl.col(<span class="st">"len"</span>) <span class="op">/</span> pl.col(<span class="st">"len"</span>).<span class="bu">sum</span>()).alias(<span class="st">"share"</span>)).sort(<span class="st">"share"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>final_share <span class="op">=</span> shares.<span class="bu">filter</span>(pl.col(<span class="st">"category"</span>) <span class="op">==</span> <span class="st">"Final"</span>)[<span class="st">"share"</span>][<span class="dv">0</span>]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>r.table(shares.select(<span class="st">"category"</span>, pl.col(<span class="st">"len"</span>).map_elements(<span class="kw">lambda</span> v: <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:,}</span><span class="ss">"</span>, return_dtype<span class="op">=</span>pl.Utf8).alias(<span class="st">"placements"</span>),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                      pl.col(<span class="st">"share"</span>).map_elements(<span class="kw">lambda</span> v: <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:.1%}</span><span class="ss">"</span>, return_dtype<span class="op">=</span>pl.Utf8)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th>category</th>
+<th>placements</th>
+<th>share</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Final</td>
+<td>998,998</td>
+<td>6.0%</td>
+</tr>
+<tr class="even">
+<td>Match</td>
+<td>6,557,040</td>
+<td>39.6%</td>
+</tr>
+<tr class="odd">
+<td>Adversarial</td>
+<td>9,003,260</td>
+<td>54.4%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Only 6.0% of placements are Final, in line with Wu and Silva’s “under 7%”. (Placements at the same microsecond on the same pixel can make its last placement ambiguous; they are rare.)</p>
+</section>
+</section>
+<section id="how-long-does-a-colour-last" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="how-long-does-a-colour-last"><span class="header-section-number">3.2</span> How long does a colour last?</h2>
+<p>A colour’s <strong>lifetime</strong> runs from the placement that set it to the next placement that changes it; wasted repaints do not end it. Colours still visible at the close are <em>censored</em>: we know only that they lasted at least until then. The Kaplan–Meier estimator handles that correctly.</p>
+<div id="e9b2b4af" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>states <span class="op">=</span> (h.<span class="bu">filter</span>(<span class="op">~</span>pl.col(<span class="st">"wasted"</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>           .with_columns((pl.col(<span class="st">"x"</span>).cast(pl.Int32) <span class="op">*</span> r.SIZE <span class="op">+</span> pl.col(<span class="st">"y"</span>).cast(pl.Int32)).alias(<span class="st">"pix"</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>           .sort(<span class="st">"pix"</span>, <span class="st">"t_us"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>           .with_columns(pl.col(<span class="st">"t_us"</span>).shift(<span class="op">-</span><span class="dv">1</span>).over(<span class="st">"pix"</span>).alias(<span class="st">"t_next"</span>)))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>states <span class="op">=</span> states.<span class="bu">filter</span>(pl.col(<span class="st">"t_us"</span>) <span class="op">&gt;=</span> r.LAUNCH_US).with_columns(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    ((pl.col(<span class="st">"t_next"</span>).fill_null(close_us) <span class="op">-</span> pl.col(<span class="st">"t_us"</span>)) <span class="op">/</span> <span class="fl">1e6</span>).alias(<span class="st">"lifetime_s"</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"t_next"</span>).is_not_null().alias(<span class="st">"ended"</span>))</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>states<span class="sc">.</span>height<span class="sc">:,}</span><span class="ss"> colour states; still visible at the close (censored): </span><span class="sc">{</span>(<span class="op">~</span>states[<span class="st">'ended'</span>])<span class="sc">.</span>mean()<span class="sc">:.1%}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>12,180,897 colour states; still visible at the close (censored): 8.2%</code></pre>
+</div>
+</div>
+<div id="cell-fig-lifetimes" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>medians <span class="op">=</span> {}</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">4</span>))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> label, sub <span class="kw">in</span> ((<span class="st">"undo (A–B–A)"</span>, states.<span class="bu">filter</span>(pl.col(<span class="st">"undo"</span>) <span class="op">==</span> <span class="va">True</span>)),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                   (<span class="st">"other colour changes"</span>, states.<span class="bu">filter</span>(pl.col(<span class="st">"undo"</span>) <span class="op">!=</span> <span class="va">True</span>))):</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    t, S <span class="op">=</span> r.kaplan_meier(sub[<span class="st">"lifetime_s"</span>].to_numpy(), sub[<span class="st">"ended"</span>].to_numpy())</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    medians[label] <span class="op">=</span> t[np.argmax(S <span class="op">&lt;=</span> <span class="fl">0.5</span>)] <span class="op">/</span> <span class="dv">60</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    ax.step(np.maximum(t, <span class="fl">0.1</span>) <span class="op">/</span> <span class="dv">60</span>, S, where<span class="op">=</span><span class="st">"post"</span>, label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>label<span class="sc">}</span><span class="ss"> (median </span><span class="sc">{</span>medians[label]<span class="sc">:.0f}</span><span class="ss"> min)"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>ax.set_xscale(<span class="st">"log"</span>)<span class="op">;</span> ax.set_xlabel(<span class="st">"minutes since the colour was placed"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"share still showing"</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>ax.legend(frameon<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-lifetimes" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lifetimes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-pixels_files/figure-html/fig-lifetimes-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lifetimes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.1: Survival of a colour on a pixel (Kaplan–Meier), for colour changes that undo the previous change and for all others. Log time axis.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The two curves cross at about ten minutes. A colour that <em>undoes</em> a change holds slightly better at first, then worse: medians of 16 and 18 minutes. One reading is that a repair buys a short respite before the fight over that pixel resumes. This is a description with no null yet. The planned null shuffles times within each pixel, which keeps how busy each pixel is and removes any memory.</p>
+</section>
+<section id="did-a-longer-wait-change-how-people-placed" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="did-a-longer-wait-change-how-people-placed"><span class="header-section-number">3.3</span> Did a longer wait change how people placed?</h2>
+<p><a href="02-actors.html" class="quarto-xref"><span>Chapter 2</span></a> found that Reddit changed the wait seven times, for everyone at once. That is a natural experiment: the same people and canvas, a different speed limit. A longer wait must lower how often each person places (<strong>mechanical</strong>). The question is whether it also changed <strong>what</strong> people did with each placement (<strong>behavioural</strong>).</p>
+<p>The test was written down before any outcome was computed: <a href="https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/03-cooldown-switches.md"><code>prereg/03-cooldown-switches.md</code></a> and its <a href="https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/03-amendment-1.md">amendment</a>, which merges two switches 27 minutes apart (they shared a window) into one, leaving six. In short:</p>
+<ul>
+<li>compare 20-minute windows just before and just after each switch (skipping the first cooldown after it);</li>
+<li><strong>primary outcome:</strong> the overwrite share; secondary and exploratory: the wasted and undo shares;</li>
+<li><strong>test:</strong> does the change have the sign that matches the direction of the switch (tighter or looser) at every switch? An exact sign-flip test over the <span class="math inline">\(2^6 = 64\)</span> sign assignments, so the smallest possible p is 2/64 = 0.031;</li>
+<li><strong>controls:</strong> a positive control that must pass, a pre-trend check, a placebo at times with no switch, and the same accounts on both sides.</li>
+</ul>
+<div id="cell-fig-windows" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>win <span class="op">=</span> r.switch_windows(r.SWITCHES, <span class="dv">20</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>grid <span class="op">=</span> np.arange(r.LAUNCH_US, r._us(<span class="st">"2017-04-02 00:00"</span>), <span class="dv">60_000_000</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">2.8</span>))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>ax.step(grid.astype(<span class="st">"datetime64[us]"</span>), r.cooldown_at(grid) <span class="op">/</span> <span class="dv">60</span>, where<span class="op">=</span><span class="st">"post"</span>, color<span class="op">=</span><span class="st">"black"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> win.<span class="bu">filter</span>(pl.col(<span class="st">"side"</span>) <span class="op">!=</span> <span class="st">"pre2"</span>).iter_rows(named<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    ax.axvspan(np.datetime64(row[<span class="st">"lo"</span>], <span class="st">"us"</span>), np.datetime64(row[<span class="st">"hi"</span>], <span class="st">"us"</span>),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>               color<span class="op">=</span><span class="st">"tab:blue"</span> <span class="cf">if</span> row[<span class="st">"side"</span>] <span class="op">==</span> <span class="st">"before"</span> <span class="cf">else</span> <span class="st">"tab:orange"</span>, alpha<span class="op">=</span><span class="fl">0.35</span>, lw<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"cooldown (min)"</span>)<span class="op">;</span> ax.set_ylim(<span class="dv">0</span>, <span class="dv">22</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-windows" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-windows-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-pixels_files/figure-html/fig-windows-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-windows-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.2: The cooldown (line) and the windows compared around each switch: before (blue) and after (orange).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="062e2156" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compare(switches, W<span class="op">=</span><span class="dv">20</span>, same_people<span class="op">=</span><span class="va">False</span>, ci<span class="op">=</span><span class="va">False</span>, hist<span class="op">=</span>h):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    win <span class="op">=</span> r.switch_windows(switches, W)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> {(x[<span class="st">"k"</span>], x[<span class="st">"side"</span>]): x <span class="cf">for</span> x <span class="kw">in</span> r.window_outcomes(hist, win)}</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> same_people:</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        both <span class="op">=</span> {k: <span class="bu">set</span>(res[(k, <span class="st">"before"</span>)][<span class="st">"per_account"</span>][<span class="st">"user_id"</span>]) <span class="op">&amp;</span> <span class="bu">set</span>(res[(k, <span class="st">"after"</span>)][<span class="st">"per_account"</span>][<span class="st">"user_id"</span>])</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(switches) <span class="op">+</span> <span class="dv">1</span>)}</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        res <span class="op">=</span> {(x[<span class="st">"k"</span>], x[<span class="st">"side"</span>]): x <span class="cf">for</span> x <span class="kw">in</span> r.window_outcomes(hist, win, both)}</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> []</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(switches) <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        b, a, p2 <span class="op">=</span> res[(k, <span class="st">"before"</span>)], res[(k, <span class="st">"after"</span>)], res[(k, <span class="st">"pre2"</span>)]</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        rate <span class="op">=</span> <span class="kw">lambda</span> x: x[<span class="st">"placements"</span>] <span class="op">/</span> <span class="bu">max</span>(x[<span class="st">"accounts"</span>], <span class="dv">1</span>) <span class="op">/</span> W           <span class="co"># placements per active account per minute</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        row <span class="op">=</span> {<span class="st">"k"</span>: k, <span class="st">"direction"</span>: b[<span class="st">"direction"</span>], <span class="st">"placements before"</span>: b[<span class="st">"placements"</span>], <span class="st">"placements after"</span>: a[<span class="st">"placements"</span>],</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>               <span class="st">"accounts before"</span>: b[<span class="st">"accounts"</span>], <span class="st">"accounts after"</span>: a[<span class="st">"accounts"</span>],</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>               <span class="st">"M1_d"</span>: rate(a) <span class="op">-</span> rate(b), <span class="st">"M1_pre"</span>: rate(b) <span class="op">-</span> rate(p2)}</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> name <span class="kw">in</span> r.OUTCOMES:</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>            sb, sa, sp <span class="op">=</span> (r.share(x[<span class="st">"per_account"</span>], name) <span class="cf">for</span> x <span class="kw">in</span> (b, a, p2))</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>            row <span class="op">|=</span> {<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">_before"</span>: sb, <span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">_after"</span>: sa, <span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">_d"</span>: sa <span class="op">-</span> sb, <span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">_pre"</span>: sb <span class="op">-</span> sp}</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> ci:</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>                lo, hi <span class="op">=</span> r.boot_delta(b[<span class="st">"per_account"</span>], a[<span class="st">"per_account"</span>], name)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>                row <span class="op">|=</span> {<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">_lo"</span>: lo, <span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">_hi"</span>: hi}</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        rows.append(row)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pl.DataFrame(rows)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test(t, name):</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    d, dirs <span class="op">=</span> t[<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">_d"</span>].to_numpy(), t[<span class="st">"direction"</span>].to_numpy()</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> r.sign_flip_p(d, dirs)[<span class="dv">1</span>]</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    flagged <span class="op">=</span> np.<span class="bu">abs</span>(t[<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">_pre"</span>].to_numpy()) <span class="op">&gt;</span> np.<span class="bu">abs</span>(d) <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    p_keep <span class="op">=</span> r.sign_flip_p(d[<span class="op">~</span>flagged], dirs[<span class="op">~</span>flagged])[<span class="dv">1</span>] <span class="cf">if</span> (<span class="op">~</span>flagged).<span class="bu">any</span>() <span class="cf">else</span> <span class="bu">float</span>(<span class="st">"nan"</span>)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> <span class="bu">float</span>(np.<span class="bu">sum</span>(dirs <span class="op">*</span> d))</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    agree <span class="op">=</span> <span class="bu">int</span>((np.sign(dirs <span class="op">*</span> d) <span class="op">==</span> np.sign(T)).<span class="bu">sum</span>())               <span class="co"># switches whose change has the same sign as T</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"outcome"</span>: name, <span class="st">"sign of T"</span>: <span class="st">"+"</span> <span class="cf">if</span> T <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">"−"</span>, <span class="st">"switches agreeing"</span>: <span class="ss">f"</span><span class="sc">{</span>agree<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span><span class="bu">len</span>(d)<span class="sc">}</span><span class="ss">"</span>, <span class="st">"p"</span>: <span class="ss">f"</span><span class="sc">{</span>p<span class="sc">:.3f}</span><span class="ss">"</span>,</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>            <span class="st">"pre-trend flagged"</span>: <span class="st">", "</span>.join(<span class="bu">str</span>(k) <span class="cf">for</span> k <span class="kw">in</span> t[<span class="st">"k"</span>].to_numpy()[flagged]) <span class="kw">or</span> <span class="st">"none"</span>,</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>            <span class="st">"p without flagged"</span>: <span class="ss">f"</span><span class="sc">{</span>p_keep<span class="sc">:.3f}</span><span class="ss">"</span>}</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>main <span class="op">=</span> compare(r.SWITCHES, <span class="dv">20</span>, ci<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>r.table(main.select(<span class="st">"k"</span>, <span class="st">"direction"</span>, <span class="st">"placements before"</span>, <span class="st">"placements after"</span>, <span class="st">"accounts before"</span>, <span class="st">"accounts after"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="8">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>k</th>
+<th>direction</th>
+<th>placements before</th>
+<th>placements after</th>
+<th>accounts before</th>
+<th>accounts after</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>1</td>
+<td>72155</td>
+<td>46215</td>
+<td>46055</td>
+<td>38286</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>-1</td>
+<td>39240</td>
+<td>56886</td>
+<td>32200</td>
+<td>32965</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>1</td>
+<td>58076</td>
+<td>37539</td>
+<td>33148</td>
+<td>30145</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>1</td>
+<td>34587</td>
+<td>22226</td>
+<td>27494</td>
+<td>22131</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>-1</td>
+<td>22463</td>
+<td>30002</td>
+<td>22459</td>
+<td>23335</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>-1</td>
+<td>75340</td>
+<td>118912</td>
+<td>58510</td>
+<td>61508</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Every window has tens of thousands of placements. In the window before switch 5 (the twenty-minute wait) each active account placed exactly once, the most the rule allowed.</p>
+<section id="the-positive-control" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="the-positive-control"><span class="header-section-number">3.3.1</span> The positive control</h3>
+<p>If the windows and the schedule are right, placements per active account per minute (M1) must fall after every tightening and rise after every loosening, so T must be negative with all six switches agreeing. If this failed, nothing else could be trusted. (In these tables, T = Σ direction × change: positive when an outcome rises after tightenings and falls after loosenings.)</p>
+<div id="01207ef1" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame([test(main, <span class="st">"M1"</span>)]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="9">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>outcome</th>
+<th>sign of T</th>
+<th>switches agreeing</th>
+<th>p</th>
+<th>pre-trend flagged</th>
+<th>p without flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>M1</td>
+<td>−</td>
+<td>6/6</td>
+<td>0.031</td>
+<td>1</td>
+<td>0.062</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>It passes at every switch, with the smallest p the test can give. Switch 1 is flagged by the pre-trend check: in the hours after launch, activity per account was already falling as the first surge faded.</p>
+</section>
+<section id="the-result" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="the-result"><span class="header-section-number">3.3.2</span> The result</h3>
+<div id="6621eb42" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fmt <span class="op">=</span> <span class="kw">lambda</span> v: <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:+.4f}</span><span class="ss">"</span> <span class="cf">if</span> v <span class="op">&lt;</span> <span class="dv">0</span> <span class="kw">or</span> v <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">"0"</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>r.table(main.select(<span class="st">"k"</span>, <span class="st">"direction"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                    <span class="op">*</span>[pl.col(<span class="ss">f"overwrite_</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span>).map_elements(<span class="kw">lambda</span> v: <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:.4f}</span><span class="ss">"</span>, return_dtype<span class="op">=</span>pl.Utf8).alias(<span class="ss">f"overwrite </span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                      <span class="cf">for</span> c <span class="kw">in</span> (<span class="st">"before"</span>, <span class="st">"after"</span>)],</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                    <span class="op">*</span>[pl.col(<span class="ss">f"overwrite_</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span>).map_elements(fmt, return_dtype<span class="op">=</span>pl.Utf8).alias(<span class="ss">f"change </span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span>.replace(<span class="st">"change d"</span>, <span class="st">"change"</span>))</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>                      <span class="cf">for</span> c <span class="kw">in</span> (<span class="st">"d"</span>, <span class="st">"lo"</span>, <span class="st">"hi"</span>)]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="10">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>k</th>
+<th>direction</th>
+<th>overwrite before</th>
+<th>overwrite after</th>
+<th>change</th>
+<th>change lo</th>
+<th>change hi</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>1</td>
+<td>0.9961</td>
+<td>0.9968</td>
+<td>+0.0007</td>
+<td>-0.0004</td>
+<td>+0.0018</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>-1</td>
+<td>0.9966</td>
+<td>0.9964</td>
+<td>-0.0002</td>
+<td>-0.0014</td>
+<td>+0.0008</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>1</td>
+<td>0.9944</td>
+<td>0.9976</td>
+<td>+0.0032</td>
+<td>+0.0020</td>
+<td>+0.0043</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>1</td>
+<td>0.9958</td>
+<td>0.9977</td>
+<td>+0.0019</td>
+<td>+0.0006</td>
+<td>+0.0031</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>-1</td>
+<td>0.9982</td>
+<td>0.9967</td>
+<td>-0.0015</td>
+<td>-0.0025</td>
+<td>-0.0004</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>-1</td>
+<td>0.9974</td>
+<td>0.9969</td>
+<td>-0.0005</td>
+<td>-0.0011</td>
+<td>+0.0002</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="5cabdb19" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame([test(main, n) <span class="cf">for</span> n <span class="kw">in</span> r.OUTCOMES]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="11">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>outcome</th>
+<th>sign of T</th>
+<th>switches agreeing</th>
+<th>p</th>
+<th>pre-trend flagged</th>
+<th>p without flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>overwrite</td>
+<td>+</td>
+<td>6/6</td>
+<td>0.031</td>
+<td>1, 2, 6</td>
+<td>0.250</td>
+</tr>
+<tr class="even">
+<td>wasted</td>
+<td>−</td>
+<td>5/6</td>
+<td>0.094</td>
+<td>none</td>
+<td>0.094</td>
+</tr>
+<tr class="odd">
+<td>undo</td>
+<td>−</td>
+<td>2/6</td>
+<td>0.750</td>
+<td>1, 2, 3, 4, 6</td>
+<td>1.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="cell-fig-switch-deltas" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="dv">3</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="dv">1</span>, <span class="dv">7</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>col <span class="op">=</span> np.where(main[<span class="st">"direction"</span>].to_numpy() <span class="op">&gt;</span> <span class="dv">0</span>, <span class="st">"tab:red"</span>, <span class="st">"tab:green"</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, name <span class="kw">in</span> <span class="bu">zip</span>(axes, r.OUTCOMES):</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    dd <span class="op">=</span> main[<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">_d"</span>].to_numpy()</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    ax.errorbar(x, dd, yerr<span class="op">=</span>[dd <span class="op">-</span> main[<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">_lo"</span>].to_numpy(), main[<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">_hi"</span>].to_numpy() <span class="op">-</span> dd], fmt<span class="op">=</span><span class="st">"none"</span>, ecolor<span class="op">=</span><span class="st">"grey"</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    ax.scatter(x, dd, c<span class="op">=</span>col)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"black"</span>, lw<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> share"</span> <span class="op">+</span> (<span class="st">" (primary)"</span> <span class="cf">if</span> name <span class="op">==</span> <span class="st">"overwrite"</span> <span class="cf">else</span> <span class="st">""</span>))</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks(x, [<span class="ss">f"</span><span class="sc">{</span>k<span class="sc">}{</span><span class="st">'+'</span> <span class="cf">if</span> d <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">'−'</span><span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> k, d <span class="kw">in</span> <span class="bu">zip</span>(x, main[<span class="st">"direction"</span>])])</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-switch-deltas" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-switch-deltas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-pixels_files/figure-html/fig-switch-deltas-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-switch-deltas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.3: Change across each switch (after minus before), with 95% bootstrap intervals over accounts. Tightenings (+, red) and loosenings (−, green).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>The pre-registered test passes.</strong> The overwrite share moved in the direction-consistent way at all six switches: it rose after every tightening and fell after every loosening (p = 0.031, the smallest possible). The secondary outcomes do not pass. The wasted share swings strongly, by up to tens of percentage points: it fell after two of the three tightenings and rose after all three loosenings (not significant, and exploratory by design). The undo share shows nothing.</p>
+</section>
+<section id="the-controls" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="the-controls"><span class="header-section-number">3.3.3</span> The controls</h3>
+<div id="5ae07578" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>checks <span class="op">=</span> []</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> label, t <span class="kw">in</span> ((<span class="st">"main, W = 20"</span>, main), (<span class="st">"same accounts on both sides"</span>, compare(r.SWITCHES, <span class="dv">20</span>, same_people<span class="op">=</span><span class="va">True</span>)),</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                 (<span class="st">"W = 10"</span>, compare(r.SWITCHES, <span class="dv">10</span>)), (<span class="st">"W = 40"</span>, compare(r.SWITCHES, <span class="dv">40</span>)),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                 (<span class="st">"placebo (no switch)"</span>, compare(r.PLACEBO, <span class="dv">20</span>))):</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    checks.append({<span class="st">"comparison"</span>: label, <span class="op">**</span>test(t, <span class="st">"overwrite"</span>)})</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(checks).drop(<span class="st">"outcome"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="13">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>comparison</th>
+<th>sign of T</th>
+<th>switches agreeing</th>
+<th>p</th>
+<th>pre-trend flagged</th>
+<th>p without flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>main, W = 20</td>
+<td>+</td>
+<td>6/6</td>
+<td>0.031</td>
+<td>1, 2, 6</td>
+<td>0.250</td>
+</tr>
+<tr class="even">
+<td>same accounts on both sides</td>
+<td>+</td>
+<td>6/6</td>
+<td>0.031</td>
+<td>1, 6</td>
+<td>0.125</td>
+</tr>
+<tr class="odd">
+<td>W = 10</td>
+<td>+</td>
+<td>6/6</td>
+<td>0.031</td>
+<td>1, 2, 3, 4</td>
+<td>0.500</td>
+</tr>
+<tr class="even">
+<td>W = 40</td>
+<td>+</td>
+<td>6/6</td>
+<td>0.031</td>
+<td>none</td>
+<td>0.031</td>
+</tr>
+<tr class="odd">
+<td>placebo (no switch)</td>
+<td>+</td>
+<td>5/6</td>
+<td>0.281</td>
+<td>1, 3, 4, 5, 6</td>
+<td>1.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><strong>Same accounts, other windows:</strong> the result holds when only accounts present on both sides are used, and at windows of 10 and 40 minutes.</li>
+<li><strong>Pre-trend:</strong> at W = 20 three switches are flagged, because the change across them is less than twice the drift just before. Without them only three switches remain, too few for the test to reach significance. At W = 40 none is flagged.</li>
+<li><strong>Placebo:</strong> at times with no switch the test is not significant, but the changes there agree in sign at 5 of the 6 pseudo-switches. With changes this small, that is uncomfortable.</li>
+</ul>
+</section>
+<section id="what-it-means-and-what-it-does-not" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="what-it-means-and-what-it-does-not"><span class="header-section-number">3.3.4</span> What it means, and what it does not</h3>
+<p>The effect is tiny. The overwrite share sits at about 99.6% everywhere and moves by 0.1 to 0.3 percentage points. Its complement is the small share of colour changes in which an account changes <em>its own</em> last placement. And there is a mechanical way to produce exactly this pattern: to change your own pixel again, you must come back to it before anyone else does. A longer wait gives others more time to get there first, so the share of changes to your own pixel falls, and the overwrite share rises, without anyone changing how they play.</p>
+<p>That account predicts the effect disappears when placements on pixels of the same age (time since the pixel last changed) are compared. This check was not pre-registered; it is exploratory.</p>
+<div id="771bd767" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>aged <span class="op">=</span> (h.with_columns((pl.col(<span class="st">"x"</span>).cast(pl.Int32) <span class="op">*</span> r.SIZE <span class="op">+</span> pl.col(<span class="st">"y"</span>).cast(pl.Int32)).alias(<span class="st">"pix"</span>))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>          .with_row_index(<span class="st">"i"</span>).sort(<span class="st">"pix"</span>, <span class="st">"t_us"</span>, <span class="st">"i"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>          .with_columns(((pl.col(<span class="st">"t_us"</span>) <span class="op">-</span> pl.col(<span class="st">"t_us"</span>).shift(<span class="dv">1</span>).over(<span class="st">"pix"</span>)) <span class="op">/</span> <span class="fl">1e6</span>).alias(<span class="st">"age_s"</span>)).sort(<span class="st">"i"</span>))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>dirs <span class="op">=</span> np.array([s[<span class="dv">3</span>] <span class="cf">for</span> s <span class="kw">in</span> r.SWITCHES])</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> []</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> a0, a1, label <span class="kw">in</span> ((<span class="dv">1200</span>, <span class="dv">2400</span>, <span class="st">"20-40 min"</span>), (<span class="dv">2400</span>, <span class="dv">7200</span>, <span class="st">"40 min-2 h"</span>), (<span class="dv">7200</span>, <span class="va">None</span>, <span class="st">"over 2 h"</span>)):</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    band <span class="op">=</span> aged.<span class="bu">filter</span>(pl.col(<span class="st">"age_s"</span>) <span class="op">&gt;=</span> a0) <span class="cf">if</span> a1 <span class="kw">is</span> <span class="va">None</span> <span class="cf">else</span> aged.<span class="bu">filter</span>(pl.col(<span class="st">"age_s"</span>).is_between(a0, a1, closed<span class="op">=</span><span class="st">"left"</span>))</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> {(x[<span class="st">"k"</span>], x[<span class="st">"side"</span>]): x <span class="cf">for</span> x <span class="kw">in</span> r.window_outcomes(band, win)}</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> np.array([r.share(res[(k, <span class="st">"after"</span>)][<span class="st">"per_account"</span>], <span class="st">"overwrite"</span>) <span class="op">-</span> r.share(res[(k, <span class="st">"before"</span>)][<span class="st">"per_account"</span>], <span class="st">"overwrite"</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">7</span>)])</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">sum</span>(res[(k, s)][<span class="st">"placements"</span>] <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">7</span>) <span class="cf">for</span> s <span class="kw">in</span> (<span class="st">"before"</span>, <span class="st">"after"</span>))</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    rows.append({<span class="st">"pixel age"</span>: label, <span class="st">"placements"</span>: <span class="ss">f"</span><span class="sc">{</span>n<span class="sc">:,}</span><span class="ss">"</span>, <span class="st">"switches agreeing with +"</span>: <span class="ss">f"</span><span class="sc">{</span><span class="bu">int</span>((np.sign(d) <span class="op">*</span> dirs <span class="op">&gt;</span> <span class="dv">0</span>).<span class="bu">sum</span>())<span class="sc">}</span><span class="ss">/6"</span>,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"p"</span>: <span class="ss">f"</span><span class="sc">{</span>r<span class="sc">.</span>sign_flip_p(d, dirs)[<span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">"</span>})</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(rows))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="14">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th>pixel age</th>
+<th>placements</th>
+<th>switches agreeing with +</th>
+<th>p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>20-40 min</td>
+<td>32,622</td>
+<td>3/6</td>
+<td>0.656</td>
+</tr>
+<tr class="even">
+<td>40 min-2 h</td>
+<td>54,780</td>
+<td>6/6</td>
+<td>0.031</td>
+</tr>
+<tr class="odd">
+<td>over 2 h</td>
+<td>102,971</td>
+<td>3/6</td>
+<td>0.469</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The check does not settle it. The pattern holds at 6 of 6 switches for pixels 40 minutes to 2 hours old, and at 3 of 6 in the other two age bands, where there are too few placements per window for changes this small to be measured: sampling noise is about as large as the effect.</p>
+<p><strong>How far this goes.</strong> The pre-registered test passed, and the result holds across windows and for the same accounts. We do not read it as a change in behaviour: the effect is a fraction of a percentage point, three switches fail the pre-trend check at the main window, the placebo leans the same way, and a mechanical explanation fits and has not been ruled out. What the cooldown clearly changed is how often people placed (the positive control). Whether it changed <em>how</em> they placed remains open. The wasted share, which swings by tens of percentage points between windows, is the more promising place to look, and gets its own analysis later.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
