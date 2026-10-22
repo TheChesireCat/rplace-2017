@@ -22,6 +22,9 @@ book:
     - part: "Pixels"
       chapters:
         - chapters/03-pixels.qmd
+    - part: "Movement"
+      chapters:
+        - chapters/04-movement.qmd
     - part: "Interactions"
       chapters:
         - chapters/04-interactions.qmd

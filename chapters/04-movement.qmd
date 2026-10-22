@@ -1,0 +1,241 @@
+# Where people go {#sec-movement}
+
+@sec-actors asked *when* people act. This chapter asks *where*: when an account places a pixel and then another, how
+far away is the second one? Studies of human travel report heavy-tailed jump lengths, often called Lévy-flight-like,
+and a strong pull back to places already visited (*studied under another name*; Brockmann et al. 2006, González et
+al. 2008, Song et al. 2010, see @sec-reading; not yet read for this book). r/place is a clean place to look, with one
+caveat that shapes everything: the canvas is a bounded square 1001 pixels across, so no jump can exceed about 1,415
+pixels.
+
+The test was written down before any jump was computed:
+[`prereg/04-movement.md`](https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/04-movement.md).
+
+```{python}
+import numpy as np
+import polars as pl
+import matplotlib.pyplot as plt
+from scipy import stats
+import rplace17 as r
+from rplace17 import tails
+
+d = r.load()
+J = r.jumps(d)                                        # one row per pair of consecutive placements of an account
+clean = J.filter(pl.col("c0") == pl.col("c1"))        # gaps that start and end in the same cooldown period
+print(f"{J.height:,} jumps; {clean.height:,} within one cooldown period")
+```
+
+## What a jump is
+
+A **jump** is the displacement $(dx, dy)$ between an account's consecutive placements, with length
+$r = \sqrt{dx^2 + dy^2}$ in pixels. How far people jump depends on how long they waited and on the rules at the time,
+so the pre-registration fixed strata in advance:
+
+- **gap:** *prompt* (placed again within a minute of being allowed), *later* (up to an hour), *after a break*;
+- **cooldown period:** five-minute periods (primary), ten-minute periods (secondary);
+- **time block** (five-minute periods): **A**, the first hours after launch; **B**, 04-01 21:30 to 04-02 21:30;
+  **C**, the last day.
+
+The primary strata are prompt jumps in blocks A, B and C.
+
+```{python}
+strata = [(f"block {b}, prompt", clean.filter((pl.col("block") == b) & (pl.col("gap_class") == "prompt"))) for b in "ABC"]
+strata += [(f"5 min, {g}", clean.filter((pl.col("period") == 300) & (pl.col("gap_class") == g))) for g in ("later", "break")]
+strata += [("10 min, prompt", clean.filter((pl.col("period") == 600) & (pl.col("gap_class") == "prompt")))]
+rows = []
+for label, s in strata:
+    dx, dy, rr = s["dx"].to_numpy().astype(float), s["dy"].to_numpy().astype(float), s["r"].to_numpy()
+    rows.append({"stratum": label, "jumps": f"{s.height:,}", "accounts": f"{s['user_id'].n_unique():,}",
+                 "same pixel (r = 0)": f"{(rr == 0).mean():.1%}", "median r (px)": f"{np.median(rr):.0f}",
+                 "r ≤ 20 px": f"{(rr <= 20).mean():.0%}", "sd of dx (px)": f"{dx.std():.0f}",
+                 "excess kurtosis dx, dy": f"{stats.kurtosis(dx):.1f}, {stats.kurtosis(dy):.1f}"})
+r.table(pl.DataFrame(rows))
+```
+
+```{python}
+#| label: fig-jump-ccdf
+#| fig-cap: "Share of jumps longer than r (log scales): prompt jumps in each time block, and jumps after a break. The dashed line is the largest jump the canvas allows."
+fig, ax = plt.subplots(figsize=(6.5, 4))
+for label, s in strata[:3] + [strata[4]]:
+    x = s["r"].to_numpy(); x = x[x > 0]
+    cx, cp = tails.ccdf(x)
+    ax.step(cx, cp, where="post", label=label)
+ax.axvline(np.hypot(1000, 1000), ls="--", color="grey")
+ax.set_xscale("log"); ax.set_yscale("log"); ax.set_ylim(1e-4, 1.5)
+ax.set_xlabel("jump length r (px)"); ax.set_ylabel("share of jumps ≥ r")
+ax.legend(frameon=False)
+plt.show()
+```
+
+Most prompt jumps are short: the median is a few pixels and most stay within 20. But the components have an enormous
+excess kurtosis, which is the signature of a mixture: many tiny steps and some very long jumps. After a break the
+picture flips: the median jump is a large fraction of the canvas, and the kurtosis drops towards that of points
+scattered over a square. (These moments are descriptive only: on a bounded canvas every moment is finite, so moments
+cannot diagnose a tail here.)
+
+## Is there a Lévy-like tail?
+
+For each primary stratum we fit the jump lengths with the method of @sec-actors (`rplace17.tails`), on three nulls
+fixed in advance, each keeping something real and removing the rest:
+
+- **N1 geometry:** each jump keeps its origin and lands anywhere on the canvas, uniformly.
+- **N2 own places, random order:** each account's placements in the block are shuffled in time and the jumps
+  recomputed; the account's footprint stays, its sequence goes.
+- **N3 two scales:** each account keeps its share of local jumps (r ≤ 20 px); local jumps are redrawn from an
+  exponential with the account's own mean local length (capped at 20 px, a detail the pre-registration did not
+  specify), far ones as in N1. It mixes two scales with no heavy tail in either.
+
+```{python}
+R_LOC, NREP = 20, 20
+rng = np.random.default_rng(0)
+
+def uniform_dest(x0, y0):
+    return np.hypot(rng.integers(0, 1001, len(x0)) - x0, rng.integers(0, 1001, len(y0)) - y0)
+
+def far_uniform(x0, y0, rmin):
+    out, todo = np.empty(len(x0)), np.arange(len(x0))
+    while len(todo):
+        rr = uniform_dest(x0[todo], y0[todo]); ok = rr > rmin
+        out[todo[ok]] = rr[ok]; todo = todo[~ok]
+    return out
+
+def own_places_random_order(s, block_rows):
+    need = s.group_by("user_id").len().rename({"len": "need"})
+    p = block_rows.join(need, on="user_id", how="semi")
+    p = (p.with_columns(pl.Series("u", rng.random(p.height))).sort("user_id", "u")
+          .with_columns(pl.col("x").shift(1).over("user_id").alias("x0"), pl.col("y").shift(1).over("user_id").alias("y0"))
+          .drop_nulls("x0")
+          .with_columns(((pl.col("x").cast(pl.Float64) - pl.col("x0")) ** 2 + (pl.col("y").cast(pl.Float64) - pl.col("y0")) ** 2).sqrt().alias("r"))
+          .join(need, on="user_id")
+          .with_columns(pl.int_range(pl.len()).shuffle(seed=int(rng.integers(1e9))).over("user_id").alias("rank"))
+          .filter(pl.col("rank") < pl.col("need")))
+    return p["r"].to_numpy()
+
+def two_scales(s):
+    df = pl.DataFrame({"u": s["user_id"], "r": s["r"], "local": s["r"] <= R_LOC})
+    acc = df.group_by("u").agg(pl.col("local").mean().alias("p"), pl.col("r").filter(pl.col("local")).mean().alias("m"))
+    j = df.join(acc, on="u", how="left")
+    is_local = rng.random(df.height) < j["p"].to_numpy()
+    out = np.empty(df.height)
+    out[is_local] = np.minimum(rng.exponential(j["m"].fill_null(1.0).to_numpy()[is_local]), R_LOC)
+    out[~is_local] = far_uniform(s["x0"].to_numpy()[~is_local], s["y0"].to_numpy()[~is_local], R_LOC)
+    return out
+
+def tail_summary(x):
+    x = x[x > 0]
+    f = tails.fit(x); c = tails.compare(x, f)
+    g = lambda m, col: c.filter(pl.col("model") == m)[col][0]
+    return f, {m: (g(m, "normalised R"), g(m, "p")) for m in ("exponential", "lognormal", "stretched exponential")}, g("truncated power law", "p")
+
+fit_rows, decision_rows = [], []
+for (name, a, b), (label, s) in zip(r.BLOCKS, strata[:3]):
+    sp = s.filter(pl.col("r") > 0)
+    block_rows = d.filter(pl.col("t_us").is_between(r._us(a), r._us(b), closed="left"))
+    series = {"data": sp["r"].to_numpy(), "N1 geometry": uniform_dest(sp["x0"].to_numpy(), sp["y0"].to_numpy()),
+              "N2 own places, random order": own_places_random_order(sp, block_rows)}
+    n3 = [two_scales(sp) for _ in range(NREP)]
+    series["N3 two scales"] = n3[0]
+    for kind, x in series.items():
+        f, alts, p_tpl = tail_summary(x)
+        fit_rows.append({"block": name, "": kind, "xmin (px)": f"{f.xmin:.0f}", "alpha": f"{f.alpha:.2f}", "decades": f"{f.decades:.2f}",
+                         "edge": "yes" if f.at_boundary else "",
+                         **{f"R {m[:11]}": f"{alts[m][0]:+.0f}" for m in alts}, "p trunc. PL": f"{p_tpl:.1g}"})
+        if kind == "data":
+            f_data, alts_data, p_tpl_data = f, alts, p_tpl
+    far = series["data"][series["data"] > R_LOC]
+    far3 = [x[x > R_LOC] for x in n3]
+    D_data = stats.ks_2samp(far, np.concatenate(far3)).statistic
+    D_null = max(stats.ks_2samp(far3[i], far3[j]).statistic for i in range(NREP) for j in range(i + 1, NREP))
+    c1 = all(R > 0 and p < 0.05 for R, p in alts_data.values()) and p_tpl_data >= 0.05
+    c2 = 1 < f_data.alpha < 3
+    c3 = f_data.decades >= 1.5 and not f_data.at_boundary
+    c4 = D_data > D_null
+    yes = lambda v: "yes" if v else "no"
+    decision_rows.append({"block": name, "1. power law beats all": yes(c1), "2. 1 < alpha < 3": yes(c2),
+                          "3. range ≥ 1.5 decades": yes(c3), "4. beyond two scales": yes(c4),
+                          "KS data vs N3": f"{D_data:.3f}", "largest KS N3 vs N3": f"{D_null:.3f}",
+                          "Lévy-flight-like": yes(c1 and c2 and c3 and c4)})
+r.table(pl.DataFrame(fit_rows))
+```
+
+The pre-registered decision, for each block:
+
+```{python}
+r.table(pl.DataFrame(decision_rows))
+```
+
+**No block passes, so the pre-registered answer is: no evidence of Lévy-flight-like jumps.** But the details are worth
+reading:
+
+- In the first hours (block A) there is no stable tail at all: the fit only finds the last stretch before the edge of
+  the canvas, the same place where the geometry null puts its "tail".
+- In blocks B and C there *is* a long, broad stretch, from about ten pixels to the edge of the canvas, with $\alpha$
+  around 1.6 over more than two decades, and it is nothing like the nulls: far jumps differ from the two-scale null by
+  far more than its replicates differ from each other. All three nulls put their only "tail" at the canvas edge.
+- But it is not a power law: the lognormal and the stretched exponential describe it much better, and a power law
+  with a cutoff beats the pure one. Condition 1 fails.
+
+So jump lengths are broad, far broader than geometry, a shuffled footprint, or a simple local-plus-random mixture
+would give, but their shape is not a power law.
+
+## How far does each account range?
+
+The **radius of gyration** of an account is the root-mean-square distance of its placements from their centre: how
+spread out its footprint is over the whole event.
+
+```{python}
+#| label: fig-rg
+#| fig-cap: "Radius of gyration of accounts against their number of placements (median and interquartile range per band)."
+live = d.filter(pl.col("t_us") >= r.LAUNCH_US)
+rg = live.group_by("user_id").agg(
+    pl.len().alias("k"),
+    (((pl.col("x") - pl.col("x").mean()).cast(pl.Float64) ** 2 + (pl.col("y") - pl.col("y").mean()).cast(pl.Float64) ** 2).mean().sqrt()).alias("rg"))
+bands = ((2, 5), (5, 20), (20, 50), (50, 100), (100, 250), (250, None))
+mid, q1, q3, labels = [], [], [], []
+for lo, hi in bands:
+    s = rg.filter((pl.col("k") >= lo) & (pl.col("k") < (hi or 10**9)))["rg"]
+    mid.append(s.median()); q1.append(s.quantile(0.25)); q3.append(s.quantile(0.75))
+    labels.append(f"{lo}+" if hi is None else f"{lo}-{hi - 1}")
+fig, ax = plt.subplots(figsize=(6, 3.5))
+x = np.arange(len(bands))
+ax.errorbar(x, mid, yerr=[np.subtract(mid, q1), np.subtract(q3, mid)], fmt="o", capsize=3)
+ax.set_xticks(x, labels); ax.set_xlabel("placements per account"); ax.set_ylabel("radius of gyration (px)")
+plt.show()
+```
+
+Even though most prompt jumps are short, a typical account's footprint spans a few hundred pixels: people work in one
+place for a while, then move. The busiest accounts are the most focused, with the smallest radius.
+
+## Do people come back?
+
+```{python}
+def return_share(df):
+    """Share of placements within 5 px of one of the account's own previous 10 placements."""
+    o = df.sort("user_id", "t_us")
+    dmin = None
+    for k in range(1, 11):
+        dk = ((pl.col("x").cast(pl.Float64) - pl.col("x").shift(k).over("user_id")) ** 2 +
+              (pl.col("y").cast(pl.Float64) - pl.col("y").shift(k).over("user_id")) ** 2).sqrt()
+        dmin = dk if dmin is None else pl.min_horizontal(dmin, dk)
+    o = o.with_columns(dmin.alias("dmin")).drop_nulls("dmin")
+    return (o["dmin"] <= 5).mean(), (o["dmin"] == 0).mean()
+
+ret, exact = return_share(live)
+# each account's own placements, in random order
+shuffled = (live.with_columns(pl.Series("u", rng.random(live.height))).sort("user_id", "u")
+                .with_columns(pl.int_range(pl.len()).over("user_id").alias("t_us")))
+ret_null, exact_null = return_share(shuffled)
+print(f"within 5 px of one of the previous 10: {ret:.1%} (own places in random order: {ret_null:.1%})")
+print(f"exactly the same pixel as one of the previous 10: {exact:.1%} (random order: {exact_null:.1%})")
+```
+
+About `{python} f"{ret:.0%}"` of placements land within five pixels of one of the account's own previous ten, against
+`{python} f"{ret_null:.0%}"` if the same places were visited in random order. People come back to where they just were
+more often than their own footprint alone would make them, by about a third: the sequence is local in time, not only
+in space.
+
+**How far this goes.** The pre-registered test found no Lévy-flight-like jumps in any block. The jump lengths are
+broad and far from all three nulls, but lognormal-like rather than power-law; prompt jumps are mostly local, jumps
+after a break span the canvas, footprints are wide and narrow with activity, and people return to recent places far
+more than chance. The moments, footprints and returns are descriptive, as pre-registered. A natural model to test next
+is the one the mobility literature uses, exploration plus preferential return (Song et al. 2010), fitted per account,
+against these same nulls.

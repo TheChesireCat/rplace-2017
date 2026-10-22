@@ -51,6 +51,15 @@ Works the chapters lean on. Every entry's metadata was checked against its DOI r
 - Axelrod, R. (1997). The dissemination of culture: a model with local convergence and global polarization.
   *Journal of Conflict Resolution* 41(2), 203–226. [doi:10.1177/0022002797041002001](https://doi.org/10.1177/0022002797041002001)
 
+## Human mobility
+
+- Brockmann, D., Hufnagel, L., Geisel, T. (2006). The scaling laws of human travel. *Nature* 439(7075), 462–465.
+  [doi:10.1038/nature04292](https://doi.org/10.1038/nature04292)
+- González, M. C., Hidalgo, C. A., Barabási, A.-L. (2008). Understanding individual human mobility patterns. *Nature*
+  453(7196), 779–782. [doi:10.1038/nature06958](https://doi.org/10.1038/nature06958)
+- Song, C., Koren, T., Wang, P., Barabási, A.-L. (2010). Modelling the scaling properties of human mobility. *Nature
+  Physics* 6(10), 818–823. [doi:10.1038/nphys1760](https://doi.org/10.1038/nphys1760)
+
 ## How many groups
 
 - Peixoto, T. P. (2014). Hierarchical block structures and high-resolution model selection in large networks.

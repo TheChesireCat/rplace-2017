@@ -238,3 +238,29 @@ def own_and_intact(w):
     s = w.filter(~pl.col("wasted") & pl.col("t_next_own").is_not_null())
     intact = (s["t_end"].is_null() | (s["t_end"] > s["t_next_own"])).mean()
     return int((~cc["overwrite"]).sum()), cc.height, float(intact)
+
+
+# ---------------------------------------------------------------- jumps between an account's placements (chapter 4; prereg/04-movement.md)
+BLOCKS = [("A", "2017-03-31 17:00", "2017-04-01 00:10"),     # the five-minute parts of the first seven hours
+          ("B", "2017-04-01 21:30", "2017-04-02 21:30"),
+          ("C", "2017-04-02 21:30", "2017-04-04 00:00")]
+
+
+def jumps(df):
+    """One row per pair of consecutive placements of an account after launch: origin, destination, dx, dy, r, gap,
+    the cooldown at both ends, the gap class (prompt / later / break) and the time block (A/B/C, five-minute periods)."""
+    j = (df.filter(pl.col("t_us") >= LAUNCH_US).sort("user_id", "t_us")
+           .with_columns(pl.col("x").shift(1).over("user_id").alias("x0"), pl.col("y").shift(1).over("user_id").alias("y0"),
+                         pl.col("t_us").shift(1).over("user_id").alias("t0"))
+           .drop_nulls("t0")
+           .with_columns((pl.col("x").cast(pl.Int32) - pl.col("x0")).alias("dx"), (pl.col("y").cast(pl.Int32) - pl.col("y0")).alias("dy"),
+                         ((pl.col("t_us") - pl.col("t0")) / 1e6).alias("gap_s")))
+    j = j.with_columns((pl.col("dx").cast(pl.Float64) ** 2 + pl.col("dy").cast(pl.Float64) ** 2).sqrt().alias("r"),
+                       pl.Series("c0", cooldown_at(j["t0"].to_numpy())), pl.Series("c1", cooldown_at(j["t_us"].to_numpy())))
+    j = j.with_columns(pl.when(pl.col("gap_s") <= pl.col("c1") + 60).then(pl.lit("prompt"))
+                         .when(pl.col("gap_s") <= 3600).then(pl.lit("later")).otherwise(pl.lit("break")).alias("gap_class"),
+                       pl.when(pl.col("c1") == 603).then(600).otherwise(pl.col("c1")).alias("period"))
+    block = pl.lit(None, dtype=pl.Utf8)
+    for name, a, b in BLOCKS:
+        block = pl.when((pl.col("t0") >= _us(a)) & (pl.col("t_us") < _us(b))).then(pl.lit(name)).otherwise(block)
+    return j.with_columns(pl.when(pl.col("period") == 300).then(block).otherwise(None).alias("block"))
