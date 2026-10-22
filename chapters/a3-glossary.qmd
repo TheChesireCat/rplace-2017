@@ -1,0 +1,47 @@
+# Glossary {#sec-glossary}
+
+**Burstiness ($B$).** $(\sigma - \mu) / (\sigma + \mu)$ for the gaps between one account's actions: −1 is a perfect
+clock, 0 a Poisson process, near 1 very bursty. It uses only the mean and spread of the gaps, not their order.
+
+**CCDF.** The complementary cumulative distribution, $P(X \geq x)$: the share of values at least $x$. Plotted on log
+scales, it shows tails without any choice of bins.
+
+**Censoring.** A value known only to exceed something, e.g. a colour still showing when the event closed: its lifetime
+is at least the time until the close. Survival estimates must treat such values correctly (Kaplan–Meier does).
+
+**Cooldown.** The wait r/place imposed between an account's placements. In 2017 it changed during the event
+(@sec-actors).
+
+**Domain.** A connected region of one colour. Its edge is a **border** or interface.
+
+**Heavy tail.** A distribution with large values far more often than an exponential would give. A **power law**,
+$P(X \geq x) \propto x^{1-\alpha}$, is the strongest kind; lognormal and stretched-exponential tails are heavy but
+less so.
+
+**Kaplan–Meier estimator.** The standard estimate of a survival curve from durations, some of them censored.
+
+**Likelihood ratio (Vuong's test).** Compares how well two fitted distributions explain the same data. Normalised, it
+is roughly a z-score: far from zero means one distribution is clearly better.
+
+**Lévy flight.** A random walk whose step lengths follow a power law, so that rare very long jumps dominate the
+spread.
+
+**Memory coefficient ($M$).** The correlation between consecutive gaps of one account: positive when long gaps follow
+long gaps.
+
+**Null model.** A version of the data, or a model, that keeps some features and destroys the one being tested.
+A result "beats a null" when the null does not reproduce it.
+
+**Pre-registration.** Writing down the test, threshold and data before computing the outcome, and committing it with
+a timestamp. It protects against choosing the test after seeing the result.
+
+**Radius of gyration.** The root-mean-square distance of an account's placements from their centre: the size of its
+footprint.
+
+**Sign-flip test.** An exact test for whether changes across several events share a sign: under the null each change
+is equally likely to be positive or negative, so all $2^n$ sign patterns are equally likely.
+
+**Stigmergy.** Coordination through a shared environment: agents read the state others left and act on it, as termites
+do with a nest, or r/place users with the canvas.
+
+**Wasted placement.** One that repaints a pixel with the colour it already has, so nothing visible changes.

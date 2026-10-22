@@ -93,7 +93,8 @@ def table(df):
     cols = df.columns
     lines = ["| " + " | ".join(cols) + " |", "|" + "---|" * len(cols)]
     lines += ["| " + " | ".join(str(v) for v in row) + " |" for row in df.iter_rows()]
-    return Markdown("\n".join(lines))
+    from IPython.display import display
+    display(Markdown("\n".join(lines)))   # shown wherever it is called in a cell, not only as the last line
 
 
 # ---------------------------------------------------------------- the cooldown switches (chapter 3; prereg/03-*)
@@ -264,3 +265,35 @@ def jumps(df):
     for name, a, b in BLOCKS:
         block = pl.when((pl.col("t0") >= _us(a)) & (pl.col("t_us") < _us(b))).then(pl.lit(name)).otherwise(block)
     return j.with_columns(pl.when(pl.col("period") == 300).then(block).otherwise(None).alias("block"))
+
+
+# ---------------------------------------------------------------- wasted-placement runs, by spatial half (chapter 3)
+def half_of(x, y):
+    """Spatial holdout of prereg/03-wasted-holdout.md: 0 = half A (bx + by even), 1 = half B."""
+    return ((x // 100) + (y // 100)) % 2
+
+
+def shuffle_colours_within_pixel(df, seed):
+    """Placements with each pixel's colours put in random order (times kept): the null for wasted-placement runs."""
+    rng = np.random.default_rng(seed)
+    px = pl.col("x").cast(pl.Int32) * SIZE + pl.col("y").cast(pl.Int32)
+    s = df.with_columns(px.alias("_pix"), pl.Series("_u", rng.random(df.height))).sort("_pix", "t_us")
+    colours = s.sort("_pix", "_u")["color"]
+    return s.with_columns(colours.alias("color")).drop("_pix", "_u")
+
+
+def run_counts(hist):
+    """Per 100 x 100 block: counts for Delta = P(wasted | previous wasted) - P(wasted | previous not wasted), and for
+    the wasted share by how often the pixel changed colour."""
+    px = pl.col("x").cast(pl.Int32) * SIZE + pl.col("y").cast(pl.Int32)
+    s = (hist.filter(pl.col("t_us") >= LAUNCH_US)
+             .with_columns(px.alias("pix"), (pl.col("x") // 100).alias("bx"), (pl.col("y") // 100).alias("by"))
+             .sort("pix", "t_us").with_columns(pl.col("wasted").shift(1).over("pix").alias("prev_wasted")))
+    flips = s.group_by("pix").agg((~pl.col("wasted")).sum().alias("flips"))
+    s = s.join(flips, on="pix")
+    return (s.drop_nulls("prev_wasted").group_by("bx", "by").agg(
+        (pl.col("wasted") & pl.col("prev_wasted")).sum().alias("ww"), pl.col("prev_wasted").sum().alias("w_"),
+        (pl.col("wasted") & ~pl.col("prev_wasted")).sum().alias("nw"), (~pl.col("prev_wasted")).sum().alias("n_"),
+        (pl.col("wasted") & (pl.col("flips") >= 100)).sum().alias("hi_w"), (pl.col("flips") >= 100).sum().alias("hi_n"),
+        (pl.col("wasted") & pl.col("flips").is_between(2, 9)).sum().alias("lo_w"), pl.col("flips").is_between(2, 9).sum().alias("lo_n"))
+        .sort("bx", "by"))

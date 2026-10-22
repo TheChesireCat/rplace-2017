@@ -60,8 +60,22 @@ print(f"x range {d['x'].min()}..{d['x'].max()}, y range {d['y'].min()}..{d['y'].
 - **`{python} missing` rows have no coordinates** or colour. They are dated weeks after the event; we drop them.
 - **`{python} dup` rows are exact duplicates** (same time, account, pixel and colour). We keep them, because we cannot
   tell a logging artefact from a real double click.
-- **`{python} f"{edge:,}"` rows sit at coordinate 1000**, one past the edge of a 1000 × 1000 canvas. We keep them and
-  draw a 1001 × 1001 canvas.
+- **`{python} f"{edge:,}"` rows sit at coordinate 1000**, one past the edge of a 1000 × 1000 canvas (whose
+  coordinates would run 0 to 999). We keep them, so in the rest of the book the canvas is 1001 × 1001 pixels,
+  coordinates 0 to 1000. The difference matters only for distances near the corners (@sec-movement).
+
+How many placements and accounts there are depends on these choices. Papers using the same release report slightly
+different totals for this reason, so here are ours at each step:
+
+```{python}
+steps = [("every row in the release", full),
+         ("with coordinates", d),
+         ("from the launch hour on", d.filter(pl.col("t_us") >= r.LAUNCH_US))]
+r.table(pl.DataFrame([{"rows": label, "placements": f"{x.height:,}", "accounts": f"{x['user_id'].n_unique():,}"}
+                      for label, x in steps]))
+```
+
+Chapters 2 to 4 use the last line.
 
 ## When it happened
 
@@ -130,3 +144,10 @@ print(f"placements still visible at the end: at most {touched / n_rows:.1%} (one
 Only one placement per pixel can be visible at the end, so at most `{python} f"{touched / n_rows:.1%}"` of all
 placements survive into the final picture. The final image is the tip of the log; almost everything people did was
 later painted over. That is why the rest of the book works from the full sequence and not from snapshots.
+
+## Exercises
+
+1. Draw the canvas at the moment of each change in the waiting rule (@sec-actors lists them). Does anything visible
+   change at a switch?
+2. Find the pixel with the most placements. Plot its colour over time, as in the history table of @sec-pixels.
+3. The 3 rows without coordinates are dated weeks after the event. What else do those accounts have in common?

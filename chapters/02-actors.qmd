@@ -75,7 +75,10 @@ print(f"top 1% of accounts: {share(0.01):.0%} of placements;  top 10%: {share(0.
 The top 1% of accounts made `{python} f"{share(0.01):.0%}"` of the placements, and the top 10% made
 `{python} f"{share(0.10):.0%}"`. The work is concentrated, but the cooldown puts a ceiling on it: no account can make
 more than `{python} f"{ceiling / k.sum():.4%}"` of all placements. Whether r/place is *less* concentrated than a
-comparable system without a rate limit is a comparison we have not made.
+comparable system without a rate limit is a comparison we have not made. It would need the same kind of action
+recorded without a cap: within r/place only the admins had no wait, too few to compare, so it needs another dataset,
+such as edits in a wiki, measured the same way (Gini coefficient and top shares of accounts active in the same
+period). The Gini coefficient of placements per account here is computed with the tail fits below.
 
 ## The rhythm of one account
 
@@ -611,6 +614,24 @@ for name in ("5 min, busiest 8 hours", "5 min, 100-249 placements"):
 r.table(pl.DataFrame(boot_rows))
 ```
 
+The same machinery answers the other heavy-tail question of this chapter: is the number of placements per account
+power-law distributed?
+
+```{python}
+ks_sorted = np.sort(k).astype(float)
+gini = float((2 * np.arange(1, len(ks_sorted) + 1) - len(ks_sorted) - 1) @ ks_sorted / (len(ks_sorted) * ks_sorted.sum()))
+fk = tails.fit(ks_sorted)
+ck = tails.compare(ks_sorted, fk)
+print(f"Gini coefficient of placements per account: {gini:.2f}")
+print(f"tail: xmin {fk.xmin:.0f}, alpha {fk.alpha:.2f}, {fk.decades:.2f} decades, cutoff at the search edge: {fk.at_boundary}")
+r.table(ck.select("model", pl.col("normalised R").map_elements(lambda v: f"{v:+.1f}", return_dtype=pl.Utf8),
+                  pl.col("p").map_elements(lambda v: f"{v:.1g}", return_dtype=pl.Utf8)))
+```
+
+Placements per account are very unequal (Gini `{python} f"{gini:.2f}"`), but not power-law: the cutoff runs to the
+edge of the search and every alternative beats the power law. The cooldown ceiling of `{python} f"{ceiling:,.0f}"`
+placements caps the tail, so a power law could not span much range here even if the habit behind it were scale-free.
+
 What the fits say:
 
 - **There is no power law.** In every split, the lognormal and the stretched exponential describe the tail better than
@@ -629,17 +650,105 @@ What the fits say:
 - **The range is short.** The event lasted three days, so extra waits are cut off at a few tens of hours; a truncated
   form wins partly for that reason alone. Only accounts with at least two placements contribute waits.
 
-**How far this goes.** Exploratory, and descriptive: the waits are broad and heavier than a mixture of exponential
-waiters, but not power-law; a lognormal or stretched-exponential shape fits better everywhere. This is consistent
+**How far this goes.** Exploratory, and descriptive: the waits, and the placement counts, are broad but not
+power-law; the waits are heavier than a mixture of exponential waiters; a lognormal or stretched-exponential shape fits better everywhere. This is consistent
 with the burstiness results and does not add a new mechanism. With more than ten million waits every simple model is
 rejected by a goodness-of-fit test, so we report the model comparisons and the plots instead of a bootstrap p-value
 for the fit.
+
+## Sessions and breaks
+
+The tail fits found two separate best cutoffs, a few hundred seconds and about half a day apart. That looks like two
+processes: the waits inside a session of play, and the breaks between sessions. A simple way to separate them is a
+**break threshold** $\tau$: a gap longer than $\tau$ ends one session and starts the next. There is no right $\tau$,
+so we use four, from 30 minutes to 4 hours, and look at what does not depend on the choice.
+
+```{python}
+rows_s = []
+for tau in (1800, 3600, 7200, 14400):
+    sess = (d.sort("user_id", "t_us")
+              .with_columns((pl.col("t_us").diff().over("user_id") / 1e6).fill_null(float("inf")).alias("g"))
+              .with_columns((pl.col("g") > tau).cum_sum().over("user_id").alias("session"))
+              .group_by("user_id", "session").agg(pl.len().alias("n"), ((pl.col("t_us").max() - pl.col("t_us").min()) / 6e7).alias("minutes")))
+    per_acc = sess.group_by("user_id").len()
+    within = gaps.filter(pl.col("gap_s") <= tau)
+    accw = within.group_by("user_id").agg(pl.col("gap_s"), pl.col("wait_end")).filter(pl.col("gap_s").list.len() >= 10)
+    Bw, Bw0 = [], []
+    for gs, ws in zip(accw["gap_s"].to_list(), accw["wait_end"].to_list()):
+        gs, ws = np.asarray(gs), np.asarray(ws)
+        extra = max(gs.mean() - ws.mean(), 1e-9)
+        Bw.append(burstiness(gs))
+        Bw0.append(burstiness(ws + np.minimum(rng.exponential(extra, len(gs)), tau - ws)))   # random waiting, kept inside the session
+    Bw, Bw0 = np.array(Bw), np.array(Bw0)
+    multi = sess.filter(pl.col("n") > 1)
+    rows_s.append({"break threshold": f"{tau // 60} min", "sessions per account (median)": f"{per_acc['len'].median():.0f}",
+                   "placements per session (mean)": f"{sess['n'].mean():.1f}",
+                   "length of multi-placement sessions (median, min)": f"{multi['minutes'].median():.0f}",
+                   "accounts": f"{len(Bw):,}", "median B within sessions": f"{np.median(Bw):+.2f}",
+                   "null": f"{np.median(Bw0):+.2f}", "data > null": f"{np.mean(Bw > Bw0):.0%}"})
+r.table(pl.DataFrame(rows_s))
+```
+
+Two things hold at every threshold. Most of the burstiness of @fig-burstiness is the alternation of sessions and
+breaks: inside sessions, the median $B$ falls from about 0.4 to between −0.3 and +0.2. But waits *inside* sessions are
+still more irregular than random waiting would make them, for 90% or more of accounts. (The null here draws random
+extra time capped at the threshold, so that it stays inside a session; its mean is therefore slightly below the
+account's, which makes the comparison slightly conservative.)
+
+```{python}
+tau = 3600
+wfit_rows = []
+for label, x in (("waits inside sessions (extra wait, s)", gaps.filter((pl.col("gap_s") <= tau)).with_columns((pl.col("gap_s") - pl.col("wait_end")).alias("e")).filter(pl.col("e") > 0)["e"].to_numpy()),
+                 ("breaks between sessions (gap, s)", gaps.filter(pl.col("gap_s") > tau)["gap_s"].to_numpy())):
+    fw = tails.fit(x); cw = tails.compare(x, fw)
+    g_ = lambda m: cw.filter(pl.col("model") == m)["normalised R"][0]
+    wfit_rows.append({"with a 1-hour threshold": label, "n": f"{len(x):,}", "xmin": f"{fw.xmin:,.0f}", "alpha": f"{fw.alpha:.2f}",
+                      "decades": f"{fw.decades:.2f}", "R lognormal": f"{g_('lognormal'):+.0f}", "R str. exp.": f"{g_('stretched exponential'):+.0f}"})
+r.table(pl.DataFrame(wfit_rows))
+```
+
+Fitted separately, neither the waits inside sessions nor the breaks between them is a power law; the lognormal and
+stretched exponential win both. Waits inside sessions are cut off at the threshold by construction, which a fit
+cannot see beyond. (Exploratory.)
+
+## Do very regular accounts drive any of this?
+
+Scripts that place on a timer would have almost constant gaps, a strongly negative $B$. Wu and Silva (2024) filter
+bot-like accounts by their rate; here we use regularity, with a threshold chosen before looking at the result: at
+least 20 gaps and $B < -0.5$.
+
+```{python}
+reg = acc.with_columns(pl.Series("B", B)).filter((pl.col("gap_s").list.len() >= 20) & (pl.col("B") < -0.5))
+bot_ids = reg.select("user_id")
+kept = d.join(bot_ids, on="user_id", how="anti")
+k2 = kept.group_by("user_id").len()["len"].to_numpy()
+desc2 = np.sort(k2)[::-1]; cum2 = np.cumsum(desc2) / desc2.sum()
+keep_mask = ~acc["user_id"].is_in(bot_ids["user_id"]).to_numpy()
+r.table(pl.DataFrame([
+    {"": "all accounts", "accounts": f"{len(k):,}", "top 1% share": f"{share(0.01):.1%}",
+     "median B, accounts with ≥ 10 gaps": f"{np.median(B):.2f}", "data > first null": f"{(B > B_null).mean():.0%}"},
+    {"": "very regular accounts removed", "accounts": f"{len(k2):,}", "top 1% share": f"{cum2[int(0.01 * len(desc2)) - 1]:.1%}",
+     "median B, accounts with ≥ 10 gaps": f"{np.median(B[keep_mask]):.2f}", "data > first null": f"{(B[keep_mask] > B_null[keep_mask]).mean():.0%}"}]))
+print(f"very regular accounts: {reg.height:,}, with {d.join(bot_ids, on='user_id', how='semi').height:,} placements")
+```
+
+There are `{python} f"{reg.height:,}"` such accounts, under 1% of placements, and removing them leaves the headline
+numbers essentially unchanged. Very regular accounts, bots or not, do not drive the results of this chapter.
 
 ## What this chapter sets up
 
 - **Activity is uneven but capped.** No account can do much, so anything large on the canvas needs many accounts.
 - **People act in bursts, and nearly everyone does.** A pixel held "all day" is held by a relay of people, not by one
-  person.
+  person. Most of the burstiness is sessions and breaks, but waits inside sessions are irregular too.
+- **Waits are broad, not power-law,** and have weak memory, about half of it the daily rhythm.
 - **The speed limit changed seven times, for everyone at once** (three tightenings, four loosenings), on a schedule
   that Reddit's own code history records. Later chapters compare conflict and repair in short windows around those
   switches.
+
+## Exercises
+
+1. Change the burstiness threshold from 10 to 50 gaps. Which conclusions change?
+2. The crowd null redraws waits from the same cooldown and hour of day. Redraw them from the same cooldown only. How
+   much of the remaining gap to the data does the hour of day explain?
+3. Use the session threshold that makes within-session burstiness closest to zero. What does that threshold say about
+   how long people step away?

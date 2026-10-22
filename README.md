@@ -27,6 +27,7 @@ make data
 make preview    # live preview
 make render     # run the chapters, build the site into _site/
 make publish    # push the built site to the gh-pages branch
+make video      # the activity video in media/ (needs ffmpeg)
 ```
 
 Chapter results are cached in `_freeze/` (committed), so the site rebuilds without the data; a chapter re-runs only
@@ -37,7 +38,7 @@ when its source changes. Requires [Quarto](https://quarto.org).
 ```
 index.qmd, chapters/   the book (Quarto); one chapter per rung of the ladder
 src/rplace17/          small helpers the chapters import (load, palette, canvas_at, cooldown_at)
-scripts/               01-fetch.py, 02-condense.py: rebuild data/ from Reddit's release
+scripts/               01-fetch.py, 02-condense.py: rebuild data/ from Reddit's release; 03-heatmap-video.py: media/
 data/                  gitignored, except 02-parity.json
 _freeze/               cached chapter results (committed)
 prereg/                pre-registrations, committed before the analysis they describe; amendments are added, never edited in

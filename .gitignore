@@ -12,3 +12,5 @@ __pycache__/
 .DS_Store
 
 /.quarto/
+# derived media: regenerate with `make video` (published to gh-pages with the site)
+media/*.mp4

@@ -210,8 +210,14 @@ def exponential_null(x, accounts, seed=0, cap=None):
 
 
 def ccdf(x, max_points=4000):
-    """Points of the complementary CDF, P(X >= x), thinned to at most max_points for plotting."""
+    """Points of the complementary CDF, P(X >= x), for plotting. Integer data with few distinct values: every distinct
+    value. Otherwise thinned so that both ends stay dense: ranks spaced geometrically from the bottom and from the top
+    (the top is where the rare large values are)."""
     xs = np.sort(np.asarray(x, float))
-    p = 1 - np.arange(len(xs)) / len(xs)
-    idx = np.unique(np.geomspace(1, len(xs), max_points).astype(np.int64) - 1)
-    return xs[idx], p[idx]
+    n = len(xs)
+    uniq, first = np.unique(xs, return_index=True)
+    if len(uniq) <= 2 * max_points:
+        return uniq, 1 - first / n
+    k = np.geomspace(1, n, max_points // 2).astype(np.int64)
+    idx = np.unique(np.concatenate([k - 1, n - k]))
+    return xs[idx], 1 - idx / n

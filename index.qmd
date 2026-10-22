@@ -22,17 +22,42 @@ as a **laboratory**: each chapter takes one idea, says what it predicts, and che
 
 The chapters climb a ladder, from single actors to properties of the whole canvas. Each rung uses the one below it.
 
-| Rung | Question | Chapter |
+| Rung | Question | Chapter | Status |
+|---|---|---|---|
+| Data | What exactly is in the log, and what is odd about it? | @sec-data | written |
+| Actors | How active are people, and how does the waiting rule shape them? | @sec-actors | written |
+| Pixels | What does one placement do, and did a longer wait change it? | @sec-pixels | written; one pre-registered test |
+| Movement | Where do people go next, and do they come back? | @sec-movement | written; one pre-registered test |
+| Interactions | Who works with, and against, whom? | @sec-interactions | planned |
+| Domains and borders | Where do colour regions meet, and do their borders move like physical interfaces? | @sec-borders | planned |
+| Cascades | Do overwrites come in avalanches of all sizes? | @sec-cascades | planned |
+| Groups | How many groups does it take to explain the canvas? | @sec-groups | planned |
+| Baselines | What would a model with no strategy at all already produce? | @sec-baselines | planned |
+
+## Results at a glance
+
+Each result carries its label: *descriptive* (a measurement, no null), *beats a null* (with the null named),
+*pre-registered* (the test was fixed before the outcome was computed), *exploratory* (looked for after seeing data),
+and *provisional* when a planned check is still missing.
+
+| Result | Label | Where |
 |---|---|---|
-| Data | What exactly is in the log, and what is odd about it? | @sec-data |
-| Actors | How active are people, and how does the waiting rule shape them? | @sec-actors |
-| Pixels | How long does a colour survive on a pixel? | @sec-pixels |
-| Movement | Where do people go next, and do they come back? | @sec-movement |
-| Interactions | Who works with, and against, whom? | @sec-interactions |
-| Domains and borders | Where do colour regions meet, and do their borders move like physical interfaces? | @sec-borders |
-| Cascades | Do overwrites come in avalanches of all sizes? | @sec-cascades |
-| Groups | How many groups does it take to explain the canvas? | @sec-groups |
-| Baselines | What would a model with no strategy at all already produce? | @sec-baselines |
+| The wait between placements changed seven times (5 → 10 → 5 → 10 → 20 → 15 → 10 → 5 min), for everyone at once, as Reddit's own code history records | descriptive; confirmed against the source | @sec-actors |
+| No per-account waits: heavy accounts (70% of placements) followed the shared schedule; the code has one constant for all | beats a null | @sec-actors |
+| A typical account placed 3 pixels (mean 14); the top 1% made 15% of placements | descriptive | @sec-actors |
+| Accounts are far burstier than random waiting above the cooldown, at every history length | beats two nulls; provisional | @sec-actors |
+| Each account is about as bursty as the crowd's pooled waits | beats a null; provisional | @sec-actors |
+| Waits have weak memory, about half of it the daily rhythm | beats two shuffle nulls | @sec-actors |
+| Most burstiness is sessions and breaks, but waits inside sessions are still more irregular than random, at every session threshold | beats a null; exploratory | @sec-actors |
+| Extra waits are broad but not power-law; lognormal or stretched-exponential shapes fit better | exploratory | @sec-actors |
+| A quarter of placements change nothing; 6% survive to the end; undos are 94% done by someone else | descriptive | @sec-pixels |
+| A third of the pixels carry three quarters of the placements | descriptive | @sec-pixels |
+| New colours are painted over faster than chance; changed colours come back faster than chance (median 33 min vs 181) | beats a null | @sec-pixels |
+| Wasted placements are 99% repaints of someone else's colour, come in runs beyond each pixel's own colour mix, and concentrate on contested pixels | pre-registered on a held-out half of the canvas; passed | @sec-pixels |
+| A tighter cooldown raised the overwrite share at all six switches, but by 0.1–0.3 points, with pre-trend failures and a possible mechanical cause | pre-registered test passed; not read as behaviour | @sec-pixels |
+| No Lévy-flight-like jumps; jump lengths are broad and far from geometry and mixture nulls, but lognormal-like | pre-registered test failed | @sec-movement |
+| People return to recent places more often than their own footprint predicts (47% vs 35%), to areas rather than to the same pixel | beats a null | @sec-movement |
+| Far jumps run along rows and columns about twice as often as random destinations; long jumps follow long jumps beyond each account's mix | beats a null; exploratory | @sec-movement |
 
 ## How to read the results
 
@@ -46,4 +71,5 @@ through the book:
 - **Ideas carry a label.** *Established* (with a citation), *studied under another name*, *speculative but
   testable* (with the test), or *possibly new* (only after a literature search, and saying what was searched).
 
-The first chapters are written; later ones state the question and the plan, and fill in as the analysis is done.
+Chapters 1 to 4 are written; the later ones state their question and plan, and fill in as the analysis is done.
+Terms are defined in the glossary (@sec-glossary).

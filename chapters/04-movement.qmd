@@ -177,6 +177,92 @@ reading:
 So jump lengths are broad, far broader than geometry, a shuffled footprint, or a simple local-plus-random mixture
 would give, but their shape is not a power law.
 
+### Checks on the decision
+
+**The local radius.** The two-scale null splits jumps at R_loc = 20 px; the pre-registration named 10 and 40 px as
+sensitivity checks, and we add 50. Condition 4 (data far from the two-scale null) is recomputed for each:
+
+```{python}
+rows_rl = []
+for (name, a, b), (label, s) in zip(r.BLOCKS, strata[:3]):
+    sp = s.filter(pl.col("r") > 0)
+    data_r, x0, y0 = sp["r"].to_numpy(), sp["x0"].to_numpy(), sp["y0"].to_numpy()
+    for R in (10, 20, 40, 50):
+        far = data_r[data_r > R]
+        reps = []
+        for _ in range(5):
+            keep = rng.random(len(data_r)) >= np.mean(data_r <= R)       # the account-level local share, pooled
+            reps.append(far_uniform(x0[keep], y0[keep], R))
+        D_d = stats.ks_2samp(far, np.concatenate(reps)).statistic
+        D_n = max(stats.ks_2samp(reps[i], reps[j]).statistic for i in range(5) for j in range(i + 1, 5))
+        rows_rl.append({"block": name, "R_loc (px)": R, "KS data vs null (far jumps)": f"{D_d:.3f}",
+                        "largest KS null vs null": f"{D_n:.4f}", "condition 4": "holds" if D_d > D_n else "fails"})
+r.table(pl.DataFrame(rows_rl))
+```
+
+Condition 4 holds at every radius (here the local share is pooled over each block rather than kept per account, a
+simplification for the sensitivity check). The verdict, which fails on condition 1, does not depend on R_loc.
+
+**Is it where the crowd is?** A different explanation of broad jumps is attraction: people jump to wherever things
+are happening. This null, not in the pre-registration and so exploratory, lands each jump on the place of a random
+placement by anyone in the ten minutes before it.
+
+```{python}
+t_all, x_all, y_all = d["t_us"].to_numpy(), d["x"].to_numpy(), d["y"].to_numpy()
+rows_at = []
+for (name, a, b), (label, s) in zip(r.BLOCKS[1:], strata[1:3]):
+    sp = s.filter(pl.col("r") > 0)
+    t1 = sp["t_us"].to_numpy()
+    lo, hi = np.searchsorted(t_all, t1 - 600_000_000), np.searchsorted(t_all, t1)
+    pick = lo + (rng.random(len(t1)) * (hi - lo)).astype(np.int64)            # a random recent placement, anywhere
+    r_attr = np.hypot(x_all[pick] - sp["x0"].to_numpy(), y_all[pick] - sp["y0"].to_numpy())
+    data_r = sp["r"].to_numpy()
+    rows_at.append({"block": name, "median jump, data (px)": f"{np.median(data_r):.0f}", "attraction null (px)": f"{np.median(r_attr):.0f}",
+                    "jumps ≤ 20 px, data": f"{np.mean(data_r <= 20):.0%}", "attraction null": f"{np.mean(r_attr <= 20):.1%}",
+                    "KS, jumps > 20 px": f"{stats.ks_2samp(data_r[data_r > 20], r_attr[r_attr > 20]).statistic:.2f}"})
+r.table(pl.DataFrame(rows_at))
+```
+
+Attraction to the crowd's recent activity reproduces nothing: recent activity is spread over the whole canvas, so
+jumps drawn towards it are as long as random ones. A *local* attraction null (towards recent activity near the
+origin) would need a radius, and choosing one builds in the locality it is meant to explain, so we do not fit it.
+
+**Direction.** Straight-edged artworks such as flags would make jumps along rows and columns more common.
+
+```{python}
+rows_dir = []
+for label, s in strata[1:3]:
+    sp = s.filter(pl.col("r") > 20)
+    ang = np.degrees(np.arctan2(np.abs(sp["dy"].to_numpy()), np.abs(sp["dx"].to_numpy())))
+    x1u, y1u = rng.integers(0, 1001, sp.height), rng.integers(0, 1001, sp.height)
+    dxu, dyu = x1u - sp["x0"].to_numpy(), y1u - sp["y0"].to_numpy()
+    far_u = np.hypot(dxu, dyu) > 20
+    ang_u = np.degrees(np.arctan2(np.abs(dyu[far_u]), np.abs(dxu[far_u])))
+    near_axis = lambda a_: np.mean((a_ < 5) | (a_ > 85))
+    rows_dir.append({"stratum (jumps > 20 px)": label, "within 5° of an axis, data": f"{near_axis(ang):.1%}",
+                     "geometry null": f"{near_axis(ang_u):.1%}", "exactly along a row or column, data": f"{((sp['dx'] == 0) | (sp['dy'] == 0)).mean():.1%}"})
+r.table(pl.DataFrame(rows_dir))
+```
+
+About twice as many far jumps run within 5° of a row or column as random destinations would give: consistent with
+people working along straight edges, though this check cannot say whose edges.
+
+**Do long jumps follow long jumps?**
+
+```{python}
+sb_ = (strata[1][1].filter(pl.col("r") > 0).sort("user_id", "t_us")
+       .with_columns(pl.col("r").log().alias("lr")).with_columns(pl.col("lr").shift(1).over("user_id").alias("lr_prev")).drop_nulls("lr_prev"))
+rho = np.corrcoef(sb_["lr"], sb_["lr_prev"])[0, 1]
+sb_shuf = sb_.with_columns(pl.col("lr_prev").shuffle(seed=1).over("user_id"))
+rho_shuf = np.corrcoef(sb_shuf["lr"], sb_shuf["lr_prev"])[0, 1]
+print(f"block B, prompt: correlation of consecutive log jump lengths {rho:.2f}; with each account's jumps shuffled {rho_shuf:.2f}")
+```
+
+Consecutive jump lengths are correlated (`{python} f"{rho:.2f}"`). Part of that is that accounts differ, some mostly
+local and some roaming: shuffling each account's own jumps keeps that and leaves `{python} f"{rho_shuf:.2f}"`. The
+rest is sequence: a long jump makes another long one more likely. One reading, not tested here, is someone moving to a
+new area and looking around.
+
 ## How far does each account range?
 
 The **radius of gyration** of an account is the root-mean-square distance of its placements from their centre: how
@@ -233,9 +319,42 @@ About `{python} f"{ret:.0%}"` of placements land within five pixels of one of th
 more often than their own footprint alone would make them, by about a third: the sequence is local in time, not only
 in space.
 
+**Distinct places.** Song et al. (2010) describe returns, as we understand it (the paper is not yet read here), by how
+fast the number of distinct places grows with the number
+of visits. Here a "place" can be a pixel:
+
+```{python}
+big = live.group_by("user_id").len().filter(pl.col("len") >= 200).select("user_id")
+L = (live.join(big, on="user_id", how="semi").sort("user_id", "t_us")
+         .with_columns(pl.int_range(pl.len()).over("user_id").alias("n"), (pl.col("x").cast(pl.Int32) * r.SIZE + pl.col("y").cast(pl.Int32)).alias("pix")))
+Ls = (L.with_columns(pl.Series("u", rng.random(L.height))).sort("user_id", "u")
+       .with_columns(pl.int_range(pl.len()).over("user_id").alias("n")))
+rows_S = []
+for n in (10, 50, 100, 200):
+    S_d = L.group_by("user_id", "pix").agg(pl.col("n").min().alias("f")).filter(pl.col("f") < n).group_by("user_id").len()["len"]
+    S_s = Ls.group_by("user_id", "pix").agg(pl.col("n").min().alias("f")).filter(pl.col("f") < n).group_by("user_id").len()["len"]
+    rows_S.append({"placements so far": n, "distinct pixels (median), data": f"{S_d.median():.0f}", "same placements in random order": f"{S_s.median():.0f}"})
+print(f"{big.height:,} accounts with at least 200 placements")
+r.table(pl.DataFrame(rows_S))
+```
+
+At the scale of single pixels people rarely come back: after 200 placements, a typical heavy account has touched
+almost 200 different pixels, and random order makes little difference. The returns of the previous section are to
+*areas*, within a few pixels, not to the same pixel. Which scale is the right "place" for a preferential-return model
+is itself a question for later.
+
 **How far this goes.** The pre-registered test found no Lévy-flight-like jumps in any block. The jump lengths are
 broad and far from all three nulls, but lognormal-like rather than power-law; prompt jumps are mostly local, jumps
 after a break span the canvas, footprints are wide and narrow with activity, and people return to recent places far
 more than chance. The moments, footprints and returns are descriptive, as pre-registered. A natural model to test next
 is the one the mobility literature uses, exploration plus preferential return (Song et al. 2010), fitted per account,
 against these same nulls.
+
+## Exercises
+
+1. Define a "place" as a 10 × 10 block instead of a pixel and redo the distinct-places table. At what block size do
+   people start to look like they return?
+2. The direction check compares far jumps with random destinations. Restrict it to jumps that start on a pixel that
+   is part of a straight edge in the final canvas. Does the axis excess grow?
+3. Fit the jump lengths of block B with a mixture of two lognormals. How much of the "broad stretch" does a second
+   scale absorb?

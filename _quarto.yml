@@ -1,6 +1,8 @@
 project:
   type: book
   output-dir: _site
+  resources:
+    - media/*.mp4
 
 book:
   title: "r/place 2017 as a complex system"
@@ -27,18 +29,19 @@ book:
         - chapters/04-movement.qmd
     - part: "Interactions"
       chapters:
-        - chapters/04-interactions.qmd
+        - chapters/05-interactions.qmd
     - part: "Domains and borders"
       chapters:
-        - chapters/05-borders.qmd
+        - chapters/06-borders.qmd
     - part: "The whole canvas"
       chapters:
-        - chapters/06-cascades.qmd
-        - chapters/07-groups.qmd
-        - chapters/08-baselines.qmd
+        - chapters/07-cascades.qmd
+        - chapters/08-groups.qmd
+        - chapters/09-baselines.qmd
   appendices:
     - chapters/a1-regenerate.qmd
     - chapters/a2-reading.qmd
+    - chapters/a3-glossary.qmd
 
 execute:
   freeze: auto      # results are stored in _freeze/ (committed), so the site rebuilds without the data

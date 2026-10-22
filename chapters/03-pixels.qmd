@@ -10,6 +10,7 @@ import numpy as np
 import polars as pl
 import matplotlib.pyplot as plt
 import rplace17 as r
+import rplace17.tails
 
 h = r.pixel_history(r.load())      # the whole log, so each pixel's state is right at every time
 close_us = h["t_us"].max()
@@ -71,6 +72,46 @@ restoring a colour someone else placed: defence by a relay of people, which is w
 held "all day" would need. A pixel that changes is usually being fought over, often by the same two colours going
 back and forth, with different people on each side taking turns.
 
+### How busy is a pixel?
+
+```{python}
+per_pixel = live.group_by("x", "y").agg(pl.len().alias("placements"), (~pl.col("wasted")).sum().alias("changes"))
+bands_px = [("frozen: at most 1 change", pl.col("changes") <= 1), ("2 to 9 changes", pl.col("changes").is_between(2, 9)),
+            ("contested: 10 or more", pl.col("changes") >= 10), ("of which 100 or more", pl.col("changes") >= 100)]
+r.table(pl.DataFrame([{"pixels": lab, "share of pixels": f"{per_pixel.filter(m).height / per_pixel.height:.1%}",
+                       "share of placements": f"{per_pixel.filter(m)['placements'].sum() / per_pixel['placements'].sum():.1%}"}
+                      for lab, m in bands_px]))
+```
+
+```{python}
+#| label: fig-pixel-busy
+#| fig-cap: "Left: share of pixels with at least n colour changes after launch (log scales). Right: where the changes happened (colour changes per pixel, log scale)."
+fig, axes = plt.subplots(1, 2, figsize=(11, 4.6))
+cx, cp = r.tails.ccdf(per_pixel["changes"].to_numpy() + 1)
+axes[0].step(cx - 1, cp, where="post"); axes[0].set_xscale("log"); axes[0].set_yscale("log")
+axes[0].set_xlabel("colour changes per pixel, n"); axes[0].set_ylabel("share of pixels with ≥ n")
+grid_c = np.zeros((r.SIZE, r.SIZE))
+grid_c[per_pixel["y"].to_numpy(), per_pixel["x"].to_numpy()] = per_pixel["changes"].to_numpy()
+lg = np.log10(grid_c + 1)
+im = axes[1].imshow(lg, cmap="inferno", vmin=np.percentile(lg, 1), vmax=np.percentile(lg, 99.5)); axes[1].set_axis_off()
+fig.colorbar(im, ax=axes[1], fraction=0.046, label="log10(changes + 1)")
+plt.show()
+```
+
+Activity is concentrated in space as well as among people: about a third of the pixels, the contested ones, carry
+about three quarters of the placements, and a few thousand pixels changed hundreds or thousands of times. On the map
+the outlines of artworks stand out against their quieter interiors, and a few areas were fought over far more than
+the rest.
+
+**The same, over time.** The map adds up three days. The video below shows the last 15 minutes at each moment, every 5
+minutes from launch to close: where people placed (left), where colours actually changed (middle), and the canvas
+(right). Both heatmaps use one fixed log colour scale for the whole video, so a dim frame means less activity, not a
+rescaled frame. The strip underneath shows the waiting rule: in the ten- and twenty-minute periods everyone could place
+two to four times less often, so those frames are dimmer for that reason alone. The video is made by
+`scripts/03-heatmap-video.py` (`make video`), adapted from a similar video of the 2023 edition.
+
+{{< video ../media/heatmap-2017.mp4 >}}
+
 ### Which placements are still visible at the end?
 
 Wu and Silva (2024, v3, §4.1) sort placements by their relation to the final picture: **Final** (persists to the
@@ -130,6 +171,103 @@ medians of `{python} f"{medians['undo (A–B–A)']:.0f}"` and `{python} f"{medi
 minutes. One reading is that a repair buys a short respite before the fight over that pixel resumes. This is a
 description with no null yet. The planned null shuffles times within each pixel, which keeps how busy each pixel is
 and removes any memory.
+
+### Against a null
+
+The null keeps each pixel's placement times and its multiset of colours, and puts the colours in random order. It
+keeps how busy each pixel is and which colours it sees, and removes any memory of the order.
+
+```{python}
+def colour_states(hist):
+    st = (hist.filter(~pl.col("wasted"))
+              .with_columns((pl.col("x").cast(pl.Int32) * r.SIZE + pl.col("y").cast(pl.Int32)).alias("pix"))
+              .sort("pix", "t_us").with_columns(pl.col("t_us").shift(-1).over("pix").alias("t_next")))
+    return st.filter(pl.col("t_us") >= r.LAUNCH_US).with_columns(
+        ((pl.col("t_next").fill_null(close_us) - pl.col("t_us")) / 1e6).alias("lifetime_s"), pl.col("t_next").is_not_null().alias("ended"))
+
+h_null = r.pixel_history(r.shuffle_colours_within_pixel(r.load(), seed=0))
+states_null = colour_states(h_null)
+
+def hazard(sub, edges):
+    """Share of colours alive at the start of each time bin that end within it, per minute of bin width."""
+    t, ev = sub["lifetime_s"].to_numpy(), sub["ended"].to_numpy()
+    out = []
+    for a, b in zip(edges[:-1], edges[1:]):
+        at_risk = (t >= a).sum()
+        out.append(((t >= a) & (t < b) & ev).sum() / max(at_risk, 1) / ((b - a) / 60))
+    return np.array(out)
+
+edges = np.geomspace(1, 3 * 86_400, 40)
+fig, axes = plt.subplots(1, 2, figsize=(11, 3.8), sharey=True)
+for ax, (title, st) in zip(axes, (("data", states), ("null: colours shuffled within each pixel", states_null))):
+    for label, sub in (("undo", st.filter(pl.col("undo") == True)), ("other colour changes", st.filter(pl.col("undo") != True))):
+        ax.plot(np.sqrt(edges[:-1] * edges[1:]) / 60, hazard(sub, edges), label=label)
+    ax.set_xscale("log"); ax.set_yscale("log"); ax.set_title(title); ax.set_xlabel("minutes since the colour was placed")
+axes[0].set_ylabel("hazard (ends per minute)"); axes[0].legend(frameon=False)
+plt.show()
+rows_n = []
+for title, st in (("data", states), ("null", states_null)):
+    for label, sub in (("undo", st.filter(pl.col("undo") == True)), ("other colour changes", st.filter(pl.col("undo") != True))):
+        t, S = r.kaplan_meier(sub["lifetime_s"].to_numpy(), sub["ended"].to_numpy())
+        rows_n.append({"": title, "colour change": label, "states": f"{sub.height:,}", "median (min)": f"{t[np.argmax(S <= 0.5)] / 60:.1f}",
+                       "still showing after 1 min": f"{S[np.searchsorted(t, 60)]:.3f}", "after 1 h": f"{S[np.searchsorted(t, 3600)]:.3f}"})
+r.table(pl.DataFrame(rows_n))
+```
+
+The hazard is the rate at which colours still showing are painted over. In the data a new colour that is *not* an undo
+is painted over faster than the null predicts in its first minutes, and it lives less long overall: new colours are
+removed faster than chance. Undos survive about as the null predicts. So the crossing in @fig-lifetimes is mostly the
+fate of new colours, not extra durability of repairs. (Descriptive against one null.)
+
+```{python}
+states_c = states.with_columns(pl.Series("cooldown", r.cooldown_at(states["t_us"].to_numpy())))
+rows_c = []
+for c in (300, 600, 603, 900, 1200):
+    sub = states_c.filter(pl.col("cooldown") == c)
+    t, S = r.kaplan_meier(sub["lifetime_s"].to_numpy(), sub["ended"].to_numpy())
+    rows_c.append({"cooldown in force when placed (s)": c, "colour states": f"{sub.height:,}", "median lifetime (min)": f"{t[np.argmax(S <= 0.5)] / 60:.0f}"})
+r.table(pl.DataFrame(rows_c))
+```
+
+Colours placed under a longer wait last far longer, but this mixes the rule with the hour: the ten- and twenty-minute
+periods include the quiet night of 31 March to 1 April, when fewer people were placing anyway. The short windows
+around the switches, below, are the cleaner comparison.
+
+### How long until a repair?
+
+When a colour is changed, how long until the pixel shows the old colour again? We follow every change from A to B and
+record when A next appears on that pixel, whatever happens in between; changes never reverted by the close are
+censored.
+
+```{python}
+def repair_times(hist):
+    px_ = pl.col("x").cast(pl.Int32) * r.SIZE + pl.col("y").cast(pl.Int32)
+    changes_ = (hist.filter(~pl.col("wasted") & ~pl.col("first") & (pl.col("t_us") >= r.LAUNCH_US))
+                    .select(px_.alias("pix"), "t_us", pl.col("prev_color").alias("color")).sort("t_us"))
+    returns = hist.filter(~pl.col("wasted")).select(px_.alias("pix"), pl.col("t_us").alias("t_back"), "color").sort("t_back")
+    rt = changes_.join_asof(returns, left_on="t_us", right_on="t_back", by=["pix", "color"], strategy="forward",
+                            allow_exact_matches=False, check_sortedness=False)
+    return rt.with_columns(((pl.col("t_back").fill_null(close_us) - pl.col("t_us")) / 1e6).alias("rt"),
+                           pl.col("t_back").is_not_null().alias("repaired"))
+
+fig, ax = plt.subplots(figsize=(6.5, 4))
+rows_r = []
+for label, hist in (("data", h), ("null: colours shuffled within each pixel", h_null)):
+    rt = repair_times(hist)
+    t, S = r.kaplan_meier(rt["rt"].to_numpy(), rt["repaired"].to_numpy())
+    ax.step(np.maximum(t, 0.1) / 60, 1 - S, where="post", label=label)
+    rows_r.append({"": label, "changes": f"{rt.height:,}", "ever repaired": f"{rt['repaired'].mean():.0%}",
+                   "repaired within 5 min": f"{1 - S[np.searchsorted(t, 300)]:.0%}", "within 1 h": f"{1 - S[np.searchsorted(t, 3600)]:.0%}",
+                   "median time to repair (min)": f"{t[np.argmax(S <= 0.5)] / 60:.0f}"})
+ax.set_xscale("log"); ax.set_xlabel("minutes since the colour was changed"); ax.set_ylabel("share repaired")
+ax.legend(frameon=False); plt.show()
+r.table(pl.DataFrame(rows_r))
+```
+
+Most changes are undone, and many quickly. Against the null, which has the same pixels, times and colours in random
+order, the data are repaired sooner: the order of colours on a pixel is not random, and the old colour comes back
+faster than chance. This is the pixel-level trace of defence, and the quantity the border chapter needs: how fast an
+artwork heals.
 
 ## Did a longer wait change how people placed?
 
@@ -279,6 +417,47 @@ r.table(pl.DataFrame(checks).drop("outcome"))
 - **Placebo:** at times with no switch the test is not significant, but the changes there agree in sign at 5 of the 6
   pseudo-switches. With changes this small, that is uncomfortable.
 
+### What the switches look like over time
+
+The test compares two windows per switch. An event-study plot shows the whole stretch from an hour before to an hour
+after, in 5-minute bins, with each switch's change *sign-adjusted* (multiplied by +1 for a tightening and −1 for a
+loosening) so that all six can be averaged. Pre-trends and drifts show up directly. Exploratory; the wasted share is
+shown for half A of the canvas only (see below).
+
+```{python}
+#| label: fig-event-study
+#| fig-cap: "Sign-adjusted change around the six switches (5-minute bins; thin lines are single switches, the thick line their mean). Left: total placements (log ratio to the hour before). Middle: share of colour changes that change one's own pixel. Right: wasted share, half A only."
+hh = live.with_columns(pl.Series("half", r.half_of(live["x"].to_numpy(), live["y"].to_numpy())))
+curves = {"placements": [], "own": [], "wasted (half A)": []}
+for sb, sa, new_c, direction in r.SWITCHES:
+    t0 = r._us(sb)
+    w = (hh.filter(pl.col("t_us").is_between(t0 - 3_600_000_000, t0 + 3_600_000_000, closed="left"))
+           .with_columns(((pl.col("t_us") - t0) // 300_000_000).alias("bin")))
+    g = w.group_by("bin").agg(pl.len().alias("n"),
+                              (~pl.col("overwrite")).filter(~pl.col("wasted") & ~pl.col("first")).mean().alias("own"),
+                              pl.col("wasted").filter(pl.col("half") == 0).mean().alias("wasted")).sort("bin")
+    pre = g.filter(pl.col("bin") < 0)
+    curves["placements"].append(direction * np.log(g["n"].to_numpy() / pre["n"].mean()))
+    curves["own"].append(direction * (g["own"].to_numpy() - pre["own"].mean()))
+    curves["wasted (half A)"].append(direction * (g["wasted"].to_numpy() - pre["wasted"].mean()))
+bins_min = (np.arange(-12, 12) * 5) + 2.5
+fig, axes = plt.subplots(1, 3, figsize=(12, 3.3))
+for ax, (name, cs) in zip(axes, curves.items()):
+    for c_ in cs:
+        ax.plot(bins_min, c_, color="grey", lw=0.6, alpha=0.7)
+    ax.plot(bins_min, np.mean(cs, axis=0), color="black", lw=2)
+    ax.axvline(0, ls="--", color="tab:red"); ax.axhline(0, color="black", lw=0.5)
+    ax.set_title(name); ax.set_xlabel("minutes from the switch")
+plt.tight_layout(); plt.show()
+```
+
+Placements drop sharply right after each tightening and recover after each loosening, with no lead-in: the mechanical
+effect. They move by less than the rule allows (a doubling of the wait would halve the placements, −0.69 on this log
+scale; the drop is about −0.4), because many people were not placing as fast as they could anyway. The own-pixel share is flat before the switches and lower after
+them, as in the window test. The wasted share drifts *before* the switches, then moves against the direction of the
+switch: a visible pre-trend, which is one more reason the switch comparison for it stays exploratory. Switch 5 is
+centred on 05:00; its 27-minute fifteen-minute stretch falls inside the after side.
+
 ### What it means, and what it does not
 
 On the scale of the overwrite share, which sits near 99.6%, the change is 0.1 to 0.3 percentage points and hard to
@@ -348,7 +527,88 @@ trends. We do not call it a change in behaviour.
 ### The wasted share
 
 The wasted share swings by tens of percentage points between windows: it fell after two of the three tightenings and
-rose after all three loosenings. That is the largest movement in this chapter, but it was seen on these six switches,
-and 2017 has no others. A test written now and run on the same switches could not be confirmatory, so this stays
-exploratory. A confirmatory test needs different variation: what drives wasted repaints (for instance, the same
-accounts repainting the same pixels) can be studied away from the switches and pre-registered there.
+rose after all three loosenings. That was seen on these six switches, and 2017 has no others, so a switch test written
+now could not be confirmatory. What wasted placements *are*, though, had not been looked at, so we used a different
+kind of holdout: before exploring, the canvas was split into 100 × 100 blocks like a chequerboard
+([`prereg/03-wasted-holdout.md`](https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/03-wasted-holdout.md)).
+Half A is for exploring; half B was held out until a test was written down.
+
+**Exploring half A.**
+
+```{python}
+hA = hh.filter(pl.col("half") == 0)
+wA = hA.filter(pl.col("wasted"))
+k_all = live.group_by("user_id").len().rename({"len": "k"})
+print(f"half A: {hA.height:,} placements, {wA.height:,} wasted ({wA.height / hA.height:.1%})")
+print(f"  on someone else's colour: {(wA['prev_user'] != wA['user_id']).mean():.1%};  re-confirming one's own: {(wA['prev_user'] == wA['user_id']).mean():.1%}")
+print(f"  first placements on an untouched pixel that are white (counted as wasted): {hA.filter(pl.col('first') & (pl.col('color') == 0)).height:,}")
+runs_A = (hA.with_columns((pl.col("x").cast(pl.Int32) * r.SIZE + pl.col("y").cast(pl.Int32)).alias("pix")).sort("pix", "t_us")
+            .with_columns(pl.col("wasted").shift(1).over("pix").alias("prev_wasted")).drop_nulls("prev_wasted"))
+print(f"  P(wasted | previous placement on the pixel wasted) {runs_A.filter(pl.col('prev_wasted'))['wasted'].mean():.1%};"
+      f"  P(wasted | previous was a colour change) {runs_A.filter(~pl.col('prev_wasted'))['wasted'].mean():.1%}")
+by_k = hA.join(k_all, on="user_id")
+r.table(pl.DataFrame([{"account's placements": f"{lo}+" if hi is None else f"{lo}-{hi - 1}",
+                       "wasted share": f"{by_k.filter((pl.col('k') >= lo) & (pl.col('k') < (hi or 10**9)))['wasted'].mean():.1%}"}
+                      for lo, hi in ((1, 2), (2, 10), (10, 50), (50, 250), (250, None))]))
+```
+
+```{python}
+#| label: fig-wasted-profile
+#| fig-cap: "Wasted share over the event, half A only (3-hour bins)."
+prof = (hA.with_columns(pl.from_epoch("t_us", time_unit="us").dt.truncate("3h").alias("t"))
+          .group_by("t").agg(pl.col("wasted").mean()).sort("t"))
+fig, ax = plt.subplots(figsize=(8, 2.8))
+ax.plot(prof["t"], prof["wasted"], marker="o", ms=3); ax.set_ylabel("wasted share")
+plt.show()
+```
+
+Almost every wasted placement repaints a colour *someone else* placed: it is reinforcement of another account's work,
+not re-confirming one's own. (Whether the placer could even tell is another question: the pixel already showed that
+colour.) The share rises over the event, from a few percent at the start to about a third at the end, and is highest
+for moderately active accounts. And wasted placements come in **runs** on a pixel: after one, another is much more
+likely than after a real change. Part of that is just that some pixels see few colours; the question is whether runs
+go beyond that.
+
+**The pre-registered test on half B** ([`prereg/03-wasted-halfB.md`](https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/03-wasted-halfB.md),
+committed before anything was computed there): the run excess
+$\Delta = P(\text{wasted} \mid \text{previous wasted}) - P(\text{wasted} \mid \text{previous not wasted})$ must exceed
+its value under a within-pixel colour shuffle by at least 0.044, with a block-bootstrap interval above zero (H1); and
+pixels with 100 or more colour changes must have a higher wasted share than pixels with 2 to 9 (H2).
+
+```{python}
+full = r.load()
+half_B = full.filter(pl.Series(r.half_of(full["x"].to_numpy(), full["y"].to_numpy())) == 1)
+cnt = r.run_counts(r.pixel_history(half_B))
+cnt_null = (pl.concat([r.run_counts(r.pixel_history(r.shuffle_colours_within_pixel(half_B, seed))) for seed in range(5)])
+              .group_by("bx", "by").agg(pl.all().mean()).sort("bx", "by"))
+assert cnt.select("bx", "by").equals(cnt_null.select("bx", "by"))
+run_excess = lambda t: t["ww"].sum() / t["w_"].sum() - t["nw"].sum() / t["n_"].sum()
+gradient = lambda t: t["hi_w"].sum() / t["hi_n"].sum() - t["lo_w"].sum() / t["lo_n"].sum()
+rng_b = np.random.default_rng(0)
+b1, b2 = [], []
+for _ in range(1000):
+    i = rng_b.integers(cnt.height, size=cnt.height)
+    b1.append(run_excess(cnt[i]) - run_excess(cnt_null[i])); b2.append(gradient(cnt[i]))
+h1 = run_excess(cnt) - run_excess(cnt_null); h2 = gradient(cnt)
+r.table(pl.DataFrame([
+    {"test (half B)": "H1: run excess, data minus null", "estimate": f"{h1:+.3f}", "95% block bootstrap": f"[{np.quantile(b1, .025):+.3f}, {np.quantile(b1, .975):+.3f}]",
+     "threshold": "≥ 0.044, interval above 0", "result": "pass" if h1 >= 0.044 and np.quantile(b1, .025) > 0 else "fail"},
+    {"test (half B)": "H2: wasted share, ≥ 100 minus 2-9 changes", "estimate": f"{h2:+.3f}", "95% block bootstrap": f"[{np.quantile(b2, .025):+.3f}, {np.quantile(b2, .975):+.3f}]",
+     "threshold": "interval above 0", "result": "pass" if np.quantile(b2, .025) > 0 else "fail"}]))
+print(f"half B: {cnt.height} blocks;  run excess in the data {run_excess(cnt):.3f}, under the null {run_excess(cnt_null):.3f}")
+```
+
+Both hypotheses pass on the held-out half. Wasted placements come in runs beyond what each pixel's own mix of colours
+produces, and they concentrate on contested pixels. What this confirms is a property of *where* and *in what order*
+wasted placements happen, in space nobody had looked at; both halves share the same people and the same three days, so
+it is not a replication in a new population. A natural reading, to be tested, is defence by reinforcement: people
+repaint a contested colour to keep it, in bursts, which @sec-actors suggests are relays of several accounts.
+
+## Exercises
+
+1. Redo the event-study plot with the overwrite share itself instead of its complement. Why is the effect invisible
+   on that scale?
+2. The repair null shuffles colours within each pixel. Write a null that keeps the order of colours but shuffles the
+   times instead. What would it test?
+3. Run the half-A exploration on half B. Is anything there that half A did not show? (After the pre-registered test,
+   this is allowed, and exploratory.)
