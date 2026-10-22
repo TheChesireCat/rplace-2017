@@ -40,6 +40,7 @@ src/rplace17/          small helpers the chapters import (load, palette, canvas_
 scripts/               01-fetch.py, 02-condense.py: rebuild data/ from Reddit's release
 data/                  gitignored, except 02-parity.json
 _freeze/               cached chapter results (committed)
+prereg/                pre-registrations, committed before the analysis they describe; amendments are added, never edited in
 ```
 
 ## Branches
@@ -54,3 +55,9 @@ _freeze/               cached chapter results (committed)
 
 The placement log is Reddit's 2017 r/place data release. Account ids in it are hashes; this book refers to accounts
 only by small integer ids and never prints the hashes.
+
+## Licence
+
+The code (`src/`, `scripts/`, and the code in the chapters) is under the MIT licence (`LICENSE`). The book's text and
+figures are under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Neither covers Reddit's r/place data,
+which this repository does not redistribute: `make data` fetches it from Reddit's release.

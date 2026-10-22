@@ -1,15 +1,18 @@
 # Reading list {#sec-reading}
 
-Works the chapters lean on. Every entry's metadata was checked against its DOI record; **none has yet been read in
-full for this book**, so the chapters' summaries of them are provisional until they are.
+Works the chapters lean on. Every entry's metadata was checked against its DOI record. Unless a note says otherwise,
+**none has yet been read in full for this book**, so the chapters' summaries of them are provisional until they are.
 
 ## r/place
 
 - Rappaz, J., Catasta, M., West, R., Aberer, K. (2018). Latent structure in collaboration: the case of Reddit
   r/place. *ICWSM* 12(1). [doi:10.1609/icwsm.v12i1.15013](https://doi.org/10.1609/icwsm.v12i1.15013)
+  *Read in full in a separate chat session; not yet checked from here.*
 - Wu, Y., Silva, A. (2024). How millions coordinate at scale: engagement, collaboration, and conflict in three
   editions of Reddit r/place. arXiv:2408.13236. [doi:10.48550/arXiv.2408.13236](https://doi.org/10.48550/arXiv.2408.13236)
-  (venue not yet verified)
+  *Version 3 (13 July 2026). No venue is given; the ACM template's conference and DOI are placeholders. Main text read in
+  a separate chat session; the definitions used in @sec-pixels (§4.1 Final / Match / Adversarial, §5.1 wasted actions)
+  were checked from the arXiv HTML. The paper treats the cooldown as a fixed five minutes throughout.*
 
 ## Activity and conflict in online systems
 

@@ -1,33 +1,299 @@
 # Pixels {#sec-pixels}
 
-::: {.callout-note}
-This chapter is planned: it states the question and the method. Results will replace the plan as the
-analysis is done.
-:::
+A pixel is the smallest place on the canvas where people meet. Its history is a sequence of colours, each placed by
+someone, each lasting until someone paints over it. This chapter asks what single placements do to their pixel, how
+long a colour survives, and, using the changes in the waiting rule found in @sec-actors, whether a longer wait changed
+how people placed.
 
-A pixel is the smallest place on the canvas where people meet. Its history is a sequence of colours, each
-placed by someone, each lasting until someone else paints over it.
+```{python}
+import numpy as np
+import polars as pl
+import matplotlib.pyplot as plt
+import rplace17 as r
 
-## The question
+h = r.pixel_history(r.load())      # the whole log, so each pixel's state is right at every time
+close_us = h["t_us"].max()
+live = h.filter(pl.col("t_us") >= r.LAUNCH_US)
+```
 
-How long does a colour survive on a pixel, and what decides it? A placement that repairs an artwork should last;
-an attack should be undone quickly. The survival time of a colour is the simplest measure of conflict that needs no
-labels.
+## What one placement does
 
-## Why it matters
+Every placement lands on a pixel that already has a colour (white, if nobody has touched it). Relative to that, a
+placement can do one of a few things:
 
-Survival times are the r/place version of *revert* statistics in Wikipedia edit wars (*studied under another name*;
-Yasseri et al. 2012, see @sec-reading), where reverts signal conflict and their timing shows memory and burstiness.
-If pixel overwrites behave like reverts, r/place becomes a spatial member of a well-studied family.
+- **wasted:** repaint the colour the pixel already has (Wu and Silva 2024, v3, §5.1: "an update that repaints a pixel
+  with its current color"). Nothing visible changes.
+- **first:** the first placement ever on that pixel.
+- **overwrite:** change a colour that a *different* account placed last.
+- **undo:** restore the colour the pixel had just before its current one (the second A in A–B–A).
 
-## Plan
+Here is one pixel's history, with these labels (accounts shown only as "same as the last placer or not"):
 
-The test of whether the cooldown changes behaviour is pre-registered in
-[`prereg/03-cooldown-switches.md`](https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/03-cooldown-switches.md),
-committed before any of its outcomes was computed.
+```{python}
+one = (h.filter((pl.col("x") == 500) & (pl.col("y") == 500) & (pl.col("t_us") >= r.LAUNCH_US)).head(8)
+         .with_columns(pl.from_epoch("t_us", time_unit="us").dt.strftime("%m-%d %H:%M:%S").alias("time"),
+                       (pl.col("prev_user") == pl.col("user_id")).alias("same account as last"))
+         .select("time", "prev_color", "color", "same account as last", "wasted", "overwrite", "undo"))
+r.table(one)
+```
 
+Across the event:
 
-- For each placement, the time until the pixel next changes colour (censored at the end of the event).
-- Kaplan–Meier survival curves, split by whether the new colour matches the colour two steps back (an "undo").
-- **Null:** the same placements with times shuffled within each pixel, which keeps how busy each pixel is and removes
-  any memory.
+```{python}
+changes = live.filter(~pl.col("wasted"))
+summary = {
+    "placements": f"{live.height:,}",
+    "wasted": f"{live['wasted'].mean():.1%}",
+    "first on the pixel": f"{live['first'].mean():.1%}",
+    "overwrite, of colour changes after the first": f"{changes.filter(~pl.col('first'))['overwrite'].mean():.1%}",
+    "undo, of colour changes": f"{changes['undo'].drop_nulls().mean():.1%}",
+}
+r.table(pl.DataFrame([summary]))
+```
+
+Two things stand out. About a quarter of all placements change nothing at all. And when a placement does change a
+colour, it almost always changes one that someone else placed, and about half the time it puts back the colour from
+just before. A pixel that changes is usually being fought over, often by the same two colours going back and forth.
+
+### Which placements are still visible at the end?
+
+Wu and Silva (2024, v3, §4.1) sort placements by their relation to the final picture: **Final** (persists to the
+close), **Match** (the colour of the final picture, but later overwritten) and **Adversarial** (a colour that differs
+from the final picture). Their final picture is an artwork; ours is simply each pixel's last colour, so these are
+pixel-level versions of their categories.
+
+```{python}
+final = h.group_by("x", "y").agg(pl.col("color").last().alias("final_color"), pl.col("t_us").max().alias("t_last"))
+cat = (live.join(final, on=["x", "y"])
+           .with_columns(pl.when(pl.col("t_us") == pl.col("t_last")).then(pl.lit("Final"))
+                           .when(pl.col("color") == pl.col("final_color")).then(pl.lit("Match"))
+                           .otherwise(pl.lit("Adversarial")).alias("category")))
+shares = cat.group_by("category").len().with_columns((pl.col("len") / pl.col("len").sum()).alias("share")).sort("share")
+final_share = shares.filter(pl.col("category") == "Final")["share"][0]
+r.table(shares.select("category", pl.col("len").map_elements(lambda v: f"{v:,}", return_dtype=pl.Utf8).alias("placements"),
+                      pl.col("share").map_elements(lambda v: f"{v:.1%}", return_dtype=pl.Utf8)))
+```
+
+Only `{python} f"{final_share:.1%}"` of placements are Final, in line with Wu and Silva's "under 7%". (Placements at
+the same microsecond on the same pixel can make its last placement ambiguous; they are rare.)
+
+## How long does a colour last?
+
+A colour's **lifetime** runs from the placement that set it to the next placement that changes it; wasted repaints do
+not end it. Colours still visible at the close are *censored*: we know only that they lasted at least until then. The
+Kaplan–Meier estimator handles that correctly.
+
+```{python}
+states = (h.filter(~pl.col("wasted"))
+           .with_columns((pl.col("x").cast(pl.Int32) * r.SIZE + pl.col("y").cast(pl.Int32)).alias("pix"))
+           .sort("pix", "t_us")
+           .with_columns(pl.col("t_us").shift(-1).over("pix").alias("t_next")))
+states = states.filter(pl.col("t_us") >= r.LAUNCH_US).with_columns(
+    ((pl.col("t_next").fill_null(close_us) - pl.col("t_us")) / 1e6).alias("lifetime_s"),
+    pl.col("t_next").is_not_null().alias("ended"))
+print(f"{states.height:,} colour states; still visible at the close (censored): {(~states['ended']).mean():.1%}")
+```
+
+```{python}
+#| label: fig-lifetimes
+#| fig-cap: "Survival of a colour on a pixel (Kaplan–Meier), for colour changes that undo the previous change and for all others. Log time axis."
+medians = {}
+fig, ax = plt.subplots(figsize=(7, 4))
+for label, sub in (("undo (A–B–A)", states.filter(pl.col("undo") == True)),
+                   ("other colour changes", states.filter(pl.col("undo") != True))):
+    t, S = r.kaplan_meier(sub["lifetime_s"].to_numpy(), sub["ended"].to_numpy())
+    medians[label] = t[np.argmax(S <= 0.5)] / 60
+    ax.step(np.maximum(t, 0.1) / 60, S, where="post", label=f"{label} (median {medians[label]:.0f} min)")
+ax.set_xscale("log"); ax.set_xlabel("minutes since the colour was placed"); ax.set_ylabel("share still showing")
+ax.legend(frameon=False)
+plt.show()
+```
+
+The two curves cross at about ten minutes. A colour that *undoes* a change holds slightly better at first, then worse:
+medians of `{python} f"{medians['undo (A–B–A)']:.0f}"` and `{python} f"{medians['other colour changes']:.0f}"`
+minutes. One reading is that a repair buys a short respite before the fight over that pixel resumes. This is a
+description with no null yet. The planned null shuffles times within each pixel, which keeps how busy each pixel is
+and removes any memory.
+
+## Did a longer wait change how people placed?
+
+@sec-actors found that Reddit changed the wait seven times, for everyone at once. That is a natural experiment: the
+same people and canvas, a different speed limit. A longer wait must lower how often each person places
+(**mechanical**). The question is whether it also changed **what** people did with each placement (**behavioural**).
+
+The test was written down before any outcome was computed:
+[`prereg/03-cooldown-switches.md`](https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/03-cooldown-switches.md)
+and its [amendment](https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/03-amendment-1.md), which merges
+two switches 27 minutes apart (they shared a window) into one, leaving six. In short:
+
+- compare 20-minute windows just before and just after each switch (skipping the first cooldown after it);
+- **primary outcome:** the overwrite share; secondary and exploratory: the wasted and undo shares;
+- **test:** does the change have the sign that matches the direction of the switch (tighter or looser) at every
+  switch? An exact sign-flip test over the $2^6 = 64$ sign assignments, so the smallest possible p is 2/64 = 0.031;
+- **controls:** a positive control that must pass, a pre-trend check, a placebo at times with no switch, and the same
+  accounts on both sides.
+
+```{python}
+#| label: fig-windows
+#| fig-cap: "The cooldown (line) and the windows compared around each switch: before (blue) and after (orange)."
+win = r.switch_windows(r.SWITCHES, 20)
+grid = np.arange(r.LAUNCH_US, r._us("2017-04-02 00:00"), 60_000_000)
+fig, ax = plt.subplots(figsize=(8, 2.8))
+ax.step(grid.astype("datetime64[us]"), r.cooldown_at(grid) / 60, where="post", color="black", lw=1)
+for row in win.filter(pl.col("side") != "pre2").iter_rows(named=True):
+    ax.axvspan(np.datetime64(row["lo"], "us"), np.datetime64(row["hi"], "us"),
+               color="tab:blue" if row["side"] == "before" else "tab:orange", alpha=0.35, lw=0)
+ax.set_ylabel("cooldown (min)"); ax.set_ylim(0, 22)
+plt.show()
+```
+
+```{python}
+def compare(switches, W=20, same_people=False, ci=False, hist=h):
+    win = r.switch_windows(switches, W)
+    res = {(x["k"], x["side"]): x for x in r.window_outcomes(hist, win)}
+    if same_people:
+        both = {k: set(res[(k, "before")]["per_account"]["user_id"]) & set(res[(k, "after")]["per_account"]["user_id"])
+                for k in range(1, len(switches) + 1)}
+        res = {(x["k"], x["side"]): x for x in r.window_outcomes(hist, win, both)}
+    rows = []
+    for k in range(1, len(switches) + 1):
+        b, a, p2 = res[(k, "before")], res[(k, "after")], res[(k, "pre2")]
+        rate = lambda x: x["placements"] / max(x["accounts"], 1) / W           # placements per active account per minute
+        row = {"k": k, "direction": b["direction"], "placements before": b["placements"], "placements after": a["placements"],
+               "accounts before": b["accounts"], "accounts after": a["accounts"],
+               "M1_d": rate(a) - rate(b), "M1_pre": rate(b) - rate(p2)}
+        for name in r.OUTCOMES:
+            sb, sa, sp = (r.share(x["per_account"], name) for x in (b, a, p2))
+            row |= {f"{name}_before": sb, f"{name}_after": sa, f"{name}_d": sa - sb, f"{name}_pre": sb - sp}
+            if ci:
+                lo, hi = r.boot_delta(b["per_account"], a["per_account"], name)
+                row |= {f"{name}_lo": lo, f"{name}_hi": hi}
+        rows.append(row)
+    return pl.DataFrame(rows)
+
+def test(t, name):
+    d, dirs = t[f"{name}_d"].to_numpy(), t["direction"].to_numpy()
+    p = r.sign_flip_p(d, dirs)[1]
+    flagged = np.abs(t[f"{name}_pre"].to_numpy()) > np.abs(d) / 2
+    p_keep = r.sign_flip_p(d[~flagged], dirs[~flagged])[1] if (~flagged).any() else float("nan")
+    T = float(np.sum(dirs * d))
+    agree = int((np.sign(dirs * d) == np.sign(T)).sum())               # switches whose change has the same sign as T
+    return {"outcome": name, "sign of T": "+" if T > 0 else "−", "switches agreeing": f"{agree}/{len(d)}", "p": f"{p:.3f}",
+            "pre-trend flagged": ", ".join(str(k) for k in t["k"].to_numpy()[flagged]) or "none",
+            "p without flagged": f"{p_keep:.3f}"}
+
+main = compare(r.SWITCHES, 20, ci=True)
+r.table(main.select("k", "direction", "placements before", "placements after", "accounts before", "accounts after"))
+```
+
+Every window has tens of thousands of placements. In the window before switch 5 (the twenty-minute wait) each active
+account placed exactly once, the most the rule allowed.
+
+### The positive control
+
+If the windows and the schedule are right, placements per active account per minute (M1) must fall after every
+tightening and rise after every loosening, so T must be negative with all six switches agreeing. If this failed,
+nothing else could be trusted. (In these tables, T = Σ direction × change: positive when an outcome rises after
+tightenings and falls after loosenings.)
+
+```{python}
+r.table(pl.DataFrame([test(main, "M1")]))
+```
+
+It passes at every switch, with the smallest p the test can give. Switch 1 is flagged by the pre-trend check: in the
+hours after launch, activity per account was already falling as the first surge faded.
+
+### The result
+
+```{python}
+fmt = lambda v: f"{v:+.4f}" if v < 0 or v > 0 else "0"
+r.table(main.select("k", "direction",
+                    *[pl.col(f"overwrite_{c}").map_elements(lambda v: f"{v:.4f}", return_dtype=pl.Utf8).alias(f"overwrite {c}")
+                      for c in ("before", "after")],
+                    *[pl.col(f"overwrite_{c}").map_elements(fmt, return_dtype=pl.Utf8).alias(f"change {c}".replace("change d", "change"))
+                      for c in ("d", "lo", "hi")]))
+```
+
+```{python}
+r.table(pl.DataFrame([test(main, n) for n in r.OUTCOMES]))
+```
+
+```{python}
+#| label: fig-switch-deltas
+#| fig-cap: "Change across each switch (after minus before), with 95% bootstrap intervals over accounts. Tightenings (+, red) and loosenings (−, green)."
+fig, axes = plt.subplots(1, 3, figsize=(11, 3))
+x = np.arange(1, 7)
+col = np.where(main["direction"].to_numpy() > 0, "tab:red", "tab:green")
+for ax, name in zip(axes, r.OUTCOMES):
+    dd = main[f"{name}_d"].to_numpy()
+    ax.errorbar(x, dd, yerr=[dd - main[f"{name}_lo"].to_numpy(), main[f"{name}_hi"].to_numpy() - dd], fmt="none", ecolor="grey")
+    ax.scatter(x, dd, c=col)
+    ax.axhline(0, color="black", lw=0.6)
+    ax.set_title(f"{name} share" + (" (primary)" if name == "overwrite" else ""))
+    ax.set_xticks(x, [f"{k}{'+' if d > 0 else '−'}" for k, d in zip(x, main["direction"])])
+plt.tight_layout(); plt.show()
+```
+
+**The pre-registered test passes.** The overwrite share moved in the direction-consistent way at all six switches: it
+rose after every tightening and fell after every loosening (p = 0.031, the smallest possible). The secondary outcomes
+do not pass. The wasted share swings strongly, by up to tens of percentage points: it fell after two of the three
+tightenings and rose after all three loosenings (not significant, and exploratory by design). The undo share shows
+nothing.
+
+### The controls
+
+```{python}
+checks = []
+for label, t in (("main, W = 20", main), ("same accounts on both sides", compare(r.SWITCHES, 20, same_people=True)),
+                 ("W = 10", compare(r.SWITCHES, 10)), ("W = 40", compare(r.SWITCHES, 40)),
+                 ("placebo (no switch)", compare(r.PLACEBO, 20))):
+    checks.append({"comparison": label, **test(t, "overwrite")})
+r.table(pl.DataFrame(checks).drop("outcome"))
+```
+
+- **Same accounts, other windows:** the result holds when only accounts present on both sides are used, and at windows
+  of 10 and 40 minutes.
+- **Pre-trend:** at W = 20 three switches are flagged, because the change across them is less than twice the drift
+  just before. Without them only three switches remain, too few for the test to reach significance. At W = 40 none is
+  flagged.
+- **Placebo:** at times with no switch the test is not significant, but the changes there agree in sign at 5 of the 6
+  pseudo-switches. With changes this small, that is uncomfortable.
+
+### What it means, and what it does not
+
+The effect is tiny. The overwrite share sits at about 99.6% everywhere and moves by 0.1 to 0.3 percentage points. Its
+complement is the small share of colour changes in which an account changes *its own* last placement. And there is a
+mechanical way to produce exactly this pattern: to change your own pixel again, you must come back to it before anyone
+else does. A longer wait gives others more time to get there first, so the share of changes to your own pixel falls,
+and the overwrite share rises, without anyone changing how they play.
+
+That account predicts the effect disappears when placements on pixels of the same age (time since the pixel last
+changed) are compared. This check was not pre-registered; it is exploratory.
+
+```{python}
+aged = (h.with_columns((pl.col("x").cast(pl.Int32) * r.SIZE + pl.col("y").cast(pl.Int32)).alias("pix"))
+          .with_row_index("i").sort("pix", "t_us", "i")
+          .with_columns(((pl.col("t_us") - pl.col("t_us").shift(1).over("pix")) / 1e6).alias("age_s")).sort("i"))
+dirs = np.array([s[3] for s in r.SWITCHES])
+rows = []
+for a0, a1, label in ((1200, 2400, "20-40 min"), (2400, 7200, "40 min-2 h"), (7200, None, "over 2 h")):
+    band = aged.filter(pl.col("age_s") >= a0) if a1 is None else aged.filter(pl.col("age_s").is_between(a0, a1, closed="left"))
+    res = {(x["k"], x["side"]): x for x in r.window_outcomes(band, win)}
+    d = np.array([r.share(res[(k, "after")]["per_account"], "overwrite") - r.share(res[(k, "before")]["per_account"], "overwrite")
+                  for k in range(1, 7)])
+    n = sum(res[(k, s)]["placements"] for k in range(1, 7) for s in ("before", "after"))
+    rows.append({"pixel age": label, "placements": f"{n:,}", "switches agreeing with +": f"{int((np.sign(d) * dirs > 0).sum())}/6",
+                 "p": f"{r.sign_flip_p(d, dirs)[1]:.3f}"})
+r.table(pl.DataFrame(rows))
+```
+
+The check does not settle it. The pattern holds at 6 of 6 switches for pixels 40 minutes to 2 hours old, and at 3 of
+6 in the other two age bands, where there are too few placements per window for changes this small to be measured:
+sampling noise is about as large as the effect.
+
+**How far this goes.** The pre-registered test passed, and the result holds across windows and for the same accounts.
+We do not read it as a change in behaviour: the effect is a fraction of a percentage point, three switches fail the
+pre-trend check at the main window, the placebo leans the same way, and a mechanical explanation fits and has not been
+ruled out. What the cooldown clearly changed is how often people placed (the positive control). Whether it changed
+*how* they placed remains open. The wasted share, which swings by tens of percentage points between windows, is the
+more promising place to look, and gets its own analysis later.

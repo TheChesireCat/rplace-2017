@@ -420,19 +420,57 @@ r.table(crowd)
 ```
 
 Against the crowd, the gap almost disappears: in every band the median account is within a few hundredths of its own
-crowd null. So each account is about as bursty as the crowd as a whole. Burstiness is a trait nearly everyone shares,
-not a property of a few unusual accounts; and since an account whose waits were simply slower or faster than others'
-would come out *less* bursty than the pooled crowd, this suggests that most of the crowd's burstiness lies within
-people rather than between them. What remains individual is spread: in each band about twice the expected 5% of accounts fall above their
-own null's 95th percentile, and as many below its 5th, and the busiest accounts lean less bursty than the crowd.
+crowd null. $B$ depends only on the mean and spread of an account's gaps, not on their order, so this null asks
+whether accounts share the crowd's distribution of waits, and the answer is that they roughly do. That also says what
+the first two comparisons measured: the gap between 0.41 and −0.09 is mostly the broad spread of human waiting against random
+waiting, not something peculiar to individual accounts. What remains individual is spread: in each band about twice
+the expected 5% of accounts fall above their own null's 95th percentile, and as many below its 5th, and the busiest
+accounts lean less bursty than the crowd.
 
-**How far this goes.** Accounts are far burstier than random waiting (two nulls, every history length), and about as
-bursty as the crowd (a third null). Both results beat a null and hold across history lengths; they are provisional
-until checked across the cooldown regimes and day and night. The likely mechanism, each person's sessions broken by
-sleep and the rest of life, is a hypothesis; a person's own sleep is part of the mechanism, not a confound to remove.
-The next step is to split each account's history into sessions and look at session lengths and the gaps between them.
-Whether the waits have a heavy tail, and of what kind, is a separate question with its own nulls, left for a later
-section.
+### Do long waits follow long waits?
+
+$B$ ignores order. Whether waits have **memory**, long ones following long ones, is measured by the memory coefficient
+$M$ of Goh and Barabási (2008): the correlation between consecutive gaps of one account. We compute it on the *extra*
+wait beyond the cooldown in force, since the cooldown periods alone would make consecutive gaps look alike. The null
+shuffles each account's own extra waits, which keeps their distribution and destroys their order.
+
+```{python}
+ex = gaps.with_columns((pl.col("gap_s") - pl.col("wait_end")).alias("extra"))
+seqs = ex.group_by("user_id", maintain_order=True).agg(pl.col("extra")).filter(pl.col("extra").list.len() + 1 >= 20)
+n_m = seqs["extra"].list.len().to_numpy() + 1                # placements per account
+
+def memory(x):
+    a, b = x[:-1], x[1:]
+    if a.std() == 0 or b.std() == 0:
+        return np.nan
+    return ((a - a.mean()) * (b - b.mean())).mean() / (a.std() * b.std())
+
+M_data = np.array([memory(np.asarray(e)) for e in seqs["extra"].to_list()])
+M_shuf = np.array([np.nanmean([memory(rng.permutation(np.asarray(e))) for _ in range(5)])
+                   for e in seqs["extra"].to_list()])
+rows = []
+for lo, hi in BANDS[1:]:
+    m = (n_m >= lo) & (n_m < (hi or 10**9)) & ~np.isnan(M_data)
+    diff = M_data[m] - M_shuf[m]
+    boot = [np.median(rng.choice(diff, len(diff))) for _ in range(500)]
+    rows.append({"placements": band_name(lo, hi), "accounts": f"{m.sum():,}",
+                 "median M, data": f"{np.median(M_data[m]):+.3f}", "median M, shuffled": f"{np.median(M_shuf[m]):+.3f}",
+                 "paired difference [95% CI]": f"{np.median(diff):+.3f} [{np.quantile(boot, .025):+.3f}, {np.quantile(boot, .975):+.3f}]",
+                 "data > shuffled": f"{np.mean(diff > 0):.0%}"})
+r.table(pl.DataFrame(rows))
+```
+
+There is memory, but little. In every band, consecutive extra waits are slightly more alike than in shuffled order (a
+paired difference of about +0.02), and the share of accounts above their shuffle grows with history length. Part of
+this is the daily cycle, which makes night gaps cluster; that is a real form of memory, but not evidence of anything
+more specific.
+
+**How far this goes.** Accounts are far burstier than random waiting (two nulls, every history length); they share
+roughly the crowd's distribution of waits (a third null); and their waits have weak positive memory (a shuffle null).
+All three beat a null and hold across history lengths; all are provisional until checked across the cooldown periods
+and day and night. The likely mechanism, sessions broken by sleep and the rest of life, is a hypothesis; the next step
+is to split each account's history into sessions and look at session lengths and the gaps between them. Whether the
+waits have a heavy tail, and of what kind, is a separate question with its own nulls, left for a later section.
 
 ## What this chapter sets up
 
