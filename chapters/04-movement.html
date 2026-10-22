@@ -358,7 +358,8 @@ window.Quarto = {
   </ul></li>
   <li><a href="#how-far-does-each-account-range" id="toc-how-far-does-each-account-range" class="nav-link" data-scroll-target="#how-far-does-each-account-range"><span class="header-section-number">4.3</span> How far does each account range?</a></li>
   <li><a href="#do-people-come-back" id="toc-do-people-come-back" class="nav-link" data-scroll-target="#do-people-come-back"><span class="header-section-number">4.4</span> Do people come back?</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">4.5</span> Exercises</a></li>
+  <li><a href="#exploration-and-preferential-return" id="toc-exploration-and-preferential-return" class="nav-link" data-scroll-target="#exploration-and-preferential-return"><span class="header-section-number">4.5</span> Exploration and preferential return</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">4.6</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/TheChesireCat/rplace-2017/blob/main/chapters/04-movement.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/TheChesireCat/rplace-2017/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -386,7 +387,7 @@ window.Quarto = {
 
 <p><a href="02-actors.html" class="quarto-xref"><span>Chapter 2</span></a> asked <em>when</em> people act. This chapter asks <em>where</em>: when an account places a pixel and then another, how far away is the second one? Studies of human travel report heavy-tailed jump lengths, often called Lévy-flight-like, and a strong pull back to places already visited (<em>studied under another name</em>; Brockmann et al.&nbsp;2006, González et al.&nbsp;2008, Song et al.&nbsp;2010, see <a href="a2-reading.html" class="quarto-xref"><span>Appendix B</span></a>; not yet read for this book). r/place is a clean place to look, with one caveat that shapes everything: the canvas is a bounded square 1001 pixels across, so no jump can exceed about 1,415 pixels.</p>
 <p>The test was written down before any jump was computed: <a href="https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/04-movement.md"><code>prereg/04-movement.md</code></a>.</p>
-<div id="9e9eefb2" class="cell" data-execution_count="1">
+<div id="3c0f23d1" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -411,7 +412,7 @@ window.Quarto = {
 <li><strong>time block</strong> (five-minute periods): <strong>A</strong>, the first hours after launch; <strong>B</strong>, 04-01 21:30 to 04-02 21:30; <strong>C</strong>, the last day.</li>
 </ul>
 <p>The primary strata are prompt jumps in blocks A, B and C.</p>
-<div id="52f92224" class="cell" data-execution_count="2">
+<div id="fa33df2f" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>strata <span class="op">=</span> [(<span class="ss">f"block </span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">, prompt"</span>, clean.<span class="bu">filter</span>((pl.col(<span class="st">"block"</span>) <span class="op">==</span> b) <span class="op">&amp;</span> (pl.col(<span class="st">"gap_class"</span>) <span class="op">==</span> <span class="st">"prompt"</span>))) <span class="cf">for</span> b <span class="kw">in</span> <span class="st">"ABC"</span>]</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>strata <span class="op">+=</span> [(<span class="ss">f"5 min, </span><span class="sc">{</span>g<span class="sc">}</span><span class="ss">"</span>, clean.<span class="bu">filter</span>((pl.col(<span class="st">"period"</span>) <span class="op">==</span> <span class="dv">300</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"gap_class"</span>) <span class="op">==</span> g))) <span class="cf">for</span> g <span class="kw">in</span> (<span class="st">"later"</span>, <span class="st">"break"</span>)]</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>strata <span class="op">+=</span> [(<span class="st">"10 min, prompt"</span>, clean.<span class="bu">filter</span>((pl.col(<span class="st">"period"</span>) <span class="op">==</span> <span class="dv">600</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"gap_class"</span>) <span class="op">==</span> <span class="st">"prompt"</span>)))]</span>
@@ -546,7 +547,7 @@ Figure&nbsp;4.1: Share of jumps longer than r (log scales): prompt jumps in each
 <li><strong>N2 own places, random order:</strong> each account’s placements in the block are shuffled in time and the jumps recomputed; the account’s footprint stays, its sequence goes.</li>
 <li><strong>N3 two scales:</strong> each account keeps its share of local jumps (r ≤ 20 px); local jumps are redrawn from an exponential with the account’s own mean local length (capped at 20 px, a detail the pre-registration did not specify), far ones as in N1. It mixes two scales with no heavy tail in either.</li>
 </ul>
-<div id="66dfab62" class="cell" data-execution_count="4">
+<div id="895db57f" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>R_LOC, NREP <span class="op">=</span> <span class="dv">20</span>, <span class="dv">20</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -795,7 +796,7 @@ Figure&nbsp;4.1: Share of jumps longer than r (log scales): prompt jumps in each
 </div>
 </div>
 <p>The pre-registered decision, for each block:</p>
-<div id="8c2fd363" class="cell" data-execution_count="5">
+<div id="3a9d0357" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(decision_rows))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown">
 <table class="table table-sm table-striped small">
@@ -866,7 +867,7 @@ Figure&nbsp;4.1: Share of jumps longer than r (log scales): prompt jumps in each
 <section id="checks-on-the-decision" class="level3" data-number="4.2.1">
 <h3 data-number="4.2.1" class="anchored" data-anchor-id="checks-on-the-decision"><span class="header-section-number">4.2.1</span> Checks on the decision</h3>
 <p><strong>The local radius.</strong> The two-scale null splits jumps at R_loc = 20 px; the pre-registration named 10 and 40 px as sensitivity checks, and we add 50. Condition 4 (data far from the two-scale null) is recomputed for each:</p>
-<div id="425ca73c" class="cell" data-execution_count="6">
+<div id="f4cf219c" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rows_rl <span class="op">=</span> []</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (name, a, b), (label, s) <span class="kw">in</span> <span class="bu">zip</span>(r.BLOCKS, strata[:<span class="dv">3</span>]):</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    sp <span class="op">=</span> s.<span class="bu">filter</span>(pl.col(<span class="st">"r"</span>) <span class="op">&gt;</span> <span class="dv">0</span>)</span>
@@ -991,7 +992,7 @@ Figure&nbsp;4.1: Share of jumps longer than r (log scales): prompt jumps in each
 </div>
 <p>Condition 4 holds at every radius (here the local share is pooled over each block rather than kept per account, a simplification for the sensitivity check). The verdict, which fails on condition 1, does not depend on R_loc.</p>
 <p><strong>Is it where the crowd is?</strong> A different explanation of broad jumps is attraction: people jump to wherever things are happening. This null, not in the pre-registration and so exploratory, lands each jump on the place of a random placement by anyone in the ten minutes before it.</p>
-<div id="aa19ad26" class="cell" data-execution_count="7">
+<div id="89087368" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>t_all, x_all, y_all <span class="op">=</span> d[<span class="st">"t_us"</span>].to_numpy(), d[<span class="st">"x"</span>].to_numpy(), d[<span class="st">"y"</span>].to_numpy()</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>rows_at <span class="op">=</span> []</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (name, a, b), (label, s) <span class="kw">in</span> <span class="bu">zip</span>(r.BLOCKS[<span class="dv">1</span>:], strata[<span class="dv">1</span>:<span class="dv">3</span>]):</span>
@@ -1048,7 +1049,7 @@ Figure&nbsp;4.1: Share of jumps longer than r (log scales): prompt jumps in each
 </div>
 <p>Attraction to the crowd’s recent activity reproduces nothing: recent activity is spread over the whole canvas, so jumps drawn towards it are as long as random ones. A <em>local</em> attraction null (towards recent activity near the origin) would need a radius, and choosing one builds in the locality it is meant to explain, so we do not fit it.</p>
 <p><strong>Direction.</strong> Straight-edged artworks such as flags would make jumps along rows and columns more common.</p>
-<div id="e201f23b" class="cell" data-execution_count="8">
+<div id="28316f19" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>rows_dir <span class="op">=</span> []</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> label, s <span class="kw">in</span> strata[<span class="dv">1</span>:<span class="dv">3</span>]:</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    sp <span class="op">=</span> s.<span class="bu">filter</span>(pl.col(<span class="st">"r"</span>) <span class="op">&gt;</span> <span class="dv">20</span>)</span>
@@ -1096,7 +1097,7 @@ Figure&nbsp;4.1: Share of jumps longer than r (log scales): prompt jumps in each
 </div>
 <p>About twice as many far jumps run within 5° of a row or column as random destinations would give: consistent with people working along straight edges, though this check cannot say whose edges.</p>
 <p><strong>Do long jumps follow long jumps?</strong></p>
-<div id="9ca05465" class="cell" data-execution_count="9">
+<div id="ce52d526" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sb_ <span class="op">=</span> (strata[<span class="dv">1</span>][<span class="dv">1</span>].<span class="bu">filter</span>(pl.col(<span class="st">"r"</span>) <span class="op">&gt;</span> <span class="dv">0</span>).sort(<span class="st">"user_id"</span>, <span class="st">"t_us"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>       .with_columns(pl.col(<span class="st">"r"</span>).log().alias(<span class="st">"lr"</span>)).with_columns(pl.col(<span class="st">"lr"</span>).shift(<span class="dv">1</span>).over(<span class="st">"user_id"</span>).alias(<span class="st">"lr_prev"</span>)).drop_nulls(<span class="st">"lr_prev"</span>))</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>rho <span class="op">=</span> np.corrcoef(sb_[<span class="st">"lr"</span>], sb_[<span class="st">"lr_prev"</span>])[<span class="dv">0</span>, <span class="dv">1</span>]</span>
@@ -1146,7 +1147,7 @@ Figure&nbsp;4.2: Radius of gyration of accounts against their number of placemen
 </section>
 <section id="do-people-come-back" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="do-people-come-back"><span class="header-section-number">4.4</span> Do people come back?</h2>
-<div id="a35cda63" class="cell" data-execution_count="11">
+<div id="47d8074d" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_share(df):</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Share of placements within 5 px of one of the account's own previous 10 placements."""</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    o <span class="op">=</span> df.sort(<span class="st">"user_id"</span>, <span class="st">"t_us"</span>)</span>
@@ -1172,7 +1173,7 @@ exactly the same pixel as one of the previous 10: 6.2% (random order: 3.6%)</cod
 </div>
 <p>About 47% of placements land within five pixels of one of the account’s own previous ten, against 35% if the same places were visited in random order. People come back to where they just were more often than their own footprint alone would make them, by about a third: the sequence is local in time, not only in space.</p>
 <p><strong>Distinct places.</strong> Song et al.&nbsp;(2010) describe returns, as we understand it (the paper is not yet read here), by how fast the number of distinct places grows with the number of visits. Here a “place” can be a pixel:</p>
-<div id="4ecd4737" class="cell" data-execution_count="12">
+<div id="9c553e9c" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>big <span class="op">=</span> live.group_by(<span class="st">"user_id"</span>).<span class="bu">len</span>().<span class="bu">filter</span>(pl.col(<span class="st">"len"</span>) <span class="op">&gt;=</span> <span class="dv">200</span>).select(<span class="st">"user_id"</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> (live.join(big, on<span class="op">=</span><span class="st">"user_id"</span>, how<span class="op">=</span><span class="st">"semi"</span>).sort(<span class="st">"user_id"</span>, <span class="st">"t_us"</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>         .with_columns(pl.int_range(pl.<span class="bu">len</span>()).over(<span class="st">"user_id"</span>).alias(<span class="st">"n"</span>), (pl.col(<span class="st">"x"</span>).cast(pl.Int32) <span class="op">*</span> r.SIZE <span class="op">+</span> pl.col(<span class="st">"y"</span>).cast(pl.Int32)).alias(<span class="st">"pix"</span>)))</span>
@@ -1228,10 +1229,207 @@ exactly the same pixel as one of the previous 10: 6.2% (random order: 3.6%)</cod
 </div>
 </div>
 <p>At the scale of single pixels people rarely come back: after 200 placements, a typical heavy account has touched almost 200 different pixels, and random order makes little difference. The returns of the previous section are to <em>areas</em>, within a few pixels, not to the same pixel. Which scale is the right “place” for a preferential-return model is itself a question for later.</p>
-<p><strong>How far this goes.</strong> The pre-registered test found no Lévy-flight-like jumps in any block. The jump lengths are broad and far from all three nulls, but lognormal-like rather than power-law; prompt jumps are mostly local, jumps after a break span the canvas, footprints are wide and narrow with activity, and people return to recent places far more than chance. The moments, footprints and returns are descriptive, as pre-registered. A natural model to test next is the one the mobility literature uses, exploration plus preferential return (Song et al.&nbsp;2010), fitted per account, against these same nulls.</p>
 </section>
-<section id="exercises" class="level2" data-number="4.5">
-<h2 data-number="4.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">4.5</span> Exercises</h2>
+<section id="exploration-and-preferential-return" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="exploration-and-preferential-return"><span class="header-section-number">4.5</span> Exploration and preferential return</h2>
+<p>The standard model of returns in human mobility is Song, Koren, Wang and Barabási’s (2010) <em>exploration and preferential return</em>: at each move a person goes somewhere new with probability <span class="math inline">\(P_\text{new} = \rho S^{-\gamma}\)</span>, where <span class="math inline">\(S\)</span> is the number of places already visited, and otherwise returns to place <span class="math inline">\(i\)</span> with probability equal to its share of past visits. It predicts that the number of places grows as <span class="math inline">\(S \sim n^{1/(1+\gamma)}\)</span> after <span class="math inline">\(n\)</span> moves and that visits by rank follow <span class="math inline">\(f_k \sim k^{-(1+\gamma)}\)</span>. For mobile-phone users the paper reports <span class="math inline">\(\gamma = 0.21\)</span> and <span class="math inline">\(\zeta \approx 1.2\)</span>. Two rivals explain returns differently: people return to visited places <strong>uniformly</strong>, or to places they visited <strong>recently</strong>, whatever their visit count.</p>
+<p>The test was fixed in advance: <a href="https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/04-epr.md"><code>prereg/04-epr.md</code></a>. A <em>place</em> is a 10 × 10 block (5 and 25 as checks); a <em>move</em> is a placement in a different block from the account’s previous one; accounts with at least 100 placements.</p>
+<div id="acb9b224" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gamma_fit(v, rng_, B<span class="op">=</span><span class="dv">200</span>):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    mv <span class="op">=</span> v.<span class="bu">filter</span>(pl.col(<span class="st">"j"</span>) <span class="op">&gt;=</span> <span class="dv">1</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    smax <span class="op">=</span> mv.group_by(<span class="st">"S"</span>).<span class="bu">len</span>().<span class="bu">filter</span>(pl.col(<span class="st">"len"</span>) <span class="op">&gt;=</span> <span class="dv">1000</span>)[<span class="st">"S"</span>].<span class="bu">max</span>()</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    edges <span class="op">=</span> np.unique(np.geomspace(<span class="dv">2</span>, smax <span class="op">+</span> <span class="dv">1</span>, <span class="dv">15</span>).astype(<span class="bu">int</span>))</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    S_, new_, u_ <span class="op">=</span> mv[<span class="st">"S"</span>].to_numpy(), mv[<span class="st">"new"</span>].to_numpy(), mv[<span class="st">"user_id"</span>].to_numpy()</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    ok <span class="op">=</span> (S_ <span class="op">&gt;=</span> edges[<span class="dv">0</span>]) <span class="op">&amp;</span> (S_ <span class="op">&lt;</span> edges[<span class="op">-</span><span class="dv">1</span>])<span class="op">;</span> S_, new_, u_ <span class="op">=</span> S_[ok], new_[ok], u_[ok]</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    bi <span class="op">=</span> np.searchsorted(edges, S_, side<span class="op">=</span><span class="st">"right"</span>) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    mid <span class="op">=</span> np.sqrt(edges[:<span class="op">-</span><span class="dv">1</span>] <span class="op">*</span> edges[<span class="dv">1</span>:])</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> one(w):</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        n <span class="op">=</span> np.bincount(bi, weights<span class="op">=</span>w, minlength<span class="op">=</span><span class="bu">len</span>(mid))<span class="op">;</span> k <span class="op">=</span> np.bincount(bi, weights<span class="op">=</span>w <span class="op">*</span> new_, minlength<span class="op">=</span><span class="bu">len</span>(mid))</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> (n <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">&amp;</span> (k <span class="op">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        A <span class="op">=</span> np.vstack([np.ones(m.<span class="bu">sum</span>()), np.log(mid[m])]).T <span class="op">*</span> np.sqrt(n[m])[:, <span class="va">None</span>]</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>        c <span class="op">=</span> np.linalg.lstsq(A, np.log(k[m] <span class="op">/</span> n[m]) <span class="op">*</span> np.sqrt(n[m]), rcond<span class="op">=</span><span class="va">None</span>)[<span class="dv">0</span>]</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span>c[<span class="dv">1</span>], np.exp(c[<span class="dv">0</span>]), mid[m], k[m] <span class="op">/</span> n[m]</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    g, rho, mids, pnew <span class="op">=</span> one(np.ones(<span class="bu">len</span>(S_)))</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    ua, inv <span class="op">=</span> np.unique(u_, return_inverse<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    boots <span class="op">=</span> [one(rng_.multinomial(<span class="bu">len</span>(ua), np.full(<span class="bu">len</span>(ua), <span class="dv">1</span> <span class="op">/</span> <span class="bu">len</span>(ua)))[inv])[<span class="dv">0</span>] <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(B)]</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> g, rho, np.quantile(boots, [<span class="fl">0.025</span>, <span class="fl">0.975</span>]), mids, pnew</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scaling(v):</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    cum <span class="op">=</span> v.group_by(<span class="st">"user_id"</span>).agg(pl.col(<span class="st">"new"</span>).cast(pl.Int32).cum_sum().alias(<span class="st">"Scum"</span>))[<span class="st">"Scum"</span>].to_list()</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    ns <span class="op">=</span> np.arange(<span class="dv">10</span>, <span class="dv">101</span>, <span class="dv">10</span>)</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    Sn <span class="op">=</span> np.array([np.median([c[n] <span class="cf">for</span> c <span class="kw">in</span> cum <span class="cf">if</span> <span class="bu">len</span>(c) <span class="op">&gt;</span> n]) <span class="cf">for</span> n <span class="kw">in</span> ns])</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    vis <span class="op">=</span> (v.group_by(<span class="st">"user_id"</span>, <span class="st">"place"</span>).<span class="bu">len</span>().sort([<span class="st">"user_id"</span>, <span class="st">"len"</span>], descending<span class="op">=</span>[<span class="va">False</span>, <span class="va">True</span>])</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>            .with_columns((pl.col(<span class="st">"len"</span>) <span class="op">/</span> pl.col(<span class="st">"len"</span>).<span class="bu">sum</span>().over(<span class="st">"user_id"</span>)).alias(<span class="st">"f"</span>), pl.int_range(<span class="dv">1</span>, pl.<span class="bu">len</span>() <span class="op">+</span> <span class="dv">1</span>).over(<span class="st">"user_id"</span>).alias(<span class="st">"k"</span>)))</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    many <span class="op">=</span> vis.group_by(<span class="st">"user_id"</span>).<span class="bu">len</span>().<span class="bu">filter</span>(pl.col(<span class="st">"len"</span>) <span class="op">&gt;=</span> <span class="dv">10</span>).select(<span class="st">"user_id"</span>)</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>    fk <span class="op">=</span> vis.join(many, on<span class="op">=</span><span class="st">"user_id"</span>, how<span class="op">=</span><span class="st">"semi"</span>).<span class="bu">filter</span>(pl.col(<span class="st">"k"</span>) <span class="op">&lt;=</span> <span class="dv">10</span>).group_by(<span class="st">"k"</span>).agg(pl.col(<span class="st">"f"</span>).mean()).sort(<span class="st">"k"</span>)</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>    mu_ <span class="op">=</span> np.polyfit(np.log(ns), np.log(Sn), <span class="dv">1</span>)[<span class="dv">0</span>]</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>    zeta_ <span class="op">=</span> <span class="op">-</span>np.polyfit(np.log(fk[<span class="st">"k"</span>].to_numpy()), np.log(fk[<span class="st">"f"</span>].to_numpy()), <span class="dv">1</span>)[<span class="dv">0</span>]</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> mu_, zeta_, ns, Sn, fk</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>rng_e <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>epr <span class="op">=</span> {}</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b <span class="kw">in</span> (<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">25</span>):</span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>    v <span class="op">=</span> r.moves(d, b<span class="op">=</span>b)</span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>    g, rho, gci, mids, pnew <span class="op">=</span> gamma_fit(v, rng_e)</span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>    mu_, zeta_, ns, Sn, fk <span class="op">=</span> scaling(v)</span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>    epr[b] <span class="op">=</span> <span class="bu">dict</span>(v<span class="op">=</span>v, gamma<span class="op">=</span>g, rho<span class="op">=</span>rho, gci<span class="op">=</span>gci, mids<span class="op">=</span>mids, pnew<span class="op">=</span>pnew, mu<span class="op">=</span>mu_, zeta<span class="op">=</span>zeta_, ns<span class="op">=</span>ns, Sn<span class="op">=</span>Sn, fk<span class="op">=</span>fk)</span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>v10 <span class="op">=</span> epr[<span class="dv">10</span>][<span class="st">"v"</span>]</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>cs <span class="op">=</span> r.return_choice_sets(v10, n_sample<span class="op">=</span><span class="dv">200_000</span>, seed<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>beta1 <span class="op">=</span> r.conditional_logit(cs, [<span class="st">"log_m"</span>])</span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>beta2 <span class="op">=</span> r.conditional_logit(cs, [<span class="st">"log_m"</span>, <span class="st">"log_rec"</span>])</span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>gu <span class="op">=</span> cs.group_by(<span class="st">"g"</span>).agg(pl.col(<span class="st">"user_id"</span>).first()).sort(<span class="st">"g"</span>)[<span class="st">"user_id"</span>].to_numpy()</span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>ua, ia <span class="op">=</span> np.unique(gu, return_inverse<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>boot <span class="op">=</span> np.array([np.r_[r.conditional_logit(cs, [<span class="st">"log_m"</span>], w), r.conditional_logit(cs, [<span class="st">"log_m"</span>, <span class="st">"log_rec"</span>], w)]</span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>                 <span class="cf">for</span> w <span class="kw">in</span> (rng_e.multinomial(<span class="bu">len</span>(ua), np.full(<span class="bu">len</span>(ua), <span class="dv">1</span> <span class="op">/</span> <span class="bu">len</span>(ua)))[ia] <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>))])</span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>ci <span class="op">=</span> <span class="kw">lambda</span> col: np.quantile(boot[:, col], [<span class="fl">0.025</span>, <span class="fl">0.975</span>])</span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"10 x 10 blocks: </span><span class="sc">{</span>v10[<span class="st">'user_id'</span>]<span class="sc">.</span>n_unique()<span class="sc">:,}</span><span class="ss"> accounts, </span><span class="sc">{</span>v10<span class="sc">.</span><span class="bu">filter</span>(pl.col(<span class="st">'j'</span>) <span class="op">&gt;=</span> <span class="dv">1</span>)<span class="sc">.</span>height<span class="sc">:,}</span><span class="ss"> moves, "</span></span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>cs[<span class="st">'g'</span>]<span class="sc">.</span>n_unique()<span class="sc">:,}</span><span class="ss"> sampled returns"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>10 x 10 blocks: 29,116 accounts, 3,066,834 moves, 199,935 sampled returns</code></pre>
+</div>
+</div>
+<div id="cell-fig-epr" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>e <span class="op">=</span> epr[<span class="dv">10</span>]</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="fl">3.4</span>))</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].loglog(e[<span class="st">"mids"</span>], e[<span class="st">"pnew"</span>], <span class="st">"o"</span>)<span class="op">;</span> axes[<span class="dv">0</span>].loglog(e[<span class="st">"mids"</span>], e[<span class="st">"rho"</span>] <span class="op">*</span> e[<span class="st">"mids"</span>] <span class="op">**</span> <span class="op">-</span>e[<span class="st">"gamma"</span>], <span class="st">"-"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">"places visited, S"</span>)<span class="op">;</span> axes[<span class="dv">0</span>].set_ylabel(<span class="st">"P(new place)"</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].loglog(e[<span class="st">"ns"</span>], e[<span class="st">"Sn"</span>], <span class="st">"o"</span>)<span class="op">;</span> axes[<span class="dv">1</span>].loglog(e[<span class="st">"ns"</span>], e[<span class="st">"Sn"</span>][<span class="dv">0</span>] <span class="op">*</span> (e[<span class="st">"ns"</span>] <span class="op">/</span> e[<span class="st">"ns"</span>][<span class="dv">0</span>]) <span class="op">**</span> (<span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> e[<span class="st">"gamma"</span>])), <span class="st">"--"</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">"moves, n"</span>)<span class="op">;</span> axes[<span class="dv">1</span>].set_ylabel(<span class="st">"places visited (median)"</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>fk_ <span class="op">=</span> e[<span class="st">"fk"</span>]</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">2</span>].loglog(fk_[<span class="st">"k"</span>], fk_[<span class="st">"f"</span>], <span class="st">"o"</span>)<span class="op">;</span> axes[<span class="dv">2</span>].loglog(fk_[<span class="st">"k"</span>], fk_[<span class="st">"f"</span>][<span class="dv">0</span>] <span class="op">*</span> fk_[<span class="st">"k"</span>].to_numpy() <span class="op">**</span> <span class="op">-</span>(<span class="dv">1</span> <span class="op">+</span> e[<span class="st">"gamma"</span>]), <span class="st">"--"</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">2</span>].set_xlabel(<span class="st">"rank of place, k"</span>)<span class="op">;</span> axes[<span class="dv">2</span>].set_ylabel(<span class="st">"share of visits"</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-epr" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-epr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="04-movement_files/figure-html/fig-epr-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-epr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.3: Exploration and preferential return at 10 × 10 blocks. Left: probability that a move goes somewhere new, against places already visited (dots), with the fitted ρS^−γ (line). Middle: median places visited after n moves (dots) and the slope the model predicts from γ (dashed). Right: share of visits by rank of place (dots) and the model’s k^−(1+γ) (dashed).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="80455413" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>g10 <span class="op">=</span> epr[<span class="dv">10</span>]</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>c1 <span class="op">=</span> g10[<span class="st">"gci"</span>][<span class="dv">0</span>] <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>lo2, hi2 <span class="op">=</span> ci(<span class="dv">1</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>c2 <span class="op">=</span> beta2[<span class="dv">0</span>] <span class="op">&gt;</span> <span class="dv">0</span> <span class="kw">and</span> lo2 <span class="op">&gt;</span> <span class="dv">0</span> <span class="kw">and</span> lo2 <span class="op">&lt;=</span> <span class="fl">1.5</span> <span class="kw">and</span> hi2 <span class="op">&gt;=</span> <span class="fl">0.5</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>c3 <span class="op">=</span> beta2[<span class="dv">0</span>] <span class="op">&gt;=</span> beta1[<span class="dv">0</span>] <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>c4 <span class="op">=</span> <span class="bu">abs</span>(g10[<span class="st">"mu"</span>] <span class="op">-</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> g10[<span class="st">"gamma"</span>])) <span class="op">&lt;=</span> <span class="fl">0.1</span> <span class="kw">and</span> <span class="bu">abs</span>(g10[<span class="st">"zeta"</span>] <span class="op">-</span> (<span class="dv">1</span> <span class="op">+</span> g10[<span class="st">"gamma"</span>])) <span class="op">&lt;=</span> <span class="fl">0.2</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>yes <span class="op">=</span> <span class="kw">lambda</span> x: <span class="st">"yes"</span> <span class="cf">if</span> x <span class="cf">else</span> <span class="st">"no"</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame([</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"condition (10 × 10 blocks)"</span>: <span class="st">"1. exploration slows with S: γ &gt; 0"</span>, <span class="st">"result"</span>: <span class="ss">f"γ = </span><span class="sc">{</span>g10[<span class="st">'gamma'</span>]<span class="sc">:.3f}</span><span class="ss"> [</span><span class="sc">{</span>g10[<span class="st">'gci'</span>][<span class="dv">0</span>]<span class="sc">:.3f}</span><span class="ss">, </span><span class="sc">{</span>g10[<span class="st">'gci'</span>][<span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">]"</span>, <span class="st">"holds"</span>: yes(c1)},</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"condition (10 × 10 blocks)"</span>: <span class="st">"2. returns preferential: coefficient on log visits &gt; 0, interval overlapping [0.5, 1.5]"</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>     <span class="st">"result"</span>: <span class="ss">f"</span><span class="sc">{</span>beta2[<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss"> [</span><span class="sc">{</span>lo2<span class="sc">:.2f}</span><span class="ss">, </span><span class="sc">{</span>hi2<span class="sc">:.2f}</span><span class="ss">], with log recency </span><span class="sc">{</span>beta2[<span class="dv">1</span>]<span class="sc">:.2f}</span><span class="ss"> [</span><span class="sc">{</span>ci(<span class="dv">2</span>)[<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss">, </span><span class="sc">{</span>ci(<span class="dv">2</span>)[<span class="dv">1</span>]<span class="sc">:.2f}</span><span class="ss">]"</span>, <span class="st">"holds"</span>: yes(c2)},</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"condition (10 × 10 blocks)"</span>: <span class="st">"3. recency does not halve it"</span>, <span class="st">"result"</span>: <span class="ss">f"</span><span class="sc">{</span>beta2[<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss"> vs </span><span class="sc">{</span>beta1[<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss"> [</span><span class="sc">{</span>ci(<span class="dv">0</span>)[<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss">, </span><span class="sc">{</span>ci(<span class="dv">0</span>)[<span class="dv">1</span>]<span class="sc">:.2f}</span><span class="ss">] alone"</span>, <span class="st">"holds"</span>: yes(c3)},</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"condition (10 × 10 blocks)"</span>: <span class="st">"4. scaling consistent with γ"</span>, <span class="st">"result"</span>: <span class="ss">f"S(n) exponent </span><span class="sc">{</span>g10[<span class="st">'mu'</span>]<span class="sc">:.2f}</span><span class="ss"> vs </span><span class="sc">{</span><span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> g10[<span class="st">'gamma'</span>])<span class="sc">:.2f}</span><span class="ss">; ζ </span><span class="sc">{</span>g10[<span class="st">'zeta'</span>]<span class="sc">:.2f}</span><span class="ss"> vs </span><span class="sc">{</span><span class="dv">1</span> <span class="op">+</span> g10[<span class="st">'gamma'</span>]<span class="sc">:.2f}</span><span class="ss">"</span>, <span class="st">"holds"</span>: yes(c4)},</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"condition (10 × 10 blocks)"</span>: <span class="st">"EPR supported"</span>, <span class="st">"result"</span>: <span class="st">""</span>, <span class="st">"holds"</span>: yes(c1 <span class="kw">and</span> c2 <span class="kw">and</span> c3 <span class="kw">and</span> c4)}]))</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame([{<span class="st">"block size"</span>: <span class="ss">f"</span><span class="sc">{</span>b<span class="sc">}</span><span class="ss"> × </span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">"</span>, <span class="st">"γ [95% CI]"</span>: <span class="ss">f"</span><span class="sc">{</span>epr[b][<span class="st">'gamma'</span>]<span class="sc">:.3f}</span><span class="ss"> [</span><span class="sc">{</span>epr[b][<span class="st">'gci'</span>][<span class="dv">0</span>]<span class="sc">:.3f}</span><span class="ss">, </span><span class="sc">{</span>epr[b][<span class="st">'gci'</span>][<span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">]"</span>,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"ρ"</span>: <span class="ss">f"</span><span class="sc">{</span>epr[b][<span class="st">'rho'</span>]<span class="sc">:.2f}</span><span class="ss">"</span>, <span class="st">"S(n) exponent"</span>: <span class="ss">f"</span><span class="sc">{</span>epr[b][<span class="st">'mu'</span>]<span class="sc">:.2f}</span><span class="ss">"</span>, <span class="st">"1/(1+γ)"</span>: <span class="ss">f"</span><span class="sc">{</span><span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> epr[b][<span class="st">'gamma'</span>])<span class="sc">:.2f}</span><span class="ss">"</span>,</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"ζ"</span>: <span class="ss">f"</span><span class="sc">{</span>epr[b][<span class="st">'zeta'</span>]<span class="sc">:.2f}</span><span class="ss">"</span>, <span class="st">"1+γ"</span>: <span class="ss">f"</span><span class="sc">{</span><span class="dv">1</span> <span class="op">+</span> epr[b][<span class="st">'gamma'</span>]<span class="sc">:.2f}</span><span class="ss">"</span>} <span class="cf">for</span> b <span class="kw">in</span> (<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">25</span>)]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>condition (10 × 10 blocks)</th>
+<th>result</th>
+<th>holds</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1. exploration slows with S: γ &gt; 0</td>
+<td>γ = 0.047 [0.042, 0.052]</td>
+<td>yes</td>
+</tr>
+<tr class="even">
+<td>2. returns preferential: coefficient on log visits &gt; 0, interval overlapping [0.5, 1.5]</td>
+<td>0.47 [0.47, 0.48], with log recency -0.61 [-0.61, -0.60]</td>
+<td>no</td>
+</tr>
+<tr class="odd">
+<td>3. recency does not halve it</td>
+<td>0.47 vs 0.91 [0.91, 0.92] alone</td>
+<td>yes</td>
+</tr>
+<tr class="even">
+<td>4. scaling consistent with γ</td>
+<td>S(n) exponent 0.74 vs 0.96; ζ 0.63 vs 1.05</td>
+<td>no</td>
+</tr>
+<tr class="odd">
+<td>EPR supported</td>
+<td></td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th>block size</th>
+<th>γ [95% CI]</th>
+<th>ρ</th>
+<th>S(n) exponent</th>
+<th>1/(1+γ)</th>
+<th>ζ</th>
+<th>1+γ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>5 × 5</td>
+<td>0.074 [0.070, 0.077]</td>
+<td>0.74</td>
+<td>0.82</td>
+<td>0.93</td>
+<td>0.50</td>
+<td>1.07</td>
+</tr>
+<tr class="even">
+<td>10 × 10</td>
+<td>0.047 [0.042, 0.052]</td>
+<td>0.51</td>
+<td>0.74</td>
+<td>0.96</td>
+<td>0.63</td>
+<td>1.05</td>
+</tr>
+<tr class="odd">
+<td>25 × 25</td>
+<td>0.025 [0.016, 0.032]</td>
+<td>0.33</td>
+<td>0.56</td>
+<td>0.98</td>
+<td>0.83</td>
+<td>1.02</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>The pre-registered answer: EPR is not supported.</strong> One ingredient is there: returns do favour places visited more. But:</p>
+<ul>
+<li><strong>Returns follow recency at least as much as frequency.</strong> With both in the model, the effect of past visits roughly halves and the effect of recency is larger: people go back to where they just were more than to where they have been most. The visit coefficient falls just below the pre-registered range, so condition 2 fails, narrowly.</li>
+<li><strong>Exploration does not follow <span class="math inline">\(\rho S^{-\gamma}\)</span>.</strong> The left panel of <a href="#fig-epr" class="quarto-xref">Figure&nbsp;<span>4.3</span></a> is not a straight line but a U: the chance of a new place falls until about 20 places, then rises again. The rise is probably composition, since only the most roaming accounts ever reach a hundred places. The small positive <span class="math inline">\(\gamma\)</span> comes from fitting a straight line to that U, so condition 1 passes only on paper; the model’s form fails.</li>
+<li><strong>The model’s scaling does not hold.</strong> Places accumulate more slowly than <span class="math inline">\(\gamma\)</span> implies, and visits are spread more evenly across places than the model predicts. Condition 4 fails clearly, at every block size.</li>
+</ul>
+<p>One reading, not tested here, is that r/place accounts behave less like people with a home and a workplace and more like workers moving along a front: they return to recent ground, and do not settle into a few favourite places within three days. The limits written into the pre-registration apply: <span class="math inline">\(S\)</span> stays small, the fits span about one decade, and the model’s predictions are asymptotic.</p>
+<p><strong>How far this goes.</strong> The two pre-registered tests failed: no Lévy-flight-like jumps in any block, and no support for exploration and preferential return at the scale of 10 × 10 blocks (returns follow recency at least as much as frequency). The jump lengths are broad and far from all three nulls, but lognormal-like rather than power-law; prompt jumps are mostly local, jumps after a break span the canvas, footprints are wide and narrow with activity, and people return to recent places far more than chance. The moments, footprints and returns are descriptive, as pre-registered. A model that combines recency with frequency of past visits, and allows fronts that move, is the natural next candidate.</p>
+</section>
+<section id="exercises" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="exercises"><span class="header-section-number">4.6</span> Exercises</h2>
 <ol type="1">
 <li>Define a “place” as a 10 × 10 block instead of a pixel and redo the distinct-places table. At what block size do people start to look like they return?</li>
 <li>The direction check compares far jumps with random destinations. Restrict it to jumps that start on a pixel that is part of a straight edge in the final canvas. Does the axis excess grow?</li>
