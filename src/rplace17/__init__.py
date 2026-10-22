@@ -215,3 +215,26 @@ def kaplan_meier(duration, event):
     deaths = np.add.reduceat(event.astype(np.int64), first_idx)
     keep = deaths > 0
     return times[keep], np.cumprod(1 - deaths[keep] / at_risk[keep])
+
+
+def with_timing(h):
+    """Add to a pixel_history() frame: t_end, when the colour state a non-wasted placement set was next changed (null if
+    never), and t_next_own, the placing account's next placement anywhere (null if none). Used for the mechanical
+    prediction in chapter 3."""
+    px = pl.col("x").cast(pl.Int32) * SIZE + pl.col("y").cast(pl.Int32)
+    h = h.with_row_index("_i").with_columns(px.alias("_pix"))
+    ends = (h.filter(~pl.col("wasted")).sort("_pix", "t_us", "_i")
+              .with_columns(pl.col("t_us").shift(-1).over("_pix").alias("t_end")).select("_i", "t_end"))
+    h = h.join(ends, on="_i", how="left")
+    h = (h.sort("user_id", "t_us", "_i").with_columns(pl.col("t_us").shift(-1).over("user_id").alias("t_next_own"))
+          .sort("_i"))
+    return h.drop("_i", "_pix")
+
+
+def own_and_intact(w):
+    """For one window of with_timing() rows: own-pixel colour changes (count, of colour changes after the first), and
+    the share of colour states set in the window that were still intact at the placer's next placement."""
+    cc = w.filter(~pl.col("wasted") & ~pl.col("first"))
+    s = w.filter(~pl.col("wasted") & pl.col("t_next_own").is_not_null())
+    intact = (s["t_end"].is_null() | (s["t_end"] > s["t_next_own"])).mean()
+    return int((~cc["overwrite"]).sum()), cc.height, float(intact)

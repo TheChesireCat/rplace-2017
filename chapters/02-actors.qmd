@@ -448,25 +448,40 @@ def memory(x):
 M_data = np.array([memory(np.asarray(e)) for e in seqs["extra"].to_list()])
 M_shuf = np.array([np.nanmean([memory(rng.permutation(np.asarray(e))) for _ in range(5)])
                    for e in seqs["extra"].to_list()])
+
+# a second shuffle that keeps the daily rhythm: permute only within the same hour of day
+hours = ex.with_columns(((pl.col("t_prev") // 3_600_000_000) % 24).alias("hr")).group_by("user_id", maintain_order=True) \
+          .agg(pl.col("hr")).filter(pl.col("hr").list.len() + 1 >= 20)["hr"].to_list()
+def hour_block_shuffle(e, hr):
+    e = e.copy()
+    for v in np.unique(hr):
+        idx = np.nonzero(hr == v)[0]
+        e[idx] = e[rng.permutation(idx)]
+    return e
+M_block = np.array([np.nanmean([memory(hour_block_shuffle(np.asarray(e), np.asarray(hh))) for _ in range(3)])
+                    for e, hh in zip(seqs["extra"].to_list(), hours)])
 rows = []
 for lo, hi in BANDS[1:]:
-    m = (n_m >= lo) & (n_m < (hi or 10**9)) & ~np.isnan(M_data)
+    m = (n_m >= lo) & (n_m < (hi or 10**9)) & ~np.isnan(M_data) & ~np.isnan(M_block)
     diff = M_data[m] - M_shuf[m]
-    boot = [np.median(rng.choice(diff, len(diff))) for _ in range(500)]
+    diff_b = M_data[m] - M_block[m]
+    boot = [np.median(rng.choice(diff_b, len(diff_b))) for _ in range(500)]
     rows.append({"placements": band_name(lo, hi), "accounts": f"{m.sum():,}",
-                 "median M, data": f"{np.median(M_data[m]):+.3f}", "median M, shuffled": f"{np.median(M_shuf[m]):+.3f}",
-                 "paired difference [95% CI]": f"{np.median(diff):+.3f} [{np.quantile(boot, .025):+.3f}, {np.quantile(boot, .975):+.3f}]",
-                 "data > shuffled": f"{np.mean(diff > 0):.0%}"})
+                 "median M, data": f"{np.median(M_data[m]):+.3f}",
+                 "minus full shuffle": f"{np.median(diff):+.3f}",
+                 "minus hour-of-day shuffle [95% CI]": f"{np.median(diff_b):+.3f} [{np.quantile(boot, .025):+.3f}, {np.quantile(boot, .975):+.3f}]",
+                 "data > hour-of-day shuffle": f"{np.mean(diff_b > 0):.0%}"})
 r.table(pl.DataFrame(rows))
 ```
 
-There is memory, but little. In every band, consecutive extra waits are slightly more alike than in shuffled order (a
-paired difference of about +0.02), and the share of accounts above their shuffle grows with history length. Part of
-this is the daily cycle, which makes night gaps cluster; that is a real form of memory, but not evidence of anything
-more specific.
+There is memory, but little. Against a full shuffle, consecutive extra waits are more alike by about +0.02 in every
+band. Part of that is the daily rhythm: an account's night gaps are long and its daytime gaps short, so neighbours in
+time resemble each other. Shuffling only within the same hour of day keeps that rhythm, and roughly halves the
+difference, to about +0.01. So about half the memory is rhythm, and a small remainder, consistent across bands, is
+something else: long waits slightly more likely to follow long waits at the same time of day.
 
 **How far this goes.** Accounts are far burstier than random waiting (two nulls, every history length); they share
-roughly the crowd's distribution of waits (a third null); and their waits have weak positive memory (a shuffle null).
+roughly the crowd's distribution of waits (a third null); and their waits have weak positive memory, about half of it the daily rhythm (two shuffle nulls).
 All three beat a null and hold across history lengths; all are provisional until checked across the cooldown periods
 and day and night. The likely mechanism, sessions broken by sleep and the rest of life, is a hypothesis; the next step
 is to split each account's history into sessions and look at session lengths and the gaps between them. Whether the

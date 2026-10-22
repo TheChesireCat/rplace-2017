@@ -25,7 +25,8 @@ placement can do one of a few things:
   with its current color"). Nothing visible changes.
 - **first:** the first placement ever on that pixel.
 - **overwrite:** change a colour that a *different* account placed last.
-- **undo:** restore the colour the pixel had just before its current one (the second A in A–B–A).
+- **undo:** restore the colour the pixel had just before its current one (the second A in A–B–A), whoever does it.
+  It need not be the account that placed A; below we check how often it is.
 
 Here is one pixel's history, with these labels (accounts shown only as "same as the last placer or not"):
 
@@ -52,8 +53,23 @@ r.table(pl.DataFrame([summary]))
 ```
 
 Two things stand out. About a quarter of all placements change nothing at all. And when a placement does change a
-colour, it almost always changes one that someone else placed, and about half the time it puts back the colour from
-just before. A pixel that changes is usually being fought over, often by the same two colours going back and forth.
+colour, it almost always changes one that someone else placed, and more than half the time it puts back the colour
+from just before. Who does the putting back?
+
+```{python}
+ch = (h.filter(~pl.col("wasted"))
+       .with_columns((pl.col("x").cast(pl.Int32) * r.SIZE + pl.col("y").cast(pl.Int32)).alias("pix"))
+       .with_row_index("i").sort("pix", "t_us", "i")
+       .with_columns(pl.col("user_id").shift(2).over("pix").alias("placed_restored")))
+undos = ch.filter((pl.col("undo") == True) & (pl.col("t_us") >= r.LAUNCH_US))
+self_restore = (undos["placed_restored"] == undos["user_id"]).mean()
+print(f"undos: {undos.height:,};  restorer had placed the restored colour itself: {self_restore:.1%}")
+```
+
+Only `{python} f"{self_restore:.1%}"` of undos are an account putting back its own colour. The rest are other accounts
+restoring a colour someone else placed: defence by a relay of people, which is what @sec-actors suggested a pixel
+held "all day" would need. A pixel that changes is usually being fought over, often by the same two colours going
+back and forth, with different people on each side taking turns.
 
 ### Which placements are still visible at the end?
 
@@ -121,7 +137,9 @@ and removes any memory.
 same people and canvas, a different speed limit. A longer wait must lower how often each person places
 (**mechanical**). The question is whether it also changed **what** people did with each placement (**behavioural**).
 
-The test was written down before any outcome was computed:
+The test was written down before any outcome was computed, though not before the data were familiar: the switch times
+themselves came from the log, in @sec-actors. The timestamp protects against choosing the outcome after seeing it,
+not against knowing the data. The test:
 [`prereg/03-cooldown-switches.md`](https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/03-cooldown-switches.md)
 and its [amendment](https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/03-amendment-1.md), which merges
 two switches 27 minutes apart (they shared a window) into one, leaving six. In short:
@@ -234,8 +252,10 @@ for ax, name in zip(axes, r.OUTCOMES):
 plt.tight_layout(); plt.show()
 ```
 
-**The pre-registered test passes.** The overwrite share moved in the direction-consistent way at all six switches: it
-rose after every tightening and fell after every loosening (p = 0.031, the smallest possible). The secondary outcomes
+**The pre-registered test passes, with a caveat attached.** The overwrite share moved in the direction-consistent way
+at all six switches: it rose after every tightening and fell after every loosening (p = 0.031, the smallest
+possible). But at three of the six switches (1, 2 and 6) the change across the switch is less than twice the drift
+just before it, which the pre-registration flags; without them the test cannot reach significance (p = 0.25). The secondary outcomes
 do not pass. The wasted share swings strongly, by up to tens of percentage points: it fell after two of the three
 tightenings and rose after all three loosenings (not significant, and exploratory by design). The undo share shows
 nothing.
@@ -261,39 +281,72 @@ r.table(pl.DataFrame(checks).drop("outcome"))
 
 ### What it means, and what it does not
 
-The effect is tiny. The overwrite share sits at about 99.6% everywhere and moves by 0.1 to 0.3 percentage points. Its
-complement is the small share of colour changes in which an account changes *its own* last placement. And there is a
-mechanical way to produce exactly this pattern: to change your own pixel again, you must come back to it before anyone
-else does. A longer wait gives others more time to get there first, so the share of changes to your own pixel falls,
-and the overwrite share rises, without anyone changing how they play.
-
-That account predicts the effect disappears when placements on pixels of the same age (time since the pixel last
-changed) are compared. This check was not pre-registered; it is exploratory.
+On the scale of the overwrite share, which sits near 99.6%, the change is 0.1 to 0.3 percentage points and hard to
+read. Its complement is easier: the share of colour changes in which an account changes **its own** last placement.
 
 ```{python}
-aged = (h.with_columns((pl.col("x").cast(pl.Int32) * r.SIZE + pl.col("y").cast(pl.Int32)).alias("pix"))
-          .with_row_index("i").sort("pix", "t_us", "i")
-          .with_columns(((pl.col("t_us") - pl.col("t_us").shift(1).over("pix")) / 1e6).alias("age_s")).sort("i"))
-dirs = np.array([s[3] for s in r.SWITCHES])
-rows = []
-for a0, a1, label in ((1200, 2400, "20-40 min"), (2400, 7200, "40 min-2 h"), (7200, None, "over 2 h")):
-    band = aged.filter(pl.col("age_s") >= a0) if a1 is None else aged.filter(pl.col("age_s").is_between(a0, a1, closed="left"))
-    res = {(x["k"], x["side"]): x for x in r.window_outcomes(band, win)}
-    d = np.array([r.share(res[(k, "after")]["per_account"], "overwrite") - r.share(res[(k, "before")]["per_account"], "overwrite")
-                  for k in range(1, 7)])
-    n = sum(res[(k, s)]["placements"] for k in range(1, 7) for s in ("before", "after"))
-    rows.append({"pixel age": label, "placements": f"{n:,}", "switches agreeing with +": f"{int((np.sign(d) * dirs > 0).sum())}/6",
-                 "p": f"{r.sign_flip_p(d, dirs)[1]:.3f}"})
-r.table(pl.DataFrame(rows))
+ht = r.with_timing(h)
+def own_table(switches, W=20):
+    win = r.switch_windows(switches, W)
+    out = {}
+    for row in win.filter(pl.col("side") != "pre2").iter_rows(named=True):
+        w = ht.filter(pl.col("t_us").is_between(row["lo"], row["hi"], closed="left"))
+        out[(row["k"], row["side"])] = r.own_and_intact(w)
+    rows = []
+    for k, (_, _, _, direction) in enumerate(switches, start=1):
+        (ob, nb, fb), (oa, na, fa) = out[(k, "before")], out[(k, "after")]
+        sb, sa = ob / nb, oa / na
+        predicted = sb * fa / fb                    # same intent, scaled by how often one's colour was still intact
+        rows.append({"k": k, "direction": direction, "own before": f"{ob} / {nb:,} = {sb:.2%}",
+                     "own after": f"{oa} / {na:,} = {sa:.2%}", "odds ratio": f"{(sa / (1 - sa)) / (sb / (1 - sb)):.2f}",
+                     "intact before": f"{fb:.3f}", "intact after": f"{fa:.3f}", "predicted after": f"{predicted:.2%}",
+                     "_d": 100 * (sa - sb), "_resid": 100 * (sa - predicted)})
+    return pl.DataFrame(rows)
+own = own_table(r.SWITCHES)
+r.table(own.drop("_d", "_resid"))
 ```
 
-The check does not settle it. The pattern holds at 6 of 6 switches for pixels 40 minutes to 2 hours old, and at 3 of
-6 in the other two age bands, where there are too few placements per window for changes this small to be measured:
-sampling noise is about as large as the effect.
+On this scale the change is large in relative terms: after the tightenings, changes to one's own pixel fell to about
+half (odds ratios down to `{python} f"{own['odds ratio'].cast(pl.Float64).min():.2f}"`), and after the loosenings they rose.
+The counts are small, though: tens to a couple of hundred such changes per window.
 
-**How far this goes.** The pre-registered test passed, and the result holds across windows and for the same accounts.
-We do not read it as a change in behaviour: the effect is a fraction of a percentage point, three switches fail the
-pre-trend check at the main window, the placebo leans the same way, and a mechanical explanation fits and has not been
-ruled out. What the cooldown clearly changed is how often people placed (the positive control). Whether it changed
-*how* they placed remains open. The wasted share, which swings by tens of percentage points between windows, is the
-more promising place to look, and gets its own analysis later.
+**A mechanical explanation.** To change your own pixel again, you must come back to it before anyone else changes it.
+A longer wait gives others more time to get there first. (It also makes everyone place less, which works the other
+way.) The columns *intact before* and *intact after* measure this directly: of the colours placed in a window, the
+share still intact when the account that placed them next placed anything. If people's intentions did not change, the
+share of own-pixel changes should move in proportion: that is the *predicted after* column.
+
+```{python}
+dirs = own["direction"].to_numpy()
+placebo_own = own_table(r.PLACEBO)
+resid_T, resid_p = r.sign_flip_p(own["_resid"].to_numpy(), dirs)
+adj = own["_d"].to_numpy() - placebo_own["_d"].to_numpy()     # each switch's change minus its placebo's change
+adj_T, adj_p = r.sign_flip_p(adj, dirs)
+agree = lambda x, T: int((np.sign(dirs * x) == np.sign(T)).sum())
+r.table(pl.DataFrame([
+    {"comparison (exploratory)": "observed minus mechanical prediction", "switches agreeing": f"{agree(own['_resid'].to_numpy(), resid_T)}/6", "p": f"{resid_p:.3f}"},
+    {"comparison (exploratory)": "real change minus placebo change", "switches agreeing": f"{agree(adj, adj_T)}/6", "p": f"{adj_p:.3f}"}]))
+```
+
+The mechanical channel is real but small. The intact share does fall after tightenings and rise after loosenings, but
+the prediction moves far less than what was observed; at switch 3, for example, it predicts
+`{python} own['predicted after'][2]` against an observed `{python} own['own after'][2].split('= ')[1]`. The part left
+over still follows the direction of the switch at most switches, but not significantly. (A cruder check, comparing
+placements on pixels of the same age, was too thin to say anything.) Subtracting each switch's
+placebo change, to remove clock-time trends such as the daily cycle, weakens it further. Neither comparison was
+pre-registered.
+
+**How far this goes.** The pre-registered test passed, and the result holds across windows and for the same accounts,
+but three switches fail the pre-trend check at the main window. On the scale where it is visible, the effect is a
+halving or so of changes to one's own pixel after a tightening, carried by small counts. The simplest mechanical
+account explains only a small part of it, and what is left does not survive the placebo adjustment. So: an effect in
+the pre-registered direction, not explained by the obvious mechanism, and not yet distinguishable from clock-time
+trends. We do not call it a change in behaviour.
+
+### The wasted share
+
+The wasted share swings by tens of percentage points between windows: it fell after two of the three tightenings and
+rose after all three loosenings. That is the largest movement in this chapter, but it was seen on these six switches,
+and 2017 has no others. A test written now and run on the same switches could not be confirmatory, so this stays
+exploratory. A confirmatory test needs different variation: what drives wasted repaints (for instance, the same
+accounts repainting the same pixels) can be studied away from the switches and pre-registered there.
