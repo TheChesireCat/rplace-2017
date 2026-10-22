@@ -367,7 +367,7 @@ window.Quarto = {
 
 
 <p>A pixel is the smallest place on the canvas where people meet. Its history is a sequence of colours, each placed by someone, each lasting until someone paints over it. This chapter asks what single placements do to their pixel, how long a colour survives, and, using the changes in the waiting rule found in <a href="02-actors.html" class="quarto-xref"><span>Chapter 2</span></a>, whether a longer wait changed how people placed.</p>
-<div id="d037421e" class="cell" data-execution_count="1">
+<div id="5e31ded3" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -387,7 +387,7 @@ window.Quarto = {
 <li><strong>undo:</strong> restore the colour the pixel had just before its current one (the second A in A–B–A), whoever does it. It need not be the account that placed A; below we check how often it is.</li>
 </ul>
 <p>Here is one pixel’s history, with these labels (accounts shown only as “same as the last placer or not”):</p>
-<div id="93a342fc" class="cell" data-execution_count="2">
+<div id="7be32f61" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>one <span class="op">=</span> (h.<span class="bu">filter</span>((pl.col(<span class="st">"x"</span>) <span class="op">==</span> <span class="dv">500</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"y"</span>) <span class="op">==</span> <span class="dv">500</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"t_us"</span>) <span class="op">&gt;=</span> r.LAUNCH_US)).head(<span class="dv">8</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>         .with_columns(pl.from_epoch(<span class="st">"t_us"</span>, time_unit<span class="op">=</span><span class="st">"us"</span>).dt.strftime(<span class="st">"%m-</span><span class="sc">%d</span><span class="st"> %H:%M:%S"</span>).alias(<span class="st">"time"</span>),</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                       (pl.col(<span class="st">"prev_user"</span>) <span class="op">==</span> pl.col(<span class="st">"user_id"</span>)).alias(<span class="st">"same account as last"</span>))</span>
@@ -493,7 +493,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Across the event:</p>
-<div id="a1f1f819" class="cell" data-execution_count="3">
+<div id="a2d7e9e0" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>changes <span class="op">=</span> live.<span class="bu">filter</span>(<span class="op">~</span>pl.col(<span class="st">"wasted"</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> {</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"placements"</span>: <span class="ss">f"</span><span class="sc">{</span>live<span class="sc">.</span>height<span class="sc">:,}</span><span class="ss">"</span>,</span>
@@ -534,7 +534,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Two things stand out. About a quarter of all placements change nothing at all. And when a placement does change a colour, it almost always changes one that someone else placed, and more than half the time it puts back the colour from just before. Who does the putting back?</p>
-<div id="c3a221e4" class="cell" data-execution_count="4">
+<div id="b29be376" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ch <span class="op">=</span> (h.<span class="bu">filter</span>(<span class="op">~</span>pl.col(<span class="st">"wasted"</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>       .with_columns((pl.col(<span class="st">"x"</span>).cast(pl.Int32) <span class="op">*</span> r.SIZE <span class="op">+</span> pl.col(<span class="st">"y"</span>).cast(pl.Int32)).alias(<span class="st">"pix"</span>))</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>       .with_row_index(<span class="st">"i"</span>).sort(<span class="st">"pix"</span>, <span class="st">"t_us"</span>, <span class="st">"i"</span>)</span>
@@ -550,7 +550,7 @@ window.Quarto = {
 <section id="which-placements-are-still-visible-at-the-end" class="level3" data-number="3.1.1">
 <h3 data-number="3.1.1" class="anchored" data-anchor-id="which-placements-are-still-visible-at-the-end"><span class="header-section-number">3.1.1</span> Which placements are still visible at the end?</h3>
 <p>Wu and Silva (2024, v3, §4.1) sort placements by their relation to the final picture: <strong>Final</strong> (persists to the close), <strong>Match</strong> (the colour of the final picture, but later overwritten) and <strong>Adversarial</strong> (a colour that differs from the final picture). Their final picture is an artwork; ours is simply each pixel’s last colour, so these are pixel-level versions of their categories.</p>
-<div id="80cfcd56" class="cell" data-execution_count="5">
+<div id="8c98745d" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>final <span class="op">=</span> h.group_by(<span class="st">"x"</span>, <span class="st">"y"</span>).agg(pl.col(<span class="st">"color"</span>).last().alias(<span class="st">"final_color"</span>), pl.col(<span class="st">"t_us"</span>).<span class="bu">max</span>().alias(<span class="st">"t_last"</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>cat <span class="op">=</span> (live.join(final, on<span class="op">=</span>[<span class="st">"x"</span>, <span class="st">"y"</span>])</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>           .with_columns(pl.when(pl.col(<span class="st">"t_us"</span>) <span class="op">==</span> pl.col(<span class="st">"t_last"</span>)).then(pl.lit(<span class="st">"Final"</span>))</span>
@@ -595,7 +595,7 @@ window.Quarto = {
 <section id="how-long-does-a-colour-last" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="how-long-does-a-colour-last"><span class="header-section-number">3.2</span> How long does a colour last?</h2>
 <p>A colour’s <strong>lifetime</strong> runs from the placement that set it to the next placement that changes it; wasted repaints do not end it. Colours still visible at the close are <em>censored</em>: we know only that they lasted at least until then. The Kaplan–Meier estimator handles that correctly.</p>
-<div id="d59f9028" class="cell" data-execution_count="6">
+<div id="47eb46aa" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>states <span class="op">=</span> (h.<span class="bu">filter</span>(<span class="op">~</span>pl.col(<span class="st">"wasted"</span>))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>           .with_columns((pl.col(<span class="st">"x"</span>).cast(pl.Int32) <span class="op">*</span> r.SIZE <span class="op">+</span> pl.col(<span class="st">"y"</span>).cast(pl.Int32)).alias(<span class="st">"pix"</span>))</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>           .sort(<span class="st">"pix"</span>, <span class="st">"t_us"</span>)</span>
@@ -667,7 +667,7 @@ Figure&nbsp;3.2: The cooldown (line) and the windows compared around each switch
 </div>
 </div>
 </div>
-<div id="6798bd42" class="cell" data-execution_count="9">
+<div id="6bc70947" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compare(switches, W<span class="op">=</span><span class="dv">20</span>, same_people<span class="op">=</span><span class="va">False</span>, ci<span class="op">=</span><span class="va">False</span>, hist<span class="op">=</span>h):</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    win <span class="op">=</span> r.switch_windows(switches, W)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> {(x[<span class="st">"k"</span>], x[<span class="st">"side"</span>]): x <span class="cf">for</span> x <span class="kw">in</span> r.window_outcomes(hist, win)}</span>
@@ -781,7 +781,7 @@ Figure&nbsp;3.2: The cooldown (line) and the windows compared around each switch
 <section id="the-positive-control" class="level3" data-number="3.3.1">
 <h3 data-number="3.3.1" class="anchored" data-anchor-id="the-positive-control"><span class="header-section-number">3.3.1</span> The positive control</h3>
 <p>If the windows and the schedule are right, placements per active account per minute (M1) must fall after every tightening and rise after every loosening, so T must be negative with all six switches agreeing. If this failed, nothing else could be trusted. (In these tables, T = Σ direction × change: positive when an outcome rises after tightenings and falls after loosenings.)</p>
-<div id="23f19222" class="cell" data-execution_count="10">
+<div id="ade6cc5e" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame([test(main, <span class="st">"M1"</span>)]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="10">
 <table class="table table-sm table-striped small">
@@ -820,7 +820,7 @@ Figure&nbsp;3.2: The cooldown (line) and the windows compared around each switch
 </section>
 <section id="the-result" class="level3" data-number="3.3.2">
 <h3 data-number="3.3.2" class="anchored" data-anchor-id="the-result"><span class="header-section-number">3.3.2</span> The result</h3>
-<div id="bd99931b" class="cell" data-execution_count="11">
+<div id="898a58e3" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fmt <span class="op">=</span> <span class="kw">lambda</span> v: <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:+.4f}</span><span class="ss">"</span> <span class="cf">if</span> v <span class="op">&lt;</span> <span class="dv">0</span> <span class="kw">or</span> v <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">"0"</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>r.table(main.select(<span class="st">"k"</span>, <span class="st">"direction"</span>,</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                    <span class="op">*</span>[pl.col(<span class="ss">f"overwrite_</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span>).map_elements(<span class="kw">lambda</span> v: <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:.4f}</span><span class="ss">"</span>, return_dtype<span class="op">=</span>pl.Utf8).alias(<span class="ss">f"overwrite </span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span>)</span>
@@ -857,7 +857,7 @@ Figure&nbsp;3.2: The cooldown (line) and the windows compared around each switch
 <td>0.9968</td>
 <td>+0.0007</td>
 <td>-0.0004</td>
-<td>+0.0017</td>
+<td>+0.0018</td>
 </tr>
 <tr class="even">
 <td>2</td>
@@ -866,7 +866,7 @@ Figure&nbsp;3.2: The cooldown (line) and the windows compared around each switch
 <td>0.9964</td>
 <td>-0.0002</td>
 <td>-0.0014</td>
-<td>+0.0009</td>
+<td>+0.0010</td>
 </tr>
 <tr class="odd">
 <td>3</td>
@@ -874,7 +874,7 @@ Figure&nbsp;3.2: The cooldown (line) and the windows compared around each switch
 <td>0.9944</td>
 <td>0.9976</td>
 <td>+0.0032</td>
-<td>+0.0021</td>
+<td>+0.0020</td>
 <td>+0.0043</td>
 </tr>
 <tr class="even">
@@ -883,7 +883,7 @@ Figure&nbsp;3.2: The cooldown (line) and the windows compared around each switch
 <td>0.9958</td>
 <td>0.9977</td>
 <td>+0.0019</td>
-<td>+0.0004</td>
+<td>+0.0007</td>
 <td>+0.0031</td>
 </tr>
 <tr class="odd">
@@ -893,7 +893,7 @@ Figure&nbsp;3.2: The cooldown (line) and the windows compared around each switch
 <td>0.9967</td>
 <td>-0.0015</td>
 <td>-0.0025</td>
-<td>-0.0004</td>
+<td>-0.0005</td>
 </tr>
 <tr class="even">
 <td>6</td>
@@ -901,14 +901,14 @@ Figure&nbsp;3.2: The cooldown (line) and the windows compared around each switch
 <td>0.9974</td>
 <td>0.9969</td>
 <td>-0.0005</td>
-<td>-0.0012</td>
+<td>-0.0011</td>
 <td>+0.0001</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<div id="c17c4751" class="cell" data-execution_count="12">
+<div id="faeac125" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame([test(main, n) <span class="cf">for</span> n <span class="kw">in</span> r.OUTCOMES]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="12">
 <table class="table table-sm table-striped small">
@@ -988,7 +988,7 @@ Figure&nbsp;3.3: Change across each switch (after minus before), with 95% bootst
 </section>
 <section id="the-controls" class="level3" data-number="3.3.3">
 <h3 data-number="3.3.3" class="anchored" data-anchor-id="the-controls"><span class="header-section-number">3.3.3</span> The controls</h3>
-<div id="e40edcf4" class="cell" data-execution_count="14">
+<div id="63cc0193" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>checks <span class="op">=</span> []</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> label, t <span class="kw">in</span> ((<span class="st">"main, W = 20"</span>, main), (<span class="st">"same accounts on both sides"</span>, compare(r.SWITCHES, <span class="dv">20</span>, same_people<span class="op">=</span><span class="va">True</span>)),</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                 (<span class="st">"W = 10"</span>, compare(r.SWITCHES, <span class="dv">10</span>)), (<span class="st">"W = 40"</span>, compare(r.SWITCHES, <span class="dv">40</span>)),</span>
@@ -1069,7 +1069,7 @@ Figure&nbsp;3.3: Change across each switch (after minus before), with 95% bootst
 <section id="what-it-means-and-what-it-does-not" class="level3" data-number="3.3.4">
 <h3 data-number="3.3.4" class="anchored" data-anchor-id="what-it-means-and-what-it-does-not"><span class="header-section-number">3.3.4</span> What it means, and what it does not</h3>
 <p>On the scale of the overwrite share, which sits near 99.6%, the change is 0.1 to 0.3 percentage points and hard to read. Its complement is easier: the share of colour changes in which an account changes <strong>its own</strong> last placement.</p>
-<div id="6c1c1413" class="cell" data-execution_count="15">
+<div id="bb6b27c5" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ht <span class="op">=</span> r.with_timing(h)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> own_table(switches, W<span class="op">=</span><span class="dv">20</span>):</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    win <span class="op">=</span> r.switch_windows(switches, W)</span>
@@ -1180,7 +1180,7 @@ Figure&nbsp;3.3: Change across each switch (after minus before), with 95% bootst
 </div>
 <p>On this scale the change is large in relative terms: after the tightenings, changes to one’s own pixel fell to about half (odds ratios down to 0.43), and after the loosenings they rose. The counts are small, though: tens to a couple of hundred such changes per window.</p>
 <p><strong>A mechanical explanation.</strong> To change your own pixel again, you must come back to it before anyone else changes it. A longer wait gives others more time to get there first. (It also makes everyone place less, which works the other way.) The columns <em>intact before</em> and <em>intact after</em> measure this directly: of the colours placed in a window, the share still intact when the account that placed them next placed anything. If people’s intentions did not change, the share of own-pixel changes should move in proportion: that is the <em>predicted after</em> column.</p>
-<div id="569aaf55" class="cell" data-execution_count="16">
+<div id="e84dd174" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dirs <span class="op">=</span> own[<span class="st">"direction"</span>].to_numpy()</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>placebo_own <span class="op">=</span> own_table(r.PLACEBO)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>resid_T, resid_p <span class="op">=</span> r.sign_flip_p(own[<span class="st">"_resid"</span>].to_numpy(), dirs)</span>
@@ -1214,8 +1214,8 @@ Figure&nbsp;3.3: Change across each switch (after minus before), with 95% bootst
 </table>
 </div>
 </div>
-<p>The mechanical channel is real but small. The intact share does fall after tightenings and rise after loosenings, but the prediction moves far less than what was observed; at switch 3, for example, it predicts 0.53% against an observed 0.24%. The part left over still follows the direction of the switch at most switches, but not significantly. (A cruder check, comparing placements on pixels of the same age, was too thin to say anything.) Subtracting each switch’s placebo change, to remove clock-time trends such as the daily cycle, weakens it further. Neither comparison was pre-registered.</p>
-<p><strong>How far this goes.</strong> The pre-registered test passed, and the result holds across windows and for the same accounts, but three switches fail the pre-trend check at the main window. On the scale where it is visible, the effect is a halving or so of changes to one’s own pixel after a tightening, carried by small counts. The simplest mechanical account explains only a small part of it, and what is left does not survive the placebo adjustment. So: an effect in the pre-registered direction, not explained by the obvious mechanism, and not yet distinguishable from clock-time trends. We do not call it a change in behaviour.</p>
+<p>The mechanical channel is real but small. The intact share does fall after tightenings and rise after loosenings, but the prediction moves far less than what was observed; at switch 3, for example, it predicts 0.53% against an observed 0.24%. The part left over still follows the direction of the switch at most switches (p = 0.062): suggestive, not significant. (A cruder check, comparing placements on pixels of the same age, was too thin to say anything.) Subtracting each switch’s placebo change, to remove clock-time trends such as the daily cycle, weakens it further (p = 0.125). Neither comparison was pre-registered.</p>
+<p><strong>How far this goes.</strong> The pre-registered test passed, and the result holds across windows and for the same accounts, but three switches fail the pre-trend check at the main window. On the scale where it is visible, the effect is a halving or so of changes to one’s own pixel after a tightening, carried by small counts. The simplest mechanical account explains only a small part of it; what is left is suggestive at best, and weaker still after the placebo adjustment. So: an effect in the pre-registered direction, not explained by the obvious mechanism, and not yet distinguishable from clock-time trends. We do not call it a change in behaviour.</p>
 </section>
 <section id="the-wasted-share" class="level3" data-number="3.3.5">
 <h3 data-number="3.3.5" class="anchored" data-anchor-id="the-wasted-share"><span class="header-section-number">3.3.5</span> The wasted share</h3>
