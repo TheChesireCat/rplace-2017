@@ -53,18 +53,22 @@ def utc(t_us):
     return np.asarray(t_us, dtype="datetime64[us]")
 
 
-# ---------------------------------------------------------------- the cooldown, as it was in force (derived in chapter 2)
-# The wait between an account's placements was not fixed: chapter 2 reads it off the log (the 1st percentile of
-# gaps ending in each 10-minute window). Boundaries are to the nearest 10 minutes, UTC.
+# ---------------------------------------------------------------- the cooldown, as it was in force (chapter 2)
+# The wait between an account's placements was not fixed. Chapter 2 reads it off the log: the 1st percentile of the
+# gaps ending in each minute. Each switch matches a commit to Reddit's released Place code
+# (github.com/reddit-archive/reddit-plugin-place-opensource, PIXEL_COOLDOWN_SECONDS in reddit_place/controllers.py),
+# 2-6 minutes after the commit time. The start times below are when the log shows the new wait in force (UTC, to the
+# minute); the values are the committed constants.
 LAUNCH = "2017-03-31 17:00"
-COOLDOWN_REGIMES = [  # (start, cooldown in seconds); each lasts until the next start
-    ("2017-03-31 17:00", 300),
-    ("2017-03-31 21:10", 600),
-    ("2017-03-31 22:40", 300),
-    ("2017-04-01 00:10", 600),
-    ("2017-04-01 03:10", 1200),
-    ("2017-04-01 05:30", 600),
-    ("2017-04-01 21:30", 300),
+COOLDOWN_REGIMES = [  # (start, cooldown in seconds, commit); each lasts until the next start
+    ("2017-03-31 17:00", 300, "4680dac"),
+    ("2017-03-31 21:10", 600, "f9c6728 Increase cooldown to 10 minutes (21:03:58)"),
+    ("2017-03-31 22:41", 300, "1b78788 Revert 'Increase cooldown to 10 minutes' (22:38:01)"),
+    ("2017-04-01 00:10", 600, "75e3a92 Revert 'Revert ...' (00:05:43)"),
+    ("2017-04-01 03:03", 1200, "e8c0e74 Increase cooldown to 20 minutes (02:59:57)"),
+    ("2017-04-01 05:00", 900, "ba74693 Decrease cooldown to 15 minutes (04:58:08)"),
+    ("2017-04-01 05:27", 603, "5a85e76 Lower to 10 minutes (05:24:39); c50bb72 Up to 10 minutes 3 seconds (05:25:25)"),
+    ("2017-04-01 21:30", 300, "0d500f3 Lower cooldown to 5 minutes (21:27:47)"),
 ]
 
 
@@ -77,7 +81,16 @@ LAUNCH_US = _us(LAUNCH)
 
 def cooldown_at(t_us):
     """The cooldown (seconds) in force at each time in t_us (array-like of µs)."""
-    starts = np.array([_us(s) for s, _ in COOLDOWN_REGIMES])
-    secs = np.array([c for _, c in COOLDOWN_REGIMES])
+    starts = np.array([_us(s) for s, _, _ in COOLDOWN_REGIMES])
+    secs = np.array([c for _, c, _ in COOLDOWN_REGIMES])
     i = np.searchsorted(starts, np.asarray(t_us), side="right") - 1
     return secs[np.clip(i, 0, len(secs) - 1)]
+
+
+def table(df):
+    """Show a small polars DataFrame as a Markdown table (no truncation), for the book."""
+    from IPython.display import Markdown
+    cols = df.columns
+    lines = ["| " + " | ".join(cols) + " |", "|" + "---|" * len(cols)]
+    lines += ["| " + " | ".join(str(v) for v in row) + " |" for row in df.iter_rows()]
+    return Markdown("\n".join(lines))
