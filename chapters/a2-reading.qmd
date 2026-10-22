@@ -59,6 +59,7 @@ Works the chapters lean on. Every entry's metadata was checked against its DOI r
   453(7196), 779–782. [doi:10.1038/nature06958](https://doi.org/10.1038/nature06958)
 - Song, C., Koren, T., Wang, P., Barabási, A.-L. (2010). Modelling the scaling properties of human mobility. *Nature
   Physics* 6(10), 818–823. [doi:10.1038/nphys1760](https://doi.org/10.1038/nphys1760)
+  *Main text read (arXiv:1010.0436, pp. 1–8); the supplementary material is not.*
 
 ## How many groups
 

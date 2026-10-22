@@ -343,12 +343,134 @@ almost 200 different pixels, and random order makes little difference. The retur
 *areas*, within a few pixels, not to the same pixel. Which scale is the right "place" for a preferential-return model
 is itself a question for later.
 
-**How far this goes.** The pre-registered test found no Lévy-flight-like jumps in any block. The jump lengths are
+## Exploration and preferential return
+
+The standard model of returns in human mobility is Song, Koren, Wang and Barabási's (2010) *exploration and
+preferential return*: at each move a person goes somewhere new with probability $P_\text{new} = \rho S^{-\gamma}$,
+where $S$ is the number of places already visited, and otherwise returns to place $i$ with probability equal to its
+share of past visits. It predicts that the number of places grows as $S \sim n^{1/(1+\gamma)}$ after $n$ moves and that
+visits by rank follow $f_k \sim k^{-(1+\gamma)}$. For mobile-phone users the paper reports $\gamma = 0.21$ and
+$\zeta \approx 1.2$. Two rivals explain returns differently: people return to visited places **uniformly**, or to places
+they visited **recently**, whatever their visit count.
+
+The test was fixed in advance:
+[`prereg/04-epr.md`](https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/04-epr.md). A *place* is a
+10 × 10 block (5 and 25 as checks); a *move* is a placement in a different block from the account's previous one;
+accounts with at least 100 placements.
+
+```{python}
+def gamma_fit(v, rng_, B=200):
+    mv = v.filter(pl.col("j") >= 1)
+    smax = mv.group_by("S").len().filter(pl.col("len") >= 1000)["S"].max()
+    edges = np.unique(np.geomspace(2, smax + 1, 15).astype(int))
+    S_, new_, u_ = mv["S"].to_numpy(), mv["new"].to_numpy(), mv["user_id"].to_numpy()
+    ok = (S_ >= edges[0]) & (S_ < edges[-1]); S_, new_, u_ = S_[ok], new_[ok], u_[ok]
+    bi = np.searchsorted(edges, S_, side="right") - 1
+    mid = np.sqrt(edges[:-1] * edges[1:])
+    def one(w):
+        n = np.bincount(bi, weights=w, minlength=len(mid)); k = np.bincount(bi, weights=w * new_, minlength=len(mid))
+        m = (n > 0) & (k > 0)
+        A = np.vstack([np.ones(m.sum()), np.log(mid[m])]).T * np.sqrt(n[m])[:, None]
+        c = np.linalg.lstsq(A, np.log(k[m] / n[m]) * np.sqrt(n[m]), rcond=None)[0]
+        return -c[1], np.exp(c[0]), mid[m], k[m] / n[m]
+    g, rho, mids, pnew = one(np.ones(len(S_)))
+    ua, inv = np.unique(u_, return_inverse=True)
+    boots = [one(rng_.multinomial(len(ua), np.full(len(ua), 1 / len(ua)))[inv])[0] for _ in range(B)]
+    return g, rho, np.quantile(boots, [0.025, 0.975]), mids, pnew
+
+def scaling(v):
+    cum = v.group_by("user_id").agg(pl.col("new").cast(pl.Int32).cum_sum().alias("Scum"))["Scum"].to_list()
+    ns = np.arange(10, 101, 10)
+    Sn = np.array([np.median([c[n] for c in cum if len(c) > n]) for n in ns])
+    vis = (v.group_by("user_id", "place").len().sort(["user_id", "len"], descending=[False, True])
+            .with_columns((pl.col("len") / pl.col("len").sum().over("user_id")).alias("f"), pl.int_range(1, pl.len() + 1).over("user_id").alias("k")))
+    many = vis.group_by("user_id").len().filter(pl.col("len") >= 10).select("user_id")
+    fk = vis.join(many, on="user_id", how="semi").filter(pl.col("k") <= 10).group_by("k").agg(pl.col("f").mean()).sort("k")
+    mu_ = np.polyfit(np.log(ns), np.log(Sn), 1)[0]
+    zeta_ = -np.polyfit(np.log(fk["k"].to_numpy()), np.log(fk["f"].to_numpy()), 1)[0]
+    return mu_, zeta_, ns, Sn, fk
+
+rng_e = np.random.default_rng(0)
+epr = {}
+for b in (10, 5, 25):
+    v = r.moves(d, b=b)
+    g, rho, gci, mids, pnew = gamma_fit(v, rng_e)
+    mu_, zeta_, ns, Sn, fk = scaling(v)
+    epr[b] = dict(v=v, gamma=g, rho=rho, gci=gci, mids=mids, pnew=pnew, mu=mu_, zeta=zeta_, ns=ns, Sn=Sn, fk=fk)
+
+v10 = epr[10]["v"]
+cs = r.return_choice_sets(v10, n_sample=200_000, seed=0)
+beta1 = r.conditional_logit(cs, ["log_m"])
+beta2 = r.conditional_logit(cs, ["log_m", "log_rec"])
+gu = cs.group_by("g").agg(pl.col("user_id").first()).sort("g")["user_id"].to_numpy()
+ua, ia = np.unique(gu, return_inverse=True)
+boot = np.array([np.r_[r.conditional_logit(cs, ["log_m"], w), r.conditional_logit(cs, ["log_m", "log_rec"], w)]
+                 for w in (rng_e.multinomial(len(ua), np.full(len(ua), 1 / len(ua)))[ia] for _ in range(100))])
+ci = lambda col: np.quantile(boot[:, col], [0.025, 0.975])
+print(f"10 x 10 blocks: {v10['user_id'].n_unique():,} accounts, {v10.filter(pl.col('j') >= 1).height:,} moves, "
+      f"{cs['g'].n_unique():,} sampled returns")
+```
+
+```{python}
+#| label: fig-epr
+#| fig-cap: "Exploration and preferential return at 10 × 10 blocks. Left: probability that a move goes somewhere new, against places already visited (dots), with the fitted ρS^−γ (line). Middle: median places visited after n moves (dots) and the slope the model predicts from γ (dashed). Right: share of visits by rank of place (dots) and the model's k^−(1+γ) (dashed)."
+e = epr[10]
+fig, axes = plt.subplots(1, 3, figsize=(12, 3.4))
+axes[0].loglog(e["mids"], e["pnew"], "o"); axes[0].loglog(e["mids"], e["rho"] * e["mids"] ** -e["gamma"], "-")
+axes[0].set_xlabel("places visited, S"); axes[0].set_ylabel("P(new place)")
+axes[1].loglog(e["ns"], e["Sn"], "o"); axes[1].loglog(e["ns"], e["Sn"][0] * (e["ns"] / e["ns"][0]) ** (1 / (1 + e["gamma"])), "--")
+axes[1].set_xlabel("moves, n"); axes[1].set_ylabel("places visited (median)")
+fk_ = e["fk"]
+axes[2].loglog(fk_["k"], fk_["f"], "o"); axes[2].loglog(fk_["k"], fk_["f"][0] * fk_["k"].to_numpy() ** -(1 + e["gamma"]), "--")
+axes[2].set_xlabel("rank of place, k"); axes[2].set_ylabel("share of visits")
+plt.tight_layout(); plt.show()
+```
+
+```{python}
+g10 = epr[10]
+c1 = g10["gci"][0] > 0
+lo2, hi2 = ci(1)
+c2 = beta2[0] > 0 and lo2 > 0 and lo2 <= 1.5 and hi2 >= 0.5
+c3 = beta2[0] >= beta1[0] / 2
+c4 = abs(g10["mu"] - 1 / (1 + g10["gamma"])) <= 0.1 and abs(g10["zeta"] - (1 + g10["gamma"])) <= 0.2
+yes = lambda x: "yes" if x else "no"
+r.table(pl.DataFrame([
+    {"condition (10 × 10 blocks)": "1. exploration slows with S: γ > 0", "result": f"γ = {g10['gamma']:.3f} [{g10['gci'][0]:.3f}, {g10['gci'][1]:.3f}]", "holds": yes(c1)},
+    {"condition (10 × 10 blocks)": "2. returns preferential: coefficient on log visits > 0, interval overlapping [0.5, 1.5]",
+     "result": f"{beta2[0]:.2f} [{lo2:.2f}, {hi2:.2f}], with log recency {beta2[1]:.2f} [{ci(2)[0]:.2f}, {ci(2)[1]:.2f}]", "holds": yes(c2)},
+    {"condition (10 × 10 blocks)": "3. recency does not halve it", "result": f"{beta2[0]:.2f} vs {beta1[0]:.2f} [{ci(0)[0]:.2f}, {ci(0)[1]:.2f}] alone", "holds": yes(c3)},
+    {"condition (10 × 10 blocks)": "4. scaling consistent with γ", "result": f"S(n) exponent {g10['mu']:.2f} vs {1 / (1 + g10['gamma']):.2f}; ζ {g10['zeta']:.2f} vs {1 + g10['gamma']:.2f}", "holds": yes(c4)},
+    {"condition (10 × 10 blocks)": "EPR supported", "result": "", "holds": yes(c1 and c2 and c3 and c4)}]))
+r.table(pl.DataFrame([{"block size": f"{b} × {b}", "γ [95% CI]": f"{epr[b]['gamma']:.3f} [{epr[b]['gci'][0]:.3f}, {epr[b]['gci'][1]:.3f}]",
+                       "ρ": f"{epr[b]['rho']:.2f}", "S(n) exponent": f"{epr[b]['mu']:.2f}", "1/(1+γ)": f"{1 / (1 + epr[b]['gamma']):.2f}",
+                       "ζ": f"{epr[b]['zeta']:.2f}", "1+γ": f"{1 + epr[b]['gamma']:.2f}"} for b in (5, 10, 25)]))
+```
+
+**The pre-registered answer: EPR is not supported.** One ingredient is there: returns do favour places visited more.
+But:
+
+- **Returns follow recency at least as much as frequency.** With both in the model, the effect of past visits roughly
+  halves and the effect of recency is larger: people go back to where they just were more than to where they have
+  been most. The visit coefficient falls just below the pre-registered range, so condition 2 fails, narrowly.
+- **Exploration does not follow $\rho S^{-\gamma}$.** The left panel of @fig-epr is not a straight line but a U: the
+  chance of a new place falls until about 20 places, then rises again. The rise is probably composition, since only
+  the most roaming accounts ever reach a hundred places. The small positive $\gamma$ comes from fitting a straight line
+  to that U, so condition 1 passes only on paper; the model's form fails.
+- **The model's scaling does not hold.** Places accumulate more slowly than $\gamma$ implies, and visits are spread more
+  evenly across places than the model predicts. Condition 4 fails clearly, at every block size.
+
+One reading, not tested here, is that r/place accounts behave less like people with a home and a workplace and more
+like workers moving along a front: they return to recent ground, and do not settle into a few favourite places within
+three days. The limits written into
+the pre-registration apply: $S$ stays small, the fits span about one decade, and the model's predictions are
+asymptotic.
+
+**How far this goes.** The two pre-registered tests failed: no Lévy-flight-like jumps in any block, and no support for exploration and
+preferential return at the scale of 10 × 10 blocks (returns follow recency at least as much as frequency). The jump lengths are
 broad and far from all three nulls, but lognormal-like rather than power-law; prompt jumps are mostly local, jumps
 after a break span the canvas, footprints are wide and narrow with activity, and people return to recent places far
-more than chance. The moments, footprints and returns are descriptive, as pre-registered. A natural model to test next
-is the one the mobility literature uses, exploration plus preferential return (Song et al. 2010), fitted per account,
-against these same nulls.
+more than chance. The moments, footprints and returns are descriptive, as pre-registered. A model that combines recency with frequency of past visits, and allows fronts that move, is the natural next
+candidate.
 
 ## Exercises
 

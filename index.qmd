@@ -58,6 +58,7 @@ and *provisional* when a planned check is still missing.
 | No Lévy-flight-like jumps; jump lengths are broad and far from geometry and mixture nulls, but lognormal-like | pre-registered test failed | @sec-movement |
 | People return to recent places more often than their own footprint predicts (47% vs 35%), to areas rather than to the same pixel | beats a null | @sec-movement |
 | Far jumps run along rows and columns about twice as often as random destinations; long jumps follow long jumps beyond each account's mix | beats a null; exploratory | @sec-movement |
+| Exploration and preferential return (Song et al. 2010) is not supported: returns follow recency at least as much as frequency, exploration is U-shaped in places visited rather than a power law, and the model's scaling fails | pre-registered test failed | @sec-movement |
 
 ## How to read the results
 

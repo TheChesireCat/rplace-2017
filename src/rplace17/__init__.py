@@ -297,3 +297,67 @@ def run_counts(hist):
         (pl.col("wasted") & (pl.col("flips") >= 100)).sum().alias("hi_w"), (pl.col("flips") >= 100).sum().alias("hi_n"),
         (pl.col("wasted") & pl.col("flips").is_between(2, 9)).sum().alias("lo_w"), pl.col("flips").is_between(2, 9).sum().alias("lo_n"))
         .sort("bx", "by"))
+
+
+# ---------------------------------------------------------------- exploration and preferential return (chapter 4; prereg/04-epr.md)
+def moves(df, b=10, min_placements=100):
+    """Each account's visits to b x b blocks: placements after launch, dropping placements in the same block as the
+    account's previous one (stays). Columns: user_id, j (0 = first visit), place, new (first time there), S (places
+    visited before this move)."""
+    live = df.filter(pl.col("t_us") >= LAUNCH_US)
+    keep = live.group_by("user_id").len().filter(pl.col("len") >= min_placements).select("user_id")
+    v = (live.join(keep, on="user_id", how="semi").sort("user_id", "t_us")
+             .with_columns(((pl.col("x").cast(pl.Int32) // b) * 1000 + pl.col("y").cast(pl.Int32) // b).alias("place"))
+             .filter(pl.col("place") != pl.col("place").shift(1).over("user_id").fill_null(-1))
+             .with_columns(pl.int_range(pl.len()).over("user_id").alias("j")))
+    first = v.group_by("user_id", "place").agg(pl.col("j").min().alias("j_first"))
+    v = v.join(first, on=["user_id", "place"]).with_columns((pl.col("j") == pl.col("j_first")).alias("new")).sort("user_id", "j")
+    v = v.with_columns((pl.col("new").cast(pl.Int32).cum_sum().over("user_id") - pl.col("new").cast(pl.Int32)).alias("S"))
+    return v.select("user_id", "j", "place", "new", "S")
+
+
+def return_choice_sets(v, n_sample=200_000, seed=0):
+    """For a random sample of return moves (not new, j >= 1): one row per visited place at that moment, with log visits
+    so far, log moves since last there, and whether it was chosen. Used for the conditional logit."""
+    rng = np.random.default_rng(seed)
+    is_return = (~v["new"].to_numpy()) & (v["j"].to_numpy() >= 1)
+    p_keep = min(1.0, n_sample / max(is_return.sum(), 1))
+    users, places, js = v["user_id"].to_numpy(), v["place"].to_numpy(), v["j"].to_numpy()
+    rows_g, rows_m, rows_r, rows_c, rows_u = [], [], [], [], []
+    g = 0
+    counts, last = {}, {}
+    prev_user = None
+    for k in range(len(users)):
+        if users[k] != prev_user:
+            counts, last, prev_user = {}, {}, users[k]
+        pl_k = places[k]
+        if is_return[k] and rng.random() < p_keep:
+            alts = list(counts)
+            m = np.fromiter((counts[a] for a in alts), float, len(alts))
+            rec = np.fromiter((js[k] - last[a] for a in alts), float, len(alts))
+            rows_g.append(np.full(len(alts), g)); rows_m.append(np.log(m)); rows_r.append(np.log(rec))
+            rows_c.append(np.fromiter((a == pl_k for a in alts), bool, len(alts))); rows_u.append(np.full(len(alts), users[k]))
+            g += 1
+        counts[pl_k] = counts.get(pl_k, 0) + 1
+        last[pl_k] = js[k]
+    return pl.DataFrame({"g": np.concatenate(rows_g), "user_id": np.concatenate(rows_u), "log_m": np.concatenate(rows_m),
+                         "log_rec": np.concatenate(rows_r), "chosen": np.concatenate(rows_c)})
+
+
+def conditional_logit(cs, features, weights=None):
+    """Maximum-likelihood conditional logit: P(choose i in set g) = exp(beta . x_i) / sum over the set. weights: one per
+    choice set (for bootstraps)."""
+    from scipy import optimize
+    X = cs.select(features).to_numpy()
+    g = cs["g"].to_numpy()
+    chosen = cs["chosen"].to_numpy()
+    starts = np.flatnonzero(np.r_[True, g[1:] != g[:-1]])
+    w = np.ones(len(starts)) if weights is None else np.asarray(weights, float)
+    def nll(beta):
+        u = X @ beta
+        umax = np.maximum.reduceat(u, starts)
+        lse = np.log(np.add.reduceat(np.exp(u - np.repeat(umax, np.diff(np.r_[starts, len(u)]))), starts)) + umax
+        uc = np.add.reduceat(np.where(chosen, u, 0.0), starts)
+        return -(w * (uc - lse)).sum()
+    res = optimize.minimize(nll, np.zeros(len(features)), method="BFGS")
+    return res.x
