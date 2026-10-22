@@ -24,7 +24,7 @@
     "href": "index.html#how-the-book-is-built-bottom-up",
     "title": "r/place 2017 as a complex system",
     "section": "How the book is built: bottom up",
-    "text": "How the book is built: bottom up\nThe chapters climb a ladder, from single actors to properties of the whole canvas. Each rung uses the one below it.\n\n\n\n\n\n\n\n\nRung\nQuestion\nChapter\n\n\n\n\nData\nWhat exactly is in the log, and what is odd about it?\n1  The log\n\n\nActors\nHow active are people, and how does the waiting rule shape them?\n2  Actors\n\n\nPixels\nHow long does a colour survive on a pixel?\n3  Pixels\n\n\nInteractions\nWho works with, and against, whom?\n4  Interactions\n\n\nDomains and borders\nWhere do colour regions meet, and do their borders move like physical interfaces?\n5  Domains and borders\n\n\nCascades\nDo overwrites come in avalanches of all sizes?\n6  Cascades\n\n\nGroups\nHow many groups does it take to explain the canvas?\n7  Groups\n\n\nBaselines\nWhat would a model with no strategy at all already produce?\n8  Baselines",
+    "text": "How the book is built: bottom up\nThe chapters climb a ladder, from single actors to properties of the whole canvas. Each rung uses the one below it.\n\n\n\n\n\n\n\n\nRung\nQuestion\nChapter\n\n\n\n\nData\nWhat exactly is in the log, and what is odd about it?\n1  The log\n\n\nActors\nHow active are people, and how does the waiting rule shape them?\n2  Actors\n\n\nPixels\nHow long does a colour survive on a pixel?\n3  Pixels\n\n\nMovement\nWhere do people go next, and do they come back?\n4  Where people go\n\n\nInteractions\nWho works with, and against, whom?\n5  Interactions\n\n\nDomains and borders\nWhere do colour regions meet, and do their borders move like physical interfaces?\n6  Domains and borders\n\n\nCascades\nDo overwrites come in avalanches of all sizes?\n7  Cascades\n\n\nGroups\nHow many groups does it take to explain the canvas?\n8  Groups\n\n\nBaselines\nWhat would a model with no strategy at all already produce?\n9  Baselines",
     "crumbs": [
       "Preface"
     ]
@@ -205,168 +205,223 @@
     ]
   },
   {
+    "objectID": "chapters/04-movement.html",
+    "href": "chapters/04-movement.html",
+    "title": "4  Where people go",
+    "section": "",
+    "text": "4.1 What a jump is\nA jump is the displacement \\((dx, dy)\\) between an account’s consecutive placements, with length \\(r = \\sqrt{dx^2 + dy^2}\\) in pixels. How far people jump depends on how long they waited and on the rules at the time, so the pre-registration fixed strata in advance:\nThe primary strata are prompt jumps in blocks A, B and C.\nstrata = [(f\"block {b}, prompt\", clean.filter((pl.col(\"block\") == b) & (pl.col(\"gap_class\") == \"prompt\"))) for b in \"ABC\"]\nstrata += [(f\"5 min, {g}\", clean.filter((pl.col(\"period\") == 300) & (pl.col(\"gap_class\") == g))) for g in (\"later\", \"break\")]\nstrata += [(\"10 min, prompt\", clean.filter((pl.col(\"period\") == 600) & (pl.col(\"gap_class\") == \"prompt\")))]\nrows = []\nfor label, s in strata:\n    dx, dy, rr = s[\"dx\"].to_numpy().astype(float), s[\"dy\"].to_numpy().astype(float), s[\"r\"].to_numpy()\n    rows.append({\"stratum\": label, \"jumps\": f\"{s.height:,}\", \"accounts\": f\"{s['user_id'].n_unique():,}\",\n                 \"same pixel (r = 0)\": f\"{(rr == 0).mean():.1%}\", \"median r (px)\": f\"{np.median(rr):.0f}\",\n                 \"r ≤ 20 px\": f\"{(rr &lt;= 20).mean():.0%}\", \"sd of dx (px)\": f\"{dx.std():.0f}\",\n                 \"excess kurtosis dx, dy\": f\"{stats.kurtosis(dx):.1f}, {stats.kurtosis(dy):.1f}\"})\nr.table(pl.DataFrame(rows))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nstratum\njumps\naccounts\nsame pixel (r = 0)\nmedian r (px)\nr ≤ 20 px\nsd of dx (px)\nexcess kurtosis dx, dy\n\n\n\n\nblock A, prompt\n290,168\n67,483\n1.4%\n9\n61%\n212\n7.6, 7.7\n\n\nblock B, prompt\n3,081,814\n302,570\n2.2%\n7\n70%\n126\n20.5, 22.5\n\n\nblock C, prompt\n2,592,654\n275,088\n4.4%\n9\n67%\n126\n21.0, 23.1\n\n\n5 min, later\n5,101,048\n522,773\n2.0%\n17\n53%\n188\n8.2, 8.6\n\n\n5 min, break\n1,522,443\n523,236\n0.9%\n170\n22%\n295\n1.7, 1.7\n\n\n10 min, prompt\n736,574\n149,854\n1.7%\n10\n63%\n159\n12.5, 12.9\nfig, ax = plt.subplots(figsize=(6.5, 4))\nfor label, s in strata[:3] + [strata[4]]:\n    x = s[\"r\"].to_numpy(); x = x[x &gt; 0]\n    cx, cp = tails.ccdf(x)\n    ax.step(cx, cp, where=\"post\", label=label)\nax.axvline(np.hypot(1000, 1000), ls=\"--\", color=\"grey\")\nax.set_xscale(\"log\"); ax.set_yscale(\"log\"); ax.set_ylim(1e-4, 1.5)\nax.set_xlabel(\"jump length r (px)\"); ax.set_ylabel(\"share of jumps ≥ r\")\nax.legend(frameon=False)\nplt.show()\n\n\n\n\n\n\n\nFigure 4.1: Share of jumps longer than r (log scales): prompt jumps in each time block, and jumps after a break. The dashed line is the largest jump the canvas allows.\nMost prompt jumps are short: the median is a few pixels and most stay within 20. But the components have an enormous excess kurtosis, which is the signature of a mixture: many tiny steps and some very long jumps. After a break the picture flips: the median jump is a large fraction of the canvas, and the kurtosis drops towards that of points scattered over a square. (These moments are descriptive only: on a bounded canvas every moment is finite, so moments cannot diagnose a tail here.)",
+    "crumbs": [
+      "Movement",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Where people go</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/04-movement.html#what-a-jump-is",
+    "href": "chapters/04-movement.html#what-a-jump-is",
+    "title": "4  Where people go",
+    "section": "",
+    "text": "gap: prompt (placed again within a minute of being allowed), later (up to an hour), after a break;\ncooldown period: five-minute periods (primary), ten-minute periods (secondary);\ntime block (five-minute periods): A, the first hours after launch; B, 04-01 21:30 to 04-02 21:30; C, the last day.",
+    "crumbs": [
+      "Movement",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Where people go</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/04-movement.html#is-there-a-lévy-like-tail",
+    "href": "chapters/04-movement.html#is-there-a-lévy-like-tail",
+    "title": "4  Where people go",
+    "section": "4.2 Is there a Lévy-like tail?",
+    "text": "4.2 Is there a Lévy-like tail?\nFor each primary stratum we fit the jump lengths with the method of Chapter 2 (rplace17.tails), on three nulls fixed in advance, each keeping something real and removing the rest:\n\nN1 geometry: each jump keeps its origin and lands anywhere on the canvas, uniformly.\nN2 own places, random order: each account’s placements in the block are shuffled in time and the jumps recomputed; the account’s footprint stays, its sequence goes.\nN3 two scales: each account keeps its share of local jumps (r ≤ 20 px); local jumps are redrawn from an exponential with the account’s own mean local length (capped at 20 px, a detail the pre-registration did not specify), far ones as in N1. It mixes two scales with no heavy tail in either.\n\n\nR_LOC, NREP = 20, 20\nrng = np.random.default_rng(0)\n\ndef uniform_dest(x0, y0):\n    return np.hypot(rng.integers(0, 1001, len(x0)) - x0, rng.integers(0, 1001, len(y0)) - y0)\n\ndef far_uniform(x0, y0, rmin):\n    out, todo = np.empty(len(x0)), np.arange(len(x0))\n    while len(todo):\n        rr = uniform_dest(x0[todo], y0[todo]); ok = rr &gt; rmin\n        out[todo[ok]] = rr[ok]; todo = todo[~ok]\n    return out\n\ndef own_places_random_order(s, block_rows):\n    need = s.group_by(\"user_id\").len().rename({\"len\": \"need\"})\n    p = block_rows.join(need, on=\"user_id\", how=\"semi\")\n    p = (p.with_columns(pl.Series(\"u\", rng.random(p.height))).sort(\"user_id\", \"u\")\n          .with_columns(pl.col(\"x\").shift(1).over(\"user_id\").alias(\"x0\"), pl.col(\"y\").shift(1).over(\"user_id\").alias(\"y0\"))\n          .drop_nulls(\"x0\")\n          .with_columns(((pl.col(\"x\").cast(pl.Float64) - pl.col(\"x0\")) ** 2 + (pl.col(\"y\").cast(pl.Float64) - pl.col(\"y0\")) ** 2).sqrt().alias(\"r\"))\n          .join(need, on=\"user_id\")\n          .with_columns(pl.int_range(pl.len()).shuffle(seed=int(rng.integers(1e9))).over(\"user_id\").alias(\"rank\"))\n          .filter(pl.col(\"rank\") &lt; pl.col(\"need\")))\n    return p[\"r\"].to_numpy()\n\ndef two_scales(s):\n    df = pl.DataFrame({\"u\": s[\"user_id\"], \"r\": s[\"r\"], \"local\": s[\"r\"] &lt;= R_LOC})\n    acc = df.group_by(\"u\").agg(pl.col(\"local\").mean().alias(\"p\"), pl.col(\"r\").filter(pl.col(\"local\")).mean().alias(\"m\"))\n    j = df.join(acc, on=\"u\", how=\"left\")\n    is_local = rng.random(df.height) &lt; j[\"p\"].to_numpy()\n    out = np.empty(df.height)\n    out[is_local] = np.minimum(rng.exponential(j[\"m\"].fill_null(1.0).to_numpy()[is_local]), R_LOC)\n    out[~is_local] = far_uniform(s[\"x0\"].to_numpy()[~is_local], s[\"y0\"].to_numpy()[~is_local], R_LOC)\n    return out\n\ndef tail_summary(x):\n    x = x[x &gt; 0]\n    f = tails.fit(x); c = tails.compare(x, f)\n    g = lambda m, col: c.filter(pl.col(\"model\") == m)[col][0]\n    return f, {m: (g(m, \"normalised R\"), g(m, \"p\")) for m in (\"exponential\", \"lognormal\", \"stretched exponential\")}, g(\"truncated power law\", \"p\")\n\nfit_rows, decision_rows = [], []\nfor (name, a, b), (label, s) in zip(r.BLOCKS, strata[:3]):\n    sp = s.filter(pl.col(\"r\") &gt; 0)\n    block_rows = d.filter(pl.col(\"t_us\").is_between(r._us(a), r._us(b), closed=\"left\"))\n    series = {\"data\": sp[\"r\"].to_numpy(), \"N1 geometry\": uniform_dest(sp[\"x0\"].to_numpy(), sp[\"y0\"].to_numpy()),\n              \"N2 own places, random order\": own_places_random_order(sp, block_rows)}\n    n3 = [two_scales(sp) for _ in range(NREP)]\n    series[\"N3 two scales\"] = n3[0]\n    for kind, x in series.items():\n        f, alts, p_tpl = tail_summary(x)\n        fit_rows.append({\"block\": name, \"\": kind, \"xmin (px)\": f\"{f.xmin:.0f}\", \"alpha\": f\"{f.alpha:.2f}\", \"decades\": f\"{f.decades:.2f}\",\n                         \"edge\": \"yes\" if f.at_boundary else \"\",\n                         **{f\"R {m[:11]}\": f\"{alts[m][0]:+.0f}\" for m in alts}, \"p trunc. PL\": f\"{p_tpl:.1g}\"})\n        if kind == \"data\":\n            f_data, alts_data, p_tpl_data = f, alts, p_tpl\n    far = series[\"data\"][series[\"data\"] &gt; R_LOC]\n    far3 = [x[x &gt; R_LOC] for x in n3]\n    D_data = stats.ks_2samp(far, np.concatenate(far3)).statistic\n    D_null = max(stats.ks_2samp(far3[i], far3[j]).statistic for i in range(NREP) for j in range(i + 1, NREP))\n    c1 = all(R &gt; 0 and p &lt; 0.05 for R, p in alts_data.values()) and p_tpl_data &gt;= 0.05\n    c2 = 1 &lt; f_data.alpha &lt; 3\n    c3 = f_data.decades &gt;= 1.5 and not f_data.at_boundary\n    c4 = D_data &gt; D_null\n    yes = lambda v: \"yes\" if v else \"no\"\n    decision_rows.append({\"block\": name, \"1. power law beats all\": yes(c1), \"2. 1 &lt; alpha &lt; 3\": yes(c2),\n                          \"3. range ≥ 1.5 decades\": yes(c3), \"4. beyond two scales\": yes(c4),\n                          \"KS data vs N3\": f\"{D_data:.3f}\", \"largest KS N3 vs N3\": f\"{D_null:.3f}\",\n                          \"Lévy-flight-like\": yes(c1 and c2 and c3 and c4)})\nr.table(pl.DataFrame(fit_rows))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nblock\n\nxmin (px)\nalpha\ndecades\nedge\nR exponential\nR lognormal\nR stretched e\np trunc. PL\n\n\n\n\nA\ndata\n909\n8.47\n0.19\n\n-25\n-14\n-15\n6e-106\n\n\nA\nN1 geometry\n932\n11.30\n0.18\n\n-40\n-22\n-23\n2e-260\n\n\nA\nN2 own places, random order\n915\n8.70\n0.19\n\n-33\n-19\n-20\n1e-180\n\n\nA\nN3 two scales\n933\n10.82\n0.17\n\n-31\n-17\n-17\n2e-150\n\n\nB\ndata\n8\n1.60\n2.25\n\n+589\n-183\n-191\n0\n\n\nB\nN1 geometry\n945\n12.74\n0.17\n\n-79\n-44\n-46\n0\n\n\nB\nN2 own places, random order\n956\n11.48\n0.17\n\n-38\n-23\n-24\n3e-266\n\n\nB\nN3 two scales\n943\n12.71\n0.17\n\n-41\n-23\n-24\n5e-295\n\n\nC\ndata\n10\n1.63\n2.15\n\n+501\n-163\n-171\n0\n\n\nC\nN1 geometry\n951\n12.89\n0.17\n\n-78\n-43\n-44\n0\n\n\nC\nN2 own places, random order\n942\n11.69\n0.18\n\n-26\n-17\n-18\n5e-149\n\n\nC\nN3 two scales\n958\n12.94\n0.16\n\n-41\n-22\n-23\n7e-277\n\n\n\n\n\nThe pre-registered decision, for each block:\n\nr.table(pl.DataFrame(decision_rows))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nblock\n1. power law beats all\n2. 1 &lt; alpha &lt; 3\n3. range ≥ 1.5 decades\n4. beyond two scales\nKS data vs N3\nlargest KS N3 vs N3\nLévy-flight-like\n\n\n\n\nA\nno\nno\nno\nyes\n0.389\n0.006\nno\n\n\nB\nno\nyes\nyes\nyes\n0.600\n0.003\nno\n\n\nC\nno\nyes\nyes\nyes\n0.633\n0.002\nno\n\n\n\n\n\nNo block passes, so the pre-registered answer is: no evidence of Lévy-flight-like jumps. But the details are worth reading:\n\nIn the first hours (block A) there is no stable tail at all: the fit only finds the last stretch before the edge of the canvas, the same place where the geometry null puts its “tail”.\nIn blocks B and C there is a long, broad stretch, from about ten pixels to the edge of the canvas, with \\(\\alpha\\) around 1.6 over more than two decades, and it is nothing like the nulls: far jumps differ from the two-scale null by far more than its replicates differ from each other. All three nulls put their only “tail” at the canvas edge.\nBut it is not a power law: the lognormal and the stretched exponential describe it much better, and a power law with a cutoff beats the pure one. Condition 1 fails.\n\nSo jump lengths are broad, far broader than geometry, a shuffled footprint, or a simple local-plus-random mixture would give, but their shape is not a power law.",
+    "crumbs": [
+      "Movement",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Where people go</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/04-movement.html#how-far-does-each-account-range",
+    "href": "chapters/04-movement.html#how-far-does-each-account-range",
+    "title": "4  Where people go",
+    "section": "4.3 How far does each account range?",
+    "text": "4.3 How far does each account range?\nThe radius of gyration of an account is the root-mean-square distance of its placements from their centre: how spread out its footprint is over the whole event.\n\nlive = d.filter(pl.col(\"t_us\") &gt;= r.LAUNCH_US)\nrg = live.group_by(\"user_id\").agg(\n    pl.len().alias(\"k\"),\n    (((pl.col(\"x\") - pl.col(\"x\").mean()).cast(pl.Float64) ** 2 + (pl.col(\"y\") - pl.col(\"y\").mean()).cast(pl.Float64) ** 2).mean().sqrt()).alias(\"rg\"))\nbands = ((2, 5), (5, 20), (20, 50), (50, 100), (100, 250), (250, None))\nmid, q1, q3, labels = [], [], [], []\nfor lo, hi in bands:\n    s = rg.filter((pl.col(\"k\") &gt;= lo) & (pl.col(\"k\") &lt; (hi or 10**9)))[\"rg\"]\n    mid.append(s.median()); q1.append(s.quantile(0.25)); q3.append(s.quantile(0.75))\n    labels.append(f\"{lo}+\" if hi is None else f\"{lo}-{hi - 1}\")\nfig, ax = plt.subplots(figsize=(6, 3.5))\nx = np.arange(len(bands))\nax.errorbar(x, mid, yerr=[np.subtract(mid, q1), np.subtract(q3, mid)], fmt=\"o\", capsize=3)\nax.set_xticks(x, labels); ax.set_xlabel(\"placements per account\"); ax.set_ylabel(\"radius of gyration (px)\")\nplt.show()\n\n\n\n\n\n\n\nFigure 4.2: Radius of gyration of accounts against their number of placements (median and interquartile range per band).\n\n\n\n\n\nEven though most prompt jumps are short, a typical account’s footprint spans a few hundred pixels: people work in one place for a while, then move. The busiest accounts are the most focused, with the smallest radius.",
+    "crumbs": [
+      "Movement",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Where people go</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/04-movement.html#do-people-come-back",
+    "href": "chapters/04-movement.html#do-people-come-back",
+    "title": "4  Where people go",
+    "section": "4.4 Do people come back?",
+    "text": "4.4 Do people come back?\n\ndef return_share(df):\n    \"\"\"Share of placements within 5 px of one of the account's own previous 10 placements.\"\"\"\n    o = df.sort(\"user_id\", \"t_us\")\n    dmin = None\n    for k in range(1, 11):\n        dk = ((pl.col(\"x\").cast(pl.Float64) - pl.col(\"x\").shift(k).over(\"user_id\")) ** 2 +\n              (pl.col(\"y\").cast(pl.Float64) - pl.col(\"y\").shift(k).over(\"user_id\")) ** 2).sqrt()\n        dmin = dk if dmin is None else pl.min_horizontal(dmin, dk)\n    o = o.with_columns(dmin.alias(\"dmin\")).drop_nulls(\"dmin\")\n    return (o[\"dmin\"] &lt;= 5).mean(), (o[\"dmin\"] == 0).mean()\n\nret, exact = return_share(live)\n# each account's own placements, in random order\nshuffled = (live.with_columns(pl.Series(\"u\", rng.random(live.height))).sort(\"user_id\", \"u\")\n                .with_columns(pl.int_range(pl.len()).over(\"user_id\").alias(\"t_us\")))\nret_null, exact_null = return_share(shuffled)\nprint(f\"within 5 px of one of the previous 10: {ret:.1%} (own places in random order: {ret_null:.1%})\")\nprint(f\"exactly the same pixel as one of the previous 10: {exact:.1%} (random order: {exact_null:.1%})\")\n\nwithin 5 px of one of the previous 10: 46.7% (own places in random order: 34.7%)\nexactly the same pixel as one of the previous 10: 6.2% (random order: 3.6%)\n\n\nAbout 47% of placements land within five pixels of one of the account’s own previous ten, against 35% if the same places were visited in random order. People come back to where they just were more often than their own footprint alone would make them, by about a third: the sequence is local in time, not only in space.\nHow far this goes. The pre-registered test found no Lévy-flight-like jumps in any block. The jump lengths are broad and far from all three nulls, but lognormal-like rather than power-law; prompt jumps are mostly local, jumps after a break span the canvas, footprints are wide and narrow with activity, and people return to recent places far more than chance. The moments, footprints and returns are descriptive, as pre-registered. A natural model to test next is the one the mobility literature uses, exploration plus preferential return (Song et al. 2010), fitted per account, against these same nulls.",
+    "crumbs": [
+      "Movement",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Where people go</span>"
+    ]
+  },
+  {
     "objectID": "chapters/04-interactions.html",
     "href": "chapters/04-interactions.html",
-    "title": "4  Interactions",
+    "title": "5  Interactions",
     "section": "",
-    "text": "4.1 The question\nTwo accounts that keep placing the same colour on the same pixels are probably working together; two that keep undoing each other are probably not. Can the log alone recover a network of collaboration and conflict?",
+    "text": "5.1 The question\nTwo accounts that keep placing the same colour on the same pixels are probably working together; two that keep undoing each other are probably not. Can the log alone recover a network of collaboration and conflict?",
     "crumbs": [
       "Interactions",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Interactions</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Interactions</span>"
     ]
   },
   {
     "objectID": "chapters/04-interactions.html#why-it-matters",
     "href": "chapters/04-interactions.html#why-it-matters",
-    "title": "4  Interactions",
-    "section": "4.2 Why it matters",
-    "text": "4.2 Why it matters\nThe canvas is a shared environment that people both read and write: what you see is what others did. Coordination through a shared environment is called stigmergy (established; Grassé 1959 for termite nests, generalised by Heylighen 2016, see Appendix B). A network built from co-placement is the most direct way to see who coordinates with whom without anyone talking.",
+    "title": "5  Interactions",
+    "section": "5.2 Why it matters",
+    "text": "5.2 Why it matters\nThe canvas is a shared environment that people both read and write: what you see is what others did. Coordination through a shared environment is called stigmergy (established; Grassé 1959 for termite nests, generalised by Heylighen 2016, see Appendix B). A network built from co-placement is the most direct way to see who coordinates with whom without anyone talking.",
     "crumbs": [
       "Interactions",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Interactions</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Interactions</span>"
     ]
   },
   {
     "objectID": "chapters/04-interactions.html#plan",
     "href": "chapters/04-interactions.html#plan",
-    "title": "4  Interactions",
-    "section": "4.3 Plan",
-    "text": "4.3 Plan\n\nA bipartite network of accounts and pixels (an edge when an account places the pixel’s current colour).\nIts projection onto accounts, with weights that discount very busy pixels.\nNull: the configuration model (same degrees, random wiring), so that structure is only read in where it beats degree alone.",
+    "title": "5  Interactions",
+    "section": "5.3 Plan",
+    "text": "5.3 Plan\n\nA bipartite network of accounts and pixels (an edge when an account places the pixel’s current colour).\nIts projection onto accounts, with weights that discount very busy pixels.\nNull: the configuration model (same degrees, random wiring), so that structure is only read in where it beats degree alone.",
     "crumbs": [
       "Interactions",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Interactions</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Interactions</span>"
     ]
   },
   {
     "objectID": "chapters/05-borders.html",
     "href": "chapters/05-borders.html",
-    "title": "5  Domains and borders",
+    "title": "6  Domains and borders",
     "section": "",
-    "text": "5.1 The question\nDo borders on the canvas behave like physical interfaces? Two textbook pictures predict different things (established theory; see Appendix B):",
+    "text": "6.1 The question\nDo borders on the canvas behave like physical interfaces? Two textbook pictures predict different things (established theory; see Appendix B):",
     "crumbs": [
       "Domains and borders",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Domains and borders</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Domains and borders</span>"
     ]
   },
   {
     "objectID": "chapters/05-borders.html#the-question",
     "href": "chapters/05-borders.html#the-question",
-    "title": "5  Domains and borders",
+    "title": "6  Domains and borders",
     "section": "",
     "text": "In the voter model, where each site copies a random neighbour, borders stay rough and move without regard to their shape.\nIn curvature-driven systems (Ising-like), sharp convex corners erode and concave notches fill in.",
     "crumbs": [
       "Domains and borders",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Domains and borders</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Domains and borders</span>"
     ]
   },
   {
     "objectID": "chapters/05-borders.html#why-it-matters",
     "href": "chapters/05-borders.html#why-it-matters",
-    "title": "5  Domains and borders",
-    "section": "5.2 Why it matters",
-    "text": "5.2 Why it matters\nFlags make this testable. Their intended shapes are known (straight edges, right angles, a few curves), so damage can be measured against the intended outline. Two questions follow, both speculative but testable:\n\nDoes border motion depend on local curvature?\nDoes geometry change maintenance cost, the placements per unit time per unit border length needed to hold a shape? On a pixel grid a diagonal is a staircase of exposed corners, so it may cost more than a straight edge.",
+    "title": "6  Domains and borders",
+    "section": "6.2 Why it matters",
+    "text": "6.2 Why it matters\nFlags make this testable. Their intended shapes are known (straight edges, right angles, a few curves), so damage can be measured against the intended outline. Two questions follow, both speculative but testable:\n\nDoes border motion depend on local curvature?\nDoes geometry change maintenance cost, the placements per unit time per unit border length needed to hold a shape? On a pixel grid a diagonal is a staircase of exposed corners, so it may cost more than a straight edge.",
     "crumbs": [
       "Domains and borders",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Domains and borders</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Domains and borders</span>"
     ]
   },
   {
     "objectID": "chapters/05-borders.html#plan-and-cautions",
     "href": "chapters/05-borders.html#plan-and-cautions",
-    "title": "5  Domains and borders",
-    "section": "5.3 Plan and cautions",
-    "text": "5.3 Plan and cautions\n\nColour domains as connected regions of one colour; border length and border velocity over time.\nCurvature on a pixel grid is noisy and angle-dependent, so borders are smoothed and results checked against the smoothing scale.\nPopular artworks attract defenders whatever their shape; comparisons control for size and neighbours.",
+    "title": "6  Domains and borders",
+    "section": "6.3 Plan and cautions",
+    "text": "6.3 Plan and cautions\n\nColour domains as connected regions of one colour; border length and border velocity over time.\nCurvature on a pixel grid is noisy and angle-dependent, so borders are smoothed and results checked against the smoothing scale.\nPopular artworks attract defenders whatever their shape; comparisons control for size and neighbours.",
     "crumbs": [
       "Domains and borders",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Domains and borders</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Domains and borders</span>"
     ]
   },
   {
     "objectID": "chapters/06-cascades.html",
     "href": "chapters/06-cascades.html",
-    "title": "6  Cascades",
+    "title": "7  Cascades",
     "section": "",
-    "text": "6.1 The question\nAdd sand to a pile one grain at a time and mostly nothing happens, but sometimes a slide sweeps the pile. Earthquakes, neuronal activity and forest fires show events of all sizes with no typical scale. Do chains of overwrites on the canvas (one overwrite provoking nearby ones, which provoke more) have that kind of size distribution?",
+    "text": "7.1 The question\nAdd sand to a pile one grain at a time and mostly nothing happens, but sometimes a slide sweeps the pile. Earthquakes, neuronal activity and forest fires show events of all sizes with no typical scale. Do chains of overwrites on the canvas (one overwrite provoking nearby ones, which provoke more) have that kind of size distribution?",
     "crumbs": [
       "The whole canvas",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Cascades</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Cascades</span>"
     ]
   },
   {
     "objectID": "chapters/06-cascades.html#why-it-matters",
     "href": "chapters/06-cascades.html#why-it-matters",
-    "title": "6  Cascades",
-    "section": "6.2 Why it matters",
-    "text": "6.2 Why it matters\nIf they do, the exponents place r/place next to other systems and can be compared directly. If they do not, that is equally informative. Either answer is a number other fields can reuse.",
+    "title": "7  Cascades",
+    "section": "7.2 Why it matters",
+    "text": "7.2 Why it matters\nIf they do, the exponents place r/place next to other systems and can be compared directly. If they do not, that is equally informative. Either answer is a number other fields can reuse.",
     "crumbs": [
       "The whole canvas",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Cascades</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Cascades</span>"
     ]
   },
   {
     "objectID": "chapters/06-cascades.html#the-main-risk-built-in-from-the-start",
     "href": "chapters/06-cascades.html#the-main-risk-built-in-from-the-start",
-    "title": "6  Cascades",
-    "section": "6.3 The main risk, built in from the start",
-    "text": "6.3 The main risk, built in from the start\nHeavy-tailed plots are easy to fake. Thresholded random processes can produce straight lines on log–log axes without anything critical going on (established; Touboul and Destexhe 2010, see Appendix B). So:\n\nfit distributions by maximum likelihood and compare against alternatives (log-normal, exponential, stretched exponential), following Clauset, Shalizi and Newman (2009);\nrun the same cascade definition on time-shuffled and space-shuffled logs, which must not show the same tails;\nreport how the result depends on the space and time windows that link overwrites into a cascade.",
+    "title": "7  Cascades",
+    "section": "7.3 The main risk, built in from the start",
+    "text": "7.3 The main risk, built in from the start\nHeavy-tailed plots are easy to fake. Thresholded random processes can produce straight lines on log–log axes without anything critical going on (established; Touboul and Destexhe 2010, see Appendix B). So:\n\nfit distributions by maximum likelihood and compare against alternatives (log-normal, exponential, stretched exponential), following Clauset, Shalizi and Newman (2009);\nrun the same cascade definition on time-shuffled and space-shuffled logs, which must not show the same tails;\nreport how the result depends on the space and time windows that link overwrites into a cascade.",
     "crumbs": [
       "The whole canvas",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Cascades</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Cascades</span>"
     ]
   },
   {
     "objectID": "chapters/07-groups.html",
     "href": "chapters/07-groups.html",
-    "title": "7  Groups",
+    "title": "8  Groups",
     "section": "",
-    "text": "7.1 The question\nStep 1: are groups needed at all? Build a null where accounts act independently, each with its own activity and spatial preference, and no coordination. If it already reproduces the canvas’s spatial statistics (colour correlations over distance, clustering of overwrites), groups are unnecessary, and that is a finding.\nStep 2: if not, how many close the gap? Add K latent groups, each with a spatial footprint and colour preference, and choose K with a criterion that penalises complexity (description length, as in nonparametric stochastic block models; see Appendix B).",
+    "text": "8.1 The question\nStep 1: are groups needed at all? Build a null where accounts act independently, each with its own activity and spatial preference, and no coordination. If it already reproduces the canvas’s spatial statistics (colour correlations over distance, clustering of overwrites), groups are unnecessary, and that is a finding.\nStep 2: if not, how many close the gap? Add K latent groups, each with a spatial footprint and colour preference, and choose K with a criterion that penalises complexity (description length, as in nonparametric stochastic block models; see Appendix B).",
     "crumbs": [
       "The whole canvas",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Groups</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Groups</span>"
     ]
   },
   {
     "objectID": "chapters/07-groups.html#cautions",
     "href": "chapters/07-groups.html#cautions",
-    "title": "7  Groups",
-    "section": "7.2 Cautions",
-    "text": "7.2 Cautions\n\nK is not one number. A flag inside a country inside a region is a hierarchy, so K is reported as a curve against resolution.\nGroups are found among accounts, not in the image: artworks can be scattered, and one white background can be painted by many groups.\nThe community Atlas of artworks is only partial ground truth: it describes the final canvas and misses groups whose work was erased.",
+    "title": "8  Groups",
+    "section": "8.2 Cautions",
+    "text": "8.2 Cautions\n\nK is not one number. A flag inside a country inside a region is a hierarchy, so K is reported as a curve against resolution.\nGroups are found among accounts, not in the image: artworks can be scattered, and one white background can be painted by many groups.\nThe community Atlas of artworks is only partial ground truth: it describes the final canvas and misses groups whose work was erased.",
     "crumbs": [
       "The whole canvas",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Groups</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Groups</span>"
     ]
   },
   {
     "objectID": "chapters/08-baselines.html",
     "href": "chapters/08-baselines.html",
-    "title": "8  Baselines",
+    "title": "9  Baselines",
     "section": "",
-    "text": "8.1 The question\nMinimal models from statistical physics predict how competing regions behave with no strategy at all: the voter model (copy a neighbour), the Potts model (many colours, local alignment), and Axelrod’s model of cultural dissemination. If one of them reproduces the canvas’s statistics, the social story is thinner than it looks. If they fail, we can say exactly where human behaviour departs from them.",
+    "text": "9.1 The question\nMinimal models from statistical physics predict how competing regions behave with no strategy at all: the voter model (copy a neighbour), the Potts model (many colours, local alignment), and Axelrod’s model of cultural dissemination. If one of them reproduces the canvas’s statistics, the social story is thinner than it looks. If they fail, we can say exactly where human behaviour departs from them.",
     "crumbs": [
       "The whole canvas",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Baselines</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Baselines</span>"
     ]
   },
   {
     "objectID": "chapters/08-baselines.html#why-it-matters",
     "href": "chapters/08-baselines.html#why-it-matters",
-    "title": "8  Baselines",
-    "section": "8.2 Why it matters",
-    "text": "8.2 Why it matters\nThese baselines are what turn a description into an explanation. A model that reproduces the measurements of the earlier chapters, with few parameters, is a candidate mechanism; prediction alone is not.",
+    "title": "9  Baselines",
+    "section": "9.2 Why it matters",
+    "text": "9.2 Why it matters\nThese baselines are what turn a description into an explanation. A model that reproduces the measurements of the earlier chapters, with few parameters, is a candidate mechanism; prediction alone is not.",
     "crumbs": [
       "The whole canvas",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Baselines</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Baselines</span>"
     ]
   },
   {
     "objectID": "chapters/08-baselines.html#cautions",
     "href": "chapters/08-baselines.html#cautions",
-    "title": "8  Baselines",
-    "section": "8.3 Cautions",
-    "text": "8.3 Cautions\n\nr/place is not a clean relaxation to equilibrium: 16 colours, three days, a canvas that fills from blank.\nA failure to see textbook behaviour is informative only if we can say why the conditions differ.",
+    "title": "9  Baselines",
+    "section": "9.3 Cautions",
+    "text": "9.3 Cautions\n\nr/place is not a clean relaxation to equilibrium: 16 colours, three days, a canvas that fills from blank.\nA failure to see textbook behaviour is informative only if we can say why the conditions differ.",
     "crumbs": [
       "The whole canvas",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Baselines</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Baselines</span>"
     ]
   },
   {
@@ -469,11 +524,22 @@
     ]
   },
   {
+    "objectID": "chapters/a2-reading.html#human-mobility",
+    "href": "chapters/a2-reading.html#human-mobility",
+    "title": "Appendix B — Reading list",
+    "section": "B.6 Human mobility",
+    "text": "B.6 Human mobility\n\nBrockmann, D., Hufnagel, L., Geisel, T. (2006). The scaling laws of human travel. Nature 439(7075), 462–465. doi:10.1038/nature04292\nGonzález, M. C., Hidalgo, C. A., Barabási, A.-L. (2008). Understanding individual human mobility patterns. Nature 453(7196), 779–782. doi:10.1038/nature06958\nSong, C., Koren, T., Wang, P., Barabási, A.-L. (2010). Modelling the scaling properties of human mobility. Nature Physics 6(10), 818–823. doi:10.1038/nphys1760",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>B</span>  <span class='chapter-title'>Reading list</span>"
+    ]
+  },
+  {
     "objectID": "chapters/a2-reading.html#how-many-groups",
     "href": "chapters/a2-reading.html#how-many-groups",
     "title": "Appendix B — Reading list",
-    "section": "B.6 How many groups",
-    "text": "B.6 How many groups\n\nPeixoto, T. P. (2014). Hierarchical block structures and high-resolution model selection in large networks. Physical Review X 4(1), 011047. doi:10.1103/PhysRevX.4.011047",
+    "section": "B.7 How many groups",
+    "text": "B.7 How many groups\n\nPeixoto, T. P. (2014). Hierarchical block structures and high-resolution model selection in large networks. Physical Review X 4(1), 011047. doi:10.1103/PhysRevX.4.011047",
     "crumbs": [
       "Appendices",
       "<span class='chapter-number'>B</span>  <span class='chapter-title'>Reading list</span>"
