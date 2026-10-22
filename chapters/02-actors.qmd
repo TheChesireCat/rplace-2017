@@ -485,7 +485,155 @@ roughly the crowd's distribution of waits (a third null); and their waits have w
 All three beat a null and hold across history lengths; all are provisional until checked across the cooldown periods
 and day and night. The likely mechanism, sessions broken by sleep and the rest of life, is a hypothesis; the next step
 is to split each account's history into sessions and look at session lengths and the gaps between them. Whether the
-waits have a heavy tail, and of what kind, is a separate question with its own nulls, left for a later section.
+waits have a heavy tail, and of what kind, is the next section's question.
+
+## Do the waits have a heavy tail?
+
+A distribution with a "heavy tail" has rare but very large values far more often than an exponential would. A
+*power-law* tail, $P(X \geq x) \propto x^{1-\alpha}$, is the strongest version, and it is what "bursty" human activity is
+often said to show. Claims of power laws are also easy to get wrong: thresholded random processes can draw straight
+lines on log–log axes (Touboul and Destexhe 2010), and a mixture of people who wait at different rates makes a heavy
+pooled tail with no single heavy-tailed person in it. So the question here has three parts: is there a power-law
+region at all; does a power law describe it better than the usual alternatives; and does it go beyond what differences
+in rate between accounts would produce on their own. This section is **exploratory**.
+
+**What we fit.** The *extra* wait $e$ = gap minus the cooldown in force, in seconds, which removes the hard floor; only
+gaps that start and end in the same cooldown period; only $e > 0$ (the few gaps at or below the wait, under 1.5% in
+every period, are dropped).
+
+**How.** The method of Clauset, Shalizi and Newman (2009): fit a power law above a cutoff $x_\text{min}$ by maximum
+likelihood, choose $x_\text{min}$ by the smallest Kolmogorov–Smirnov distance $D$, and compare against four
+alternatives above the same cutoff by likelihood ratio (Vuong 1989). The usual software refits at every distinct
+value, which does not finish on 12 million waits; `rplace17.tails` does the same computation with sorted arrays and
+running sums, in seconds. First, the method is checked on data whose answer we know.
+
+```{python}
+from rplace17 import tails
+rng_c = np.random.default_rng(1)
+body = rng_c.lognormal(2.5, 0.6, 400_000); body = body[body < 60][:150_000]
+pure = np.concatenate([body, 60 * (1 - rng_c.random(150_000)) ** (-1 / 1.5)])       # power law above 60, alpha = 2.5
+logn = rng_c.lognormal(3.0, 1.0, 300_000)                                             # no power law at all
+rows = []
+for label, x in (("power law above 60, alpha 2.5", pure), ("lognormal", logn)):
+    f = tails.fit(x)
+    c = tails.compare(x, f)
+    get = lambda m, col: c.filter(pl.col("model") == m)[col][0]
+    rows.append({"control": label, "xmin": f"{f.xmin:.0f}", "alpha": f"{f.alpha:.2f}", "xmin at search edge": f.at_boundary,
+                 "R vs lognormal": f"{get('lognormal', 'normalised R'):+.1f}", "R vs stretched exp.": f"{get('stretched exponential', 'normalised R'):+.1f}"})
+r.table(pl.DataFrame(rows))
+```
+
+On the power-law control the fit recovers $\alpha$ and the alternatives do not beat it (a normalised $R$ near zero
+means the two cannot be told apart; negative favours the alternative). On the lognormal control the cutoff runs to the
+edge of the search, a sign that no stable power-law region exists, and the alternatives win.
+
+Now the data, split by cooldown period, by account activity, and by time of day. For each split, the same fit on a
+**null**: every account's extra waits replaced by exponential draws with that account's own mean, cut off at the
+length of the event as the real waits are. The null contains
+the differences in rate between accounts and nothing else, so a tail it also produces is not evidence of heavy-tailed
+people.
+
+```{python}
+k_acc = d.group_by("user_id").len().rename({"len": "k"})
+clean = (gaps.filter(pl.col("wait_start") == pl.col("wait_end"))
+             .with_columns((pl.col("gap_s") - pl.col("wait_end")).alias("e"),
+                           pl.when(pl.col("wait_end") == 603).then(600).otherwise(pl.col("wait_end")).alias("period"),
+                           ((pl.col("t_prev") // 3_600_000_000) % 24).alias("hr"))
+             .filter(pl.col("e") > 0).join(k_acc, on="user_id"))
+by_hour = d.group_by(((pl.col("t_us") // 3_600_000_000) % 24).alias("hr")).len().sort("len", descending=True)
+peak = by_hour["hr"].head(8).to_list()                        # the 8 busiest hours of the day (UTC)
+five = clean.filter(pl.col("period") == 300)
+splits = [("5 min", five), ("10 min", clean.filter(pl.col("period") == 600)), ("20 min", clean.filter(pl.col("period") == 1200))]
+splits += [(f"5 min, {band_name(lo, hi)} placements", five.filter((pl.col("k") >= lo) & (pl.col("k") < (hi or 10**9))))
+           for lo, hi in BANDS[1:]]
+splits += [("5 min, busiest 8 hours", five.filter(pl.col("hr").is_in(peak)))]
+
+rows, fits = [], {}
+span_s = (d["t_us"].max() - r.LAUNCH_US) / 1e6          # no wait can be longer than the event
+for name, sub in splits:
+    null = tails.exponential_null(sub["e"].to_numpy(), sub["user_id"].to_numpy(), cap=span_s)
+    for kind, x in (("data", sub["e"].to_numpy()), ("null", null)):
+        f = tails.fit(x)
+        c, params = tails.compare(x, f, return_params=True)
+        fits[(name, kind)] = (x, f, params)
+        get = lambda m: c.filter(pl.col("model") == m)
+        rows.append({"split": name, "": kind, "gaps": f"{len(x):,}", "in tail": f"{f.n_tail:,}", "xmin (s)": f"{f.xmin:,.0f}",
+                     "alpha": f"{f.alpha:.2f}", "D": f"{f.D:.3f}", "decades": f"{f.decades:.1f}",
+                     "edge": "yes" if f.at_boundary else "",
+                     "R exp.": f"{get('exponential')['normalised R'][0]:+.0f}",
+                     "R lognormal": f"{get('lognormal')['normalised R'][0]:+.0f}",
+                     "R str. exp.": f"{get('stretched exponential')['normalised R'][0]:+.0f}",
+                     "p trunc. PL": f"{get('truncated power law')['p'][0]:.1g}"})
+r.table(pl.DataFrame(rows))
+```
+
+How to read the table: *edge* means the best cutoff is the largest candidate, so no stable tail was found; *decades*
+is how much range the fitted tail spans; the *R* columns are normalised likelihood ratios of the power law against
+each alternative (positive favours the power law); *p trunc. PL* tests the power law against the same law with an
+exponential cutoff (small favours the cutoff).
+
+```{python}
+#| label: fig-tail-ccdf
+#| fig-cap: "Extra waits in the busiest hours of the five-minute periods: the data's CCDF above its cutoff (dots), the fitted models (lines), and the per-account exponential null (grey)."
+x, f, params = fits[("5 min, busiest 8 hours", "data")]
+xn, fn, _ = fits[("5 min, busiest 8 hours", "null")]
+fig, ax = plt.subplots(figsize=(6.5, 4))
+cx, cp = tails.ccdf(x[x >= f.xmin]); ax.scatter(cx, cp, s=4, color="black", label="data")
+nx, npr = tails.ccdf(xn[xn >= f.xmin]); ax.plot(nx, npr, color="grey", lw=2, alpha=0.6, label="null (per-account exponential)")
+grid = np.geomspace(f.xmin, x.max(), 200)
+for name in ("power law", "lognormal", "stretched exponential", "exponential"):
+    ax.plot(grid, tails.model_ccdf(name, params[name], f.xmin, grid), lw=1.2, label=name)
+ax.set_xscale("log"); ax.set_yscale("log"); ax.set_ylim(cp.min() / 3, 1.5)
+ax.set_xlabel("extra wait (s)"); ax.set_ylabel("P(X ≥ x | X ≥ xmin)"); ax.legend(frameon=False, fontsize=8)
+plt.show()
+```
+
+```{python}
+#| label: fig-tail-scan
+#| fig-cap: "The fitted exponent at every candidate cutoff. A real power-law region would show a plateau in alpha over a range of cutoffs, with a low KS distance."
+fig, axes = plt.subplots(1, 2, figsize=(10, 3.4))
+for name in ("5 min", "5 min, busiest 8 hours", "5 min, 100-249 placements"):
+    sc = fits[(name, "data")][1].scan
+    axes[0].plot(sc["xmin"], sc["alpha"], label=name); axes[1].plot(sc["xmin"], sc["D"], label=name)
+for ax, lab in zip(axes, ("alpha", "KS distance D")):
+    ax.set_xscale("log"); ax.set_xlabel("candidate xmin (s)"); ax.set_ylabel(lab)
+axes[0].legend(frameon=False, fontsize=8)
+plt.show()
+```
+
+```{python}
+boot_rows = []
+for name in ("5 min, busiest 8 hours", "5 min, 100-249 placements"):
+    sub = dict(splits)[name]
+    b = tails.bootstrap_accounts(sub["e"].to_numpy(), sub["user_id"].to_numpy(), B=100)
+    boot_rows.append({"split": name, "alpha [95% CI, accounts resampled]": f"{fits[(name, 'data')][1].alpha:.2f} [{b['alpha_ci'][0]:.2f}, {b['alpha_ci'][1]:.2f}]",
+                      "xmin s [95% CI]": f"{fits[(name, 'data')][1].xmin:,.0f} [{b['xmin_ci'][0]:,.0f}, {b['xmin_ci'][1]:,.0f}]"})
+r.table(pl.DataFrame(boot_rows))
+```
+
+What the fits say:
+
+- **There is no power law.** In every split, the lognormal and the stretched exponential describe the tail better than
+  a power law, mostly by a wide margin, and the power law with an exponential cutoff always beats the pure one. The one
+  partial exception, the heaviest accounts, still favours the lognormal.
+- **The cutoff is unstable.** Pooled over all five-minute gaps, and for light accounts, the best cutoff sits at the
+  edge of the search: there is no stable tail. In the busiest hours and for heavy accounts the fit finds a long stretch
+  with $\alpha$ between about 1.4 and 1.8 over two to three decades, but $\alpha$ rises steadily with the cutoff
+  (@fig-tail-scan), with no plateau, and the alternatives still win. The KS distance has two separate minima, near a
+  few hundred seconds and near half a day, and resampling accounts moves the chosen cutoff between them, which is why
+  the busiest-hours interval for $x_\text{min}$ is so wide.
+- **Rate differences alone make a heavy-looking tail.** The per-account exponential null, which has no heavy-tailed
+  person in it, itself produces apparent power-law tails, with $\alpha$ of about 2.4 to 5 over about one decade.
+  Where the data find a long tail it is heavier than the null's, so the data's waits are broader than rate differences
+  alone produce, which agrees with the burstiness results above.
+- **The range is short.** The event lasted three days, so extra waits are cut off at a few tens of hours; a truncated
+  form wins partly for that reason alone. Only accounts with at least two placements contribute waits.
+
+**How far this goes.** Exploratory, and descriptive: the waits are broad and heavier than a mixture of exponential
+waiters, but not power-law; a lognormal or stretched-exponential shape fits better everywhere. This is consistent
+with the burstiness results and does not add a new mechanism. With more than ten million waits every simple model is
+rejected by a goodness-of-fit test, so we report the model comparisons and the plots instead of a bootstrap p-value
+for the fit.
 
 ## What this chapter sets up
 

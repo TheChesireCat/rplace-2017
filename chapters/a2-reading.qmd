@@ -35,6 +35,8 @@ Works the chapters lean on. Every entry's metadata was checked against its DOI r
   Review Letters* 59(4), 381–384. [doi:10.1103/PhysRevLett.59.381](https://doi.org/10.1103/PhysRevLett.59.381)
 - Clauset, A., Shalizi, C. R., Newman, M. E. J. (2009). Power-law distributions in empirical data. *SIAM Review*
   51(4), 661–703. [doi:10.1137/070710111](https://doi.org/10.1137/070710111)
+- Vuong, Q. H. (1989). Likelihood ratio tests for model selection and non-nested hypotheses. *Econometrica* 57(2), 307.
+  [doi:10.2307/1912557](https://doi.org/10.2307/1912557)
 - Touboul, J., Destexhe, A. (2010). Can power-law scaling and neuronal avalanches arise from stochastic dynamics?
   *PLoS ONE* 5(2), e8982. [doi:10.1371/journal.pone.0008982](https://doi.org/10.1371/journal.pone.0008982)
 

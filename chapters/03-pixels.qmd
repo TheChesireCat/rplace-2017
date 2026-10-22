@@ -331,15 +331,17 @@ r.table(pl.DataFrame([
 The mechanical channel is real but small. The intact share does fall after tightenings and rise after loosenings, but
 the prediction moves far less than what was observed; at switch 3, for example, it predicts
 `{python} own['predicted after'][2]` against an observed `{python} own['own after'][2].split('= ')[1]`. The part left
-over still follows the direction of the switch at most switches, but not significantly. (A cruder check, comparing
+over still follows the direction of the switch at most switches (p = `{python} f"{resid_p:.3f}"`): suggestive, not
+significant. (A cruder check, comparing
 placements on pixels of the same age, was too thin to say anything.) Subtracting each switch's
-placebo change, to remove clock-time trends such as the daily cycle, weakens it further. Neither comparison was
+placebo change, to remove clock-time trends such as the daily cycle, weakens it further (p = `{python} f"{adj_p:.3f}"`). Neither comparison was
 pre-registered.
 
 **How far this goes.** The pre-registered test passed, and the result holds across windows and for the same accounts,
 but three switches fail the pre-trend check at the main window. On the scale where it is visible, the effect is a
 halving or so of changes to one's own pixel after a tightening, carried by small counts. The simplest mechanical
-account explains only a small part of it, and what is left does not survive the placebo adjustment. So: an effect in
+account explains only a small part of it; what is left is suggestive at best, and weaker still after the placebo
+adjustment. So: an effect in
 the pre-registered direction, not explained by the obvious mechanism, and not yet distinguishable from clock-time
 trends. We do not call it a change in behaviour.
 
