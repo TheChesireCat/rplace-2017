@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>r/place 2017 as a complex system - 5&nbsp; Interactions</title>
+<title>r/place 2017 as a complex system - Appendix C — Glossary</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../chapters/05-borders.html" rel="next">
-<link href="../chapters/04-movement.html" rel="prev">
+<link href="../chapters/a2-reading.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -71,6 +70,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -83,7 +111,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/04-interactions.html">Interactions</a></li><li class="breadcrumb-item"><a href="../chapters/04-interactions.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Interactions</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/a1-regenerate.html">Appendices</a></li><li class="breadcrumb-item"><a href="../chapters/a3-glossary.html"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Glossary</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -197,7 +225,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/04-interactions.html" class="sidebar-item-text sidebar-link active">
+  <a href="../chapters/05-interactions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
   </div>
 </li>
@@ -214,7 +242,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/05-borders.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/06-borders.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Domains and borders</span></span></a>
   </div>
 </li>
@@ -231,19 +259,19 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/06-cascades.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/07-cascades.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Cascades</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/07-groups.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/08-groups.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Groups</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/08-baselines.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/09-baselines.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Baselines</span></span></a>
   </div>
 </li>
@@ -270,6 +298,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Reading list</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/a3-glossary.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -278,22 +312,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#the-question" id="toc-the-question" class="nav-link active" data-scroll-target="#the-question"><span class="header-section-number">5.1</span> The question</a></li>
-  <li><a href="#why-it-matters" id="toc-why-it-matters" class="nav-link" data-scroll-target="#why-it-matters"><span class="header-section-number">5.2</span> Why it matters</a></li>
-  <li><a href="#plan" id="toc-plan" class="nav-link" data-scroll-target="#plan"><span class="header-section-number">5.3</span> Plan</a></li>
-  </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/TheChesireCat/rplace-2017/blob/main/chapters/04-interactions.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/TheChesireCat/rplace-2017/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/04-interactions.html">Interactions</a></li><li class="breadcrumb-item"><a href="../chapters/04-interactions.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Interactions</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/a1-regenerate.html">Appendices</a></li><li class="breadcrumb-item"><a href="../chapters/a3-glossary.html"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Glossary</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span id="sec-interactions" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Interactions</span></span></h1>
+<h1 class="title"><span id="sec-glossary" class="quarto-section-identifier">Appendix C — Glossary</span></h1>
 </div>
 
 
@@ -310,38 +336,24 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This chapter is planned: it states the question and the method. Results will replace the plan as the analysis is done.</p>
-</div>
-</div>
-<p>Up to here every account acted alone. The next rung asks who works with whom, and who against whom, using only where and when people placed.</p>
-<section id="the-question" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="the-question"><span class="header-section-number">5.1</span> The question</h2>
-<p>Two accounts that keep placing the same colour on the same pixels are probably working together; two that keep undoing each other are probably not. Can the log alone recover a network of collaboration and conflict?</p>
-</section>
-<section id="why-it-matters" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="why-it-matters"><span class="header-section-number">5.2</span> Why it matters</h2>
-<p>The canvas is a shared environment that people both read and write: what you see is what others did. Coordination through a shared environment is called <strong>stigmergy</strong> (<em>established</em>; Grassé 1959 for termite nests, generalised by Heylighen 2016, see <a href="a2-reading.html" class="quarto-xref"><span>Appendix B</span></a>). A network built from co-placement is the most direct way to see who coordinates with whom without anyone talking.</p>
-</section>
-<section id="plan" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="plan"><span class="header-section-number">5.3</span> Plan</h2>
-<ul>
-<li>A bipartite network of accounts and pixels (an edge when an account places the pixel’s current colour).</li>
-<li>Its projection onto accounts, with weights that discount very busy pixels.</li>
-<li><strong>Null:</strong> the configuration model (same degrees, random wiring), so that structure is only read in where it beats degree alone.</li>
-</ul>
+<p><strong>Burstiness (<span class="math inline">\(B\)</span>).</strong> <span class="math inline">\((\sigma - \mu) / (\sigma + \mu)\)</span> for the gaps between one account’s actions: −1 is a perfect clock, 0 a Poisson process, near 1 very bursty. It uses only the mean and spread of the gaps, not their order.</p>
+<p><strong>CCDF.</strong> The complementary cumulative distribution, <span class="math inline">\(P(X \geq x)\)</span>: the share of values at least <span class="math inline">\(x\)</span>. Plotted on log scales, it shows tails without any choice of bins.</p>
+<p><strong>Censoring.</strong> A value known only to exceed something, e.g.&nbsp;a colour still showing when the event closed: its lifetime is at least the time until the close. Survival estimates must treat such values correctly (Kaplan–Meier does).</p>
+<p><strong>Cooldown.</strong> The wait r/place imposed between an account’s placements. In 2017 it changed during the event (<a href="02-actors.html" class="quarto-xref"><span>Chapter 2</span></a>).</p>
+<p><strong>Domain.</strong> A connected region of one colour. Its edge is a <strong>border</strong> or interface.</p>
+<p><strong>Heavy tail.</strong> A distribution with large values far more often than an exponential would give. A <strong>power law</strong>, <span class="math inline">\(P(X \geq x) \propto x^{1-\alpha}\)</span>, is the strongest kind; lognormal and stretched-exponential tails are heavy but less so.</p>
+<p><strong>Kaplan–Meier estimator.</strong> The standard estimate of a survival curve from durations, some of them censored.</p>
+<p><strong>Likelihood ratio (Vuong’s test).</strong> Compares how well two fitted distributions explain the same data. Normalised, it is roughly a z-score: far from zero means one distribution is clearly better.</p>
+<p><strong>Lévy flight.</strong> A random walk whose step lengths follow a power law, so that rare very long jumps dominate the spread.</p>
+<p><strong>Memory coefficient (<span class="math inline">\(M\)</span>).</strong> The correlation between consecutive gaps of one account: positive when long gaps follow long gaps.</p>
+<p><strong>Null model.</strong> A version of the data, or a model, that keeps some features and destroys the one being tested. A result “beats a null” when the null does not reproduce it.</p>
+<p><strong>Pre-registration.</strong> Writing down the test, threshold and data before computing the outcome, and committing it with a timestamp. It protects against choosing the test after seeing the result.</p>
+<p><strong>Radius of gyration.</strong> The root-mean-square distance of an account’s placements from their centre: the size of its footprint.</p>
+<p><strong>Sign-flip test.</strong> An exact test for whether changes across several events share a sign: under the null each change is equally likely to be positive or negative, so all <span class="math inline">\(2^n\)</span> sign patterns are equally likely.</p>
+<p><strong>Stigmergy.</strong> Coordination through a shared environment: agents read the state others left and act on it, as termites do with a nest, or r/place users with the canvas.</p>
+<p><strong>Wasted placement.</strong> One that repaints a pixel with the colour it already has, so nothing visible changes.</p>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -899,14 +911,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../chapters/04-movement.html" class="pagination-link" aria-label="Where people go">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Where people go</span></span>
+      <a href="../chapters/a2-reading.html" class="pagination-link" aria-label="Reading list">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Reading list</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../chapters/05-borders.html" class="pagination-link" aria-label="Domains and borders">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Domains and borders</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
@@ -914,4 +923,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/TheChesireCat/rplace-2017/blob/main/chapters/04-interactions.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/TheChesireCat/rplace-2017/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/TheChesireCat/rplace-2017/blob/main/chapters/a3-glossary.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/TheChesireCat/rplace-2017/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

@@ -234,7 +234,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/04-interactions.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/05-interactions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
   </div>
 </li>
@@ -251,7 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/05-borders.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/06-borders.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Domains and borders</span></span></a>
   </div>
 </li>
@@ -268,19 +268,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/06-cascades.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/07-cascades.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Cascades</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/07-groups.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/08-groups.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Groups</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/08-baselines.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/09-baselines.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Baselines</span></span></a>
   </div>
 </li>
@@ -307,6 +307,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Reading list</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/a3-glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -324,6 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#when-it-happened" id="toc-when-it-happened" class="nav-link" data-scroll-target="#when-it-happened"><span class="header-section-number">1.3</span> When it happened</a></li>
   <li><a href="#the-canvas-drawn-from-the-log" id="toc-the-canvas-drawn-from-the-log" class="nav-link" data-scroll-target="#the-canvas-drawn-from-the-log"><span class="header-section-number">1.4</span> The canvas, drawn from the log</a></li>
   <li><a href="#how-much-of-the-history-survives" id="toc-how-much-of-the-history-survives" class="nav-link" data-scroll-target="#how-much-of-the-history-survives"><span class="header-section-number">1.5</span> How much of the history survives</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">1.6</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/TheChesireCat/rplace-2017/blob/main/chapters/01-data.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/TheChesireCat/rplace-2017/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -352,7 +359,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Before asking how the canvas behaves, we need to know exactly what was recorded. This chapter loads the log, looks at what one record is, lists what is odd about it, and draws the canvas from it. Nothing here is a finding about people yet; it is the ground the rest of the book stands on.</p>
 <section id="one-placement-is-one-row" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="one-placement-is-one-row"><span class="header-section-number">1.1</span> One placement is one row</h2>
-<div id="575061c9" class="cell" data-execution_count="1">
+<div id="4d80d3a2" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -436,7 +443,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>x</code>, <code>y</code>: where, with <code>(0, 0)</code> at the top left.</li>
 <li><code>color</code>: which of the 16 colours, as an index into the palette.</li>
 </ul>
-<div id="e527c1be" class="cell" data-execution_count="2">
+<div id="548d023f" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pal <span class="op">=</span> r.palette()</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">0.9</span>))</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ax.imshow(r.palette_rgb()[<span class="va">None</span>, :, :], aspect<span class="op">=</span><span class="st">"auto"</span>)</span>
@@ -451,7 +458,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="72d47e41" class="cell" data-execution_count="3">
+<div id="2de62784" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n_rows, n_users <span class="op">=</span> d.height, d[<span class="st">"user_id"</span>].n_unique()</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>n_rows<span class="sc">:,}</span><span class="ss"> placements by </span><span class="sc">{</span>n_users<span class="sc">:,}</span><span class="ss"> accounts"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -463,7 +470,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="what-is-odd-about-the-log" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="what-is-odd-about-the-log"><span class="header-section-number">1.2</span> What is odd about the log</h2>
 <p>A dataset should be checked before it is trusted. These checks compare the log with what the rules say should be possible.</p>
-<div id="c1de2422" class="cell" data-execution_count="4">
+<div id="e362b498" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>full <span class="op">=</span> r.load(drop_missing<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>dup <span class="op">=</span> full.height <span class="op">-</span> full.unique().height</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>missing <span class="op">=</span> full[<span class="st">"x"</span>].null_count()</span>
@@ -482,32 +489,69 @@ x range 0..1000, y range 0..1000</code></pre>
 <ul>
 <li><strong>3 rows have no coordinates</strong> or colour. They are dated weeks after the event; we drop them.</li>
 <li><strong>304 rows are exact duplicates</strong> (same time, account, pixel and colour). We keep them, because we cannot tell a logging artefact from a real double click.</li>
-<li><strong>3,256 rows sit at coordinate 1000</strong>, one past the edge of a 1000 × 1000 canvas. We keep them and draw a 1001 × 1001 canvas.</li>
+<li><strong>3,256 rows sit at coordinate 1000</strong>, one past the edge of a 1000 × 1000 canvas (whose coordinates would run 0 to 999). We keep them, so in the rest of the book the canvas is 1001 × 1001 pixels, coordinates 0 to 1000. The difference matters only for distances near the corners (<a href="04-movement.html" class="quarto-xref"><span>Chapter 4</span></a>).</li>
 </ul>
+<p>How many placements and accounts there are depends on these choices. Papers using the same release report slightly different totals for this reason, so here are ours at each step:</p>
+<div id="674433d5" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>steps <span class="op">=</span> [(<span class="st">"every row in the release"</span>, full),</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>         (<span class="st">"with coordinates"</span>, d),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>         (<span class="st">"from the launch hour on"</span>, d.<span class="bu">filter</span>(pl.col(<span class="st">"t_us"</span>) <span class="op">&gt;=</span> r.LAUNCH_US))]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame([{<span class="st">"rows"</span>: label, <span class="st">"placements"</span>: <span class="ss">f"</span><span class="sc">{</span>x<span class="sc">.</span>height<span class="sc">:,}</span><span class="ss">"</span>, <span class="st">"accounts"</span>: <span class="ss">f"</span><span class="sc">{</span>x[<span class="st">'user_id'</span>]<span class="sc">.</span>n_unique()<span class="sc">:,}</span><span class="ss">"</span>}</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                      <span class="cf">for</span> label, x <span class="kw">in</span> steps]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th>rows</th>
+<th>placements</th>
+<th>accounts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>every row in the release</td>
+<td>16,567,567</td>
+<td>1,166,940</td>
+</tr>
+<tr class="even">
+<td>with coordinates</td>
+<td>16,567,564</td>
+<td>1,166,938</td>
+</tr>
+<tr class="odd">
+<td>from the launch hour on</td>
+<td>16,559,298</td>
+<td>1,166,794</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Chapters 2 to 4 use the last line.</p>
 </section>
 <section id="when-it-happened" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="when-it-happened"><span class="header-section-number">1.3</span> When it happened</h2>
-<div id="413c303f" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>hourly <span class="op">=</span> (d.with_columns(pl.from_epoch(<span class="st">"t_us"</span>, time_unit<span class="op">=</span><span class="st">"us"</span>).dt.truncate(<span class="st">"1h"</span>).alias(<span class="st">"hour"</span>))</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>            .group_by(<span class="st">"hour"</span>).<span class="bu">len</span>().sort(<span class="st">"hour"</span>))</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>launch <span class="op">=</span> hourly.<span class="bu">filter</span>(pl.col(<span class="st">"len"</span>) <span class="op">&gt;</span> <span class="dv">10_000</span>)[<span class="st">"hour"</span>].<span class="bu">min</span>()   <span class="co"># the first hour with more than 10,000 placements</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> hourly.<span class="bu">filter</span>(pl.col(<span class="st">"hour"</span>) <span class="op">==</span> launch)[<span class="st">"hour"</span>].dt.epoch(<span class="st">"us"</span>)[<span class="dv">0</span>] <span class="op">==</span> r.LAUNCH_US  <span class="co"># = rplace17.LAUNCH</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>end <span class="op">=</span> hourly[<span class="st">"hour"</span>].<span class="bu">max</span>()</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>pre <span class="op">=</span> d.<span class="bu">filter</span>(pl.from_epoch(<span class="st">"t_us"</span>, time_unit<span class="op">=</span><span class="st">"us"</span>) <span class="op">&lt;</span> launch)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"launch hour:"</span>, launch, <span class="st">" last hour:"</span>, end)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"before launch: </span><span class="sc">{</span>pre<span class="sc">.</span>height<span class="sc">:,}</span><span class="ss"> placements by </span><span class="sc">{</span>pre[<span class="st">'user_id'</span>]<span class="sc">.</span>n_unique()<span class="sc">}</span><span class="ss"> accounts"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="4ed969a6" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>hourly <span class="op">=</span> (d.with_columns(pl.from_epoch(<span class="st">"t_us"</span>, time_unit<span class="op">=</span><span class="st">"us"</span>).dt.truncate(<span class="st">"1h"</span>).alias(<span class="st">"hour"</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>            .group_by(<span class="st">"hour"</span>).<span class="bu">len</span>().sort(<span class="st">"hour"</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>launch <span class="op">=</span> hourly.<span class="bu">filter</span>(pl.col(<span class="st">"len"</span>) <span class="op">&gt;</span> <span class="dv">10_000</span>)[<span class="st">"hour"</span>].<span class="bu">min</span>()   <span class="co"># the first hour with more than 10,000 placements</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> hourly.<span class="bu">filter</span>(pl.col(<span class="st">"hour"</span>) <span class="op">==</span> launch)[<span class="st">"hour"</span>].dt.epoch(<span class="st">"us"</span>)[<span class="dv">0</span>] <span class="op">==</span> r.LAUNCH_US  <span class="co"># = rplace17.LAUNCH</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>end <span class="op">=</span> hourly[<span class="st">"hour"</span>].<span class="bu">max</span>()</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>pre <span class="op">=</span> d.<span class="bu">filter</span>(pl.from_epoch(<span class="st">"t_us"</span>, time_unit<span class="op">=</span><span class="st">"us"</span>) <span class="op">&lt;</span> launch)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"launch hour:"</span>, launch, <span class="st">" last hour:"</span>, end)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"before launch: </span><span class="sc">{</span>pre<span class="sc">.</span>height<span class="sc">:,}</span><span class="ss"> placements by </span><span class="sc">{</span>pre[<span class="st">'user_id'</span>]<span class="sc">.</span>n_unique()<span class="sc">}</span><span class="ss"> accounts"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>launch hour: 2017-03-31 17:00:00  last hour: 2017-04-03 16:00:00
 before launch: 8,266 placements by 768 accounts</code></pre>
 </div>
 </div>
-<div id="cell-fig-hourly" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">3</span>))</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ax.plot(hourly[<span class="st">"hour"</span>], hourly[<span class="st">"len"</span>], lw<span class="op">=</span><span class="fl">1.2</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>ax.axvline(launch, ls<span class="op">=</span><span class="st">"--"</span>, color<span class="op">=</span><span class="st">"grey"</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>ax.set_yscale(<span class="st">"log"</span>)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"placements per hour"</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-fig-hourly" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">3</span>))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>ax.plot(hourly[<span class="st">"hour"</span>], hourly[<span class="st">"len"</span>], lw<span class="op">=</span><span class="fl">1.2</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>ax.axvline(launch, ls<span class="op">=</span><span class="st">"--"</span>, color<span class="op">=</span><span class="st">"grey"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>ax.set_yscale(<span class="st">"log"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"placements per hour"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="fig-hourly" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -526,11 +570,11 @@ Figure&nbsp;1.1: Placements per hour. The dashed line is the launch hour (the fi
 <section id="the-canvas-drawn-from-the-log" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="the-canvas-drawn-from-the-log"><span class="header-section-number">1.4</span> The canvas, drawn from the log</h2>
 <p>The canvas at any moment is just each pixel’s latest colour. <code>canvas_at</code> keeps, for every pixel, the last placement up to a time and paints it; pixels nobody touched stay white.</p>
-<div id="cell-fig-final" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>ax.imshow(r.canvas_at(d))</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>ax.set_axis_off()</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-fig-final" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>ax.imshow(r.canvas_at(d))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>ax.set_axis_off()</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="fig-final" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -545,13 +589,13 @@ Figure&nbsp;1.2: The canvas after the last placement, rebuilt from the log.
 </div>
 </div>
 <p>The same function, called at earlier times, shows the canvas filling in.</p>
-<div id="cell-fig-snapshots" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>t0 <span class="op">=</span> r.LAUNCH_US</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">4</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="fl">3.3</span>))</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, hours <span class="kw">in</span> <span class="bu">zip</span>(axes, [<span class="dv">1</span>, <span class="dv">6</span>, <span class="dv">24</span>, <span class="dv">48</span>]):</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    ax.imshow(r.canvas_at(d, t0 <span class="op">+</span> hours <span class="op">*</span> <span class="dv">3_600_000_000</span>))</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"+</span><span class="sc">{</span>hours<span class="sc">}</span><span class="ss"> h"</span>)<span class="op">;</span> ax.set_axis_off()</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-fig-snapshots" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>t0 <span class="op">=</span> r.LAUNCH_US</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">4</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="fl">3.3</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, hours <span class="kw">in</span> <span class="bu">zip</span>(axes, [<span class="dv">1</span>, <span class="dv">6</span>, <span class="dv">24</span>, <span class="dv">48</span>]):</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    ax.imshow(r.canvas_at(d, t0 <span class="op">+</span> hours <span class="op">*</span> <span class="dv">3_600_000_000</span>))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"+</span><span class="sc">{</span>hours<span class="sc">}</span><span class="ss"> h"</span>)<span class="op">;</span> ax.set_axis_off()</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="fig-snapshots" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -568,16 +612,24 @@ Figure&nbsp;1.3: The canvas 1, 6, 24 and 48 hours after launch.
 </section>
 <section id="how-much-of-the-history-survives" class="level2" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="how-much-of-the-history-survives"><span class="header-section-number">1.5</span> How much of the history survives</h2>
-<div id="0eb3d420" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>touched <span class="op">=</span> d.select(<span class="st">"x"</span>, <span class="st">"y"</span>).unique().height</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"pixels ever placed: </span><span class="sc">{</span>touched<span class="sc">:,}</span><span class="ss"> of </span><span class="sc">{</span><span class="dv">1001</span> <span class="op">*</span> <span class="dv">1001</span><span class="sc">:,}</span><span class="ss">"</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"placements still visible at the end: at most </span><span class="sc">{</span>touched <span class="op">/</span> n_rows<span class="sc">:.1%}</span><span class="ss"> (one per pixel)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="c91e0382" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>touched <span class="op">=</span> d.select(<span class="st">"x"</span>, <span class="st">"y"</span>).unique().height</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"pixels ever placed: </span><span class="sc">{</span>touched<span class="sc">:,}</span><span class="ss"> of </span><span class="sc">{</span><span class="dv">1001</span> <span class="op">*</span> <span class="dv">1001</span><span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"placements still visible at the end: at most </span><span class="sc">{</span>touched <span class="op">/</span> n_rows<span class="sc">:.1%}</span><span class="ss"> (one per pixel)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>pixels ever placed: 998,779 of 1,002,001
 placements still visible at the end: at most 6.0% (one per pixel)</code></pre>
 </div>
 </div>
 <p>Only one placement per pixel can be visible at the end, so at most 6.0% of all placements survive into the final picture. The final image is the tip of the log; almost everything people did was later painted over. That is why the rest of the book works from the full sequence and not from snapshots.</p>
+</section>
+<section id="exercises" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="exercises"><span class="header-section-number">1.6</span> Exercises</h2>
+<ol type="1">
+<li>Draw the canvas at the moment of each change in the waiting rule (<a href="02-actors.html" class="quarto-xref"><span>Chapter 2</span></a> lists them). Does anything visible change at a switch?</li>
+<li>Find the pixel with the most placements. Plot its colour over time, as in the history table of <a href="03-pixels.html" class="quarto-xref"><span>Chapter 3</span></a>.</li>
+<li>The 3 rows without coordinates are dated weeks after the event. What else do those accounts have in common?</li>
+</ol>
 
 
 </section>

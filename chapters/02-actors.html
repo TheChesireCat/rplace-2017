@@ -260,7 +260,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/04-interactions.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/05-interactions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
   </div>
 </li>
@@ -277,7 +277,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/05-borders.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/06-borders.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Domains and borders</span></span></a>
   </div>
 </li>
@@ -294,19 +294,19 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/06-cascades.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/07-cascades.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Cascades</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/07-groups.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/08-groups.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Groups</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/08-baselines.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/09-baselines.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Baselines</span></span></a>
   </div>
 </li>
@@ -331,6 +331,12 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../chapters/a2-reading.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Reading list</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/a3-glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
   </div>
 </li>
       </ul>
@@ -358,7 +364,10 @@ window.Quarto = {
   <li><a href="#do-long-waits-follow-long-waits" id="toc-do-long-waits-follow-long-waits" class="nav-link" data-scroll-target="#do-long-waits-follow-long-waits"><span class="header-section-number">2.3.3</span> Do long waits follow long waits?</a></li>
   </ul></li>
   <li><a href="#do-the-waits-have-a-heavy-tail" id="toc-do-the-waits-have-a-heavy-tail" class="nav-link" data-scroll-target="#do-the-waits-have-a-heavy-tail"><span class="header-section-number">2.4</span> Do the waits have a heavy tail?</a></li>
-  <li><a href="#what-this-chapter-sets-up" id="toc-what-this-chapter-sets-up" class="nav-link" data-scroll-target="#what-this-chapter-sets-up"><span class="header-section-number">2.5</span> What this chapter sets up</a></li>
+  <li><a href="#sessions-and-breaks" id="toc-sessions-and-breaks" class="nav-link" data-scroll-target="#sessions-and-breaks"><span class="header-section-number">2.5</span> Sessions and breaks</a></li>
+  <li><a href="#do-very-regular-accounts-drive-any-of-this" id="toc-do-very-regular-accounts-drive-any-of-this" class="nav-link" data-scroll-target="#do-very-regular-accounts-drive-any-of-this"><span class="header-section-number">2.6</span> Do very regular accounts drive any of this?</a></li>
+  <li><a href="#what-this-chapter-sets-up" id="toc-what-this-chapter-sets-up" class="nav-link" data-scroll-target="#what-this-chapter-sets-up"><span class="header-section-number">2.7</span> What this chapter sets up</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">2.8</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/TheChesireCat/rplace-2017/blob/main/chapters/02-actors.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/TheChesireCat/rplace-2017/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -390,7 +399,7 @@ window.Quarto = {
 <li><strong>Burstiness.</strong> Human activity tends to come in bursts separated by long silences, not at a steady rate (<em>established</em>; Goh and Barabási 2008, see <a href="a2-reading.html" class="quarto-xref"><span>Appendix B</span></a>). r/place adds a hard rule: after each pixel you must wait. Does the rule make people regular, or are they still bursty above it?</li>
 </ul>
 <p>On the way we find that the rule itself was not fixed.</p>
-<div id="29e29db6" class="cell" data-execution_count="1">
+<div id="469cbb96" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -400,7 +409,7 @@ window.Quarto = {
 </div>
 <section id="how-much-people-place" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="how-much-people-place"><span class="header-section-number">2.1</span> How much people place</h2>
-<div id="a6b426cf" class="cell" data-execution_count="2">
+<div id="404cac3c" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> d.group_by(<span class="st">"user_id"</span>).<span class="bu">len</span>()[<span class="st">"len"</span>].to_numpy()</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(k)<span class="sc">:,}</span><span class="ss"> accounts; mean </span><span class="sc">{</span>k<span class="sc">.</span>mean()<span class="sc">:.1f}</span><span class="ss">, median </span><span class="sc">{</span>np<span class="sc">.</span>median(k)<span class="sc">:.0f}</span><span class="ss">, max </span><span class="sc">{</span>k<span class="sc">.</span><span class="bu">max</span>()<span class="sc">:,}</span><span class="ss"> placements"</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"placed exactly once: </span><span class="sc">{</span>(k <span class="op">==</span> <span class="dv">1</span>)<span class="sc">.</span>mean()<span class="sc">:.1%}</span><span class="ss">;  100 or more: </span><span class="sc">{</span>(k <span class="op">&gt;=</span> <span class="dv">100</span>)<span class="sc">.</span>mean()<span class="sc">:.1%}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -464,12 +473,12 @@ Figure&nbsp;2.2: Share of all placements made by the most active accounts.
 <pre><code>top 1% of accounts: 15% of placements;  top 10%: 60%</code></pre>
 </div>
 </div>
-<p>The top 1% of accounts made 15% of the placements, and the top 10% made 60%. The work is concentrated, but the cooldown puts a ceiling on it: no account can make more than 0.0043% of all placements. Whether r/place is <em>less</em> concentrated than a comparable system without a rate limit is a comparison we have not made.</p>
+<p>The top 1% of accounts made 15% of the placements, and the top 10% made 60%. The work is concentrated, but the cooldown puts a ceiling on it: no account can make more than 0.0043% of all placements. Whether r/place is <em>less</em> concentrated than a comparable system without a rate limit is a comparison we have not made. It would need the same kind of action recorded without a cap: within r/place only the admins had no wait, too few to compare, so it needs another dataset, such as edits in a wiki, measured the same way (Gini coefficient and top shares of accounts active in the same period). The Gini coefficient of placements per account here is computed with the tail fits below.</p>
 </section>
 <section id="the-rhythm-of-one-account" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="the-rhythm-of-one-account"><span class="header-section-number">2.2</span> The rhythm of one account</h2>
 <p>The cooldown should leave a fingerprint: no gap between an account’s consecutive placements should be shorter than the wait. Here are all the gaps.</p>
-<div id="0c46c382" class="cell" data-execution_count="5">
+<div id="8362fe58" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>gaps <span class="op">=</span> (d.sort(<span class="st">"user_id"</span>, <span class="st">"t_us"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>          .with_columns((pl.col(<span class="st">"t_us"</span>).diff().over(<span class="st">"user_id"</span>) <span class="op">/</span> <span class="fl">1e6</span>).alias(<span class="st">"gap_s"</span>))</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>          .drop_nulls(<span class="st">"gap_s"</span>))</span>
@@ -531,8 +540,8 @@ Figure&nbsp;2.4: The effective cooldown over time: the 1st percentile of gaps en
 <section id="what-reddits-code-says" class="level3" data-number="2.2.1">
 <h3 data-number="2.2.1" class="anchored" data-anchor-id="what-reddits-code-says"><span class="header-section-number">2.2.1</span> What Reddit’s code says</h3>
 <p>Reddit released the code that ran r/place, with its commit history. The wait is one constant, <code>PIXEL_COOLDOWN_SECONDS</code>, and the history shows it being changed during the event. Each change appears in the log 2 to 6 minutes after it was committed, the time it took to deploy:</p>
-<div id="290b5020" class="cell" data-execution_count="8">
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="8">
+<div id="4dd98ef1" class="cell" data-execution_count="8">
+<div class="cell-output cell-output-display cell-output-markdown">
 <table class="table table-sm table-striped small">
 <colgroup>
 <col style="width: 25%">
@@ -607,7 +616,7 @@ Figure&nbsp;2.4: The effective cooldown over time: the 1st percentile of gaps en
 <section id="did-some-accounts-have-a-longer-wait" class="level3" data-number="2.2.2">
 <h3 data-number="2.2.2" class="anchored" data-anchor-id="did-some-accounts-have-a-longer-wait"><span class="header-section-number">2.2.2</span> Did some accounts have a longer wait?</h3>
 <p>The cleanest place to look is inside the five-minute periods, keeping only gaps that start and end there, so the rule in force is not in doubt. If some accounts had a personal ten-minute wait, they should never place faster than every ten minutes there.</p>
-<div id="c66f2d2b" class="cell" data-execution_count="9">
+<div id="23eb9c78" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>gaps <span class="op">=</span> gaps.with_columns(pl.Series(<span class="st">"t_prev"</span>, gaps[<span class="st">"t_us"</span>] <span class="op">-</span> (gaps[<span class="st">"gap_s"</span>] <span class="op">*</span> <span class="fl">1e6</span>).cast(pl.Int64)))</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>gaps <span class="op">=</span> gaps.with_columns(pl.Series(<span class="st">"wait_end"</span>, r.cooldown_at(gaps[<span class="st">"t_us"</span>].to_numpy())),</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                         pl.Series(<span class="st">"wait_start"</span>, r.cooldown_at(gaps[<span class="st">"t_prev"</span>].to_numpy())))</span>
@@ -636,7 +645,7 @@ gaps inside twenty-minute periods: 49,279;  shorter than 20 minutes: 0.40%</code
 </div>
 <p>Of the 176,615 accounts with at least 20 such gaps, only 24 never placed faster than every ten minutes. For these accounts a personal ten-minute wait is ruled out. They are 15% of accounts but made 70% of all placements. The same holds in the other direction: inside the twenty-minute period only 0.4% of gaps are shorter than twenty minutes, so no group of accounts kept a shorter wait there either.</p>
 <p>Lighter accounts are harder to test: with few gaps, an account can miss every five-minute chance by accident. So we ask how many light accounts (5 to 19 gaps) <em>would</em> never go faster than ten minutes by chance if everyone shared the five-minute rule. We estimate that chance from random stretches of the same length taken from the heavy accounts.</p>
-<div id="a39a30c7" class="cell" data-execution_count="10">
+<div id="9d716361" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>light <span class="op">=</span> in5.<span class="bu">filter</span>(pl.col(<span class="st">"n"</span>).is_between(<span class="dv">5</span>, <span class="dv">19</span>))</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>heavy_gaps <span class="op">=</span> heavy[<span class="st">"gap_s"</span>].to_list()</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
@@ -694,7 +703,7 @@ Figure&nbsp;2.5: Gaps of light accounts (5 to 19 gaps) inside five-minute period
 <h2 data-number="2.3" class="anchored" data-anchor-id="regular-or-bursty"><span class="header-section-number">2.3</span> Regular or bursty?</h2>
 <p>A gap distribution mixes people. To ask whether each person is regular or bursty, we use the <strong>burstiness coefficient</strong> <span class="math inline">\(B = (\sigma - \mu) / (\sigma + \mu)\)</span>, where <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> are the mean and standard deviation of one person’s gaps (Goh and Barabási 2008). <span class="math inline">\(B = -1\)</span> is a perfectly regular clock, <span class="math inline">\(B = 0\)</span> is a Poisson process, and <span class="math inline">\(B \to 1\)</span> is extremely bursty.</p>
 <p>The cooldown changes what “random” should mean. Someone who placed at random times <em>subject to the rule</em> would have gaps equal to the wait in force plus a random extra time. So our <strong>null model</strong> keeps each account’s own gaps’ waits (the cooldown in force when each gap ended) and its own mean gap, and replaces the extra time with an exponential draw. If real accounts are burstier than that, the burstiness is theirs, not the rule’s.</p>
-<div id="55535b62" class="cell" data-execution_count="12">
+<div id="1bd1bdef" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>gaps <span class="op">=</span> gaps.with_columns(pl.col(<span class="st">"wait_end"</span>).alias(<span class="st">"wait_s"</span>))                <span class="co"># the cooldown in force when each gap ended</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>acc <span class="op">=</span> (gaps.group_by(<span class="st">"user_id"</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>           .agg(pl.col(<span class="st">"gap_s"</span>), pl.col(<span class="st">"wait_s"</span>))</span>
@@ -750,7 +759,7 @@ Figure&nbsp;2.6: Burstiness of accounts with at least 10 gaps, against a null of
 <li><strong>Short histories.</strong> <span class="math inline">\(B\)</span> measured from few gaps is biased. Our null uses each account’s own number of gaps, so both sides share the bias, but it is worth seeing the comparison separately for short and long histories.</li>
 </ul>
 <p>For the first, a second null draws the extra time from a process whose rate follows the number of accounts active in each 10-minute window. Each account’s rate is scaled so its mean gap matches the data. For the second, we split accounts by number of gaps.</p>
-<div id="f35fd6a8" class="cell" data-execution_count="14">
+<div id="86cc311d" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>t_end_s <span class="op">=</span> d[<span class="st">"t_us"</span>].<span class="bu">max</span>() <span class="op">/</span> <span class="fl">1e6</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>active <span class="op">=</span> (d.with_columns((pl.col(<span class="st">"t_us"</span>) <span class="op">//</span> <span class="dv">600_000_000</span>).alias(<span class="st">"w"</span>))</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>           .group_by(<span class="st">"w"</span>).agg(pl.col(<span class="st">"user_id"</span>).n_unique().alias(<span class="st">"accounts"</span>)).sort(<span class="st">"w"</span>))</span>
@@ -799,7 +808,7 @@ Figure&nbsp;2.6: Burstiness of accounts with at least 10 gaps, against a null of
 <div class="cell-output cell-output-stdout">
 <pre><code>null mean gap / observed mean gap: median 1.00 (IQR 0.91-1.09)</code></pre>
 </div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="14">
+<div class="cell-output cell-output-display cell-output-markdown">
 <table class="table table-sm table-striped small">
 <colgroup>
 <col style="width: 20%">
@@ -862,7 +871,7 @@ Figure&nbsp;2.6: Burstiness of accounts with at least 10 gaps, against a null of
 <section id="is-each-account-as-bursty-as-the-crowd" class="level3" data-number="2.3.2">
 <h3 data-number="2.3.2" class="anchored" data-anchor-id="is-each-account-as-bursty-as-the-crowd"><span class="header-section-number">2.3.2</span> Is each account as bursty as the crowd?</h3>
 <p>Both nulls so far ask whether accounts are burstier than <em>random</em> waiting. A different question is whether each account is burstier than the <em>crowd</em>. A third null answers it. Each account keeps its number of placements and its start time, and each of its gaps is redrawn as the cooldown in force plus an extra wait drawn from everyone’s extra waits at the same cooldown and the same hour of day. This null carries the crowd’s own burstiness, its daily cycle and the launch surge, so it tests “this account waits like everybody does”, not “this account waits at random”. We draw 20 null histories per account, for accounts with at least 20 placements.</p>
-<div id="7e78e645" class="cell" data-execution_count="15">
+<div id="daedcc40" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>g2 <span class="op">=</span> gaps.with_columns(((pl.col(<span class="st">"t_prev"</span>) <span class="op">//</span> <span class="dv">3_600_000_000</span>) <span class="op">%</span> <span class="dv">24</span>).alias(<span class="st">"hour"</span>),</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                       (pl.col(<span class="st">"gap_s"</span>) <span class="op">-</span> pl.col(<span class="st">"wait_end"</span>)).alias(<span class="st">"extra"</span>))</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>pools <span class="op">=</span> {key: grp[<span class="st">"extra"</span>].to_numpy()                          <span class="co"># extra waits, by (cooldown, hour of day)</span></span>
@@ -905,7 +914,7 @@ Figure&nbsp;2.6: Burstiness of accounts with at least 10 gaps, against a null of
 <span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"below own null's 5th pct"</span>: <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>mean(B3[m] <span class="op">&lt;</span> np.quantile(B3_null[m], <span class="fl">.05</span>, axis<span class="op">=</span><span class="dv">1</span>))<span class="sc">:.0%}</span><span class="ss">"</span>})</span>
 <span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>crowd <span class="op">=</span> pl.DataFrame(rows)</span>
 <span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>r.table(crowd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="15">
+<div class="cell-output cell-output-display cell-output-markdown">
 <table class="table table-sm table-striped small">
 <colgroup>
 <col style="width: 14%">
@@ -942,26 +951,26 @@ Figure&nbsp;2.6: Burstiness of accounts with at least 10 gaps, against a null of
 <td>58,799</td>
 <td>0.49</td>
 <td>0.50</td>
-<td>-0.011 [-0.012, -0.010]</td>
-<td>10%</td>
-<td>14%</td>
+<td>-0.008 [-0.009, -0.007]</td>
+<td>11%</td>
+<td>13%</td>
 </tr>
 <tr class="odd">
 <td>100-249</td>
 <td>26,839</td>
 <td>0.54</td>
 <td>0.54</td>
-<td>-0.019 [-0.020, -0.017]</td>
-<td>10%</td>
-<td>17%</td>
+<td>-0.004 [-0.006, -0.003]</td>
+<td>13%</td>
+<td>16%</td>
 </tr>
 <tr class="even">
 <td>250+</td>
 <td>2,277</td>
 <td>0.56</td>
-<td>0.57</td>
-<td>-0.033 [-0.038, -0.027]</td>
-<td>11%</td>
+<td>0.56</td>
+<td>-0.009 [-0.014, -0.004]</td>
+<td>18%</td>
 <td>29%</td>
 </tr>
 </tbody>
@@ -973,7 +982,7 @@ Figure&nbsp;2.6: Burstiness of accounts with at least 10 gaps, against a null of
 <section id="do-long-waits-follow-long-waits" class="level3" data-number="2.3.3">
 <h3 data-number="2.3.3" class="anchored" data-anchor-id="do-long-waits-follow-long-waits"><span class="header-section-number">2.3.3</span> Do long waits follow long waits?</h3>
 <p><span class="math inline">\(B\)</span> ignores order. Whether waits have <strong>memory</strong>, long ones following long ones, is measured by the memory coefficient <span class="math inline">\(M\)</span> of Goh and Barabási (2008): the correlation between consecutive gaps of one account. We compute it on the <em>extra</em> wait beyond the cooldown in force, since the cooldown periods alone would make consecutive gaps look alike. The null shuffles each account’s own extra waits, which keeps their distribution and destroys their order.</p>
-<div id="28319127" class="cell" data-execution_count="16">
+<div id="8017117f" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>ex <span class="op">=</span> gaps.with_columns((pl.col(<span class="st">"gap_s"</span>) <span class="op">-</span> pl.col(<span class="st">"wait_end"</span>)).alias(<span class="st">"extra"</span>))</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>seqs <span class="op">=</span> ex.group_by(<span class="st">"user_id"</span>, maintain_order<span class="op">=</span><span class="va">True</span>).agg(pl.col(<span class="st">"extra"</span>)).<span class="bu">filter</span>(pl.col(<span class="st">"extra"</span>).<span class="bu">list</span>.<span class="bu">len</span>() <span class="op">+</span> <span class="dv">1</span> <span class="op">&gt;=</span> <span class="dv">20</span>)</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>n_m <span class="op">=</span> seqs[<span class="st">"extra"</span>].<span class="bu">list</span>.<span class="bu">len</span>().to_numpy() <span class="op">+</span> <span class="dv">1</span>                <span class="co"># placements per account</span></span>
@@ -1011,7 +1020,7 @@ Figure&nbsp;2.6: Burstiness of accounts with at least 10 gaps, against a null of
 <span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"minus hour-of-day shuffle [95% CI]"</span>: <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>median(diff_b)<span class="sc">:+.3f}</span><span class="ss"> [</span><span class="sc">{</span>np<span class="sc">.</span>quantile(boot, <span class="fl">.025</span>)<span class="sc">:+.3f}</span><span class="ss">, </span><span class="sc">{</span>np<span class="sc">.</span>quantile(boot, <span class="fl">.975</span>)<span class="sc">:+.3f}</span><span class="ss">]"</span>,</span>
 <span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"data &gt; hour-of-day shuffle"</span>: <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>mean(diff_b <span class="op">&gt;</span> <span class="dv">0</span>)<span class="sc">:.0%}</span><span class="ss">"</span>})</span>
 <span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(rows))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="16">
+<div class="cell-output cell-output-display cell-output-markdown">
 <table class="table table-sm table-striped small">
 <colgroup>
 <col style="width: 16%">
@@ -1052,7 +1061,7 @@ Figure&nbsp;2.6: Burstiness of accounts with at least 10 gaps, against a null of
 <td>100-249</td>
 <td>26,839</td>
 <td>+0.009</td>
-<td>+0.020</td>
+<td>+0.021</td>
 <td>+0.011 [+0.010, +0.012]</td>
 <td>66%</td>
 </tr>
@@ -1061,8 +1070,8 @@ Figure&nbsp;2.6: Burstiness of accounts with at least 10 gaps, against a null of
 <td>2,277</td>
 <td>+0.017</td>
 <td>+0.023</td>
-<td>+0.016 [+0.015, +0.018]</td>
-<td>77%</td>
+<td>+0.017 [+0.015, +0.019]</td>
+<td>78%</td>
 </tr>
 </tbody>
 </table>
@@ -1077,7 +1086,7 @@ Figure&nbsp;2.6: Burstiness of accounts with at least 10 gaps, against a null of
 <p>A distribution with a “heavy tail” has rare but very large values far more often than an exponential would. A <em>power-law</em> tail, <span class="math inline">\(P(X \geq x) \propto x^{1-\alpha}\)</span>, is the strongest version, and it is what “bursty” human activity is often said to show. Claims of power laws are also easy to get wrong: thresholded random processes can draw straight lines on log–log axes (Touboul and Destexhe 2010), and a mixture of people who wait at different rates makes a heavy pooled tail with no single heavy-tailed person in it. So the question here has three parts: is there a power-law region at all; does a power law describe it better than the usual alternatives; and does it go beyond what differences in rate between accounts would produce on their own. This section is <strong>exploratory</strong>.</p>
 <p><strong>What we fit.</strong> The <em>extra</em> wait <span class="math inline">\(e\)</span> = gap minus the cooldown in force, in seconds, which removes the hard floor; only gaps that start and end in the same cooldown period; only <span class="math inline">\(e &gt; 0\)</span> (the few gaps at or below the wait, under 1.5% in every period, are dropped).</p>
 <p><strong>How.</strong> The method of Clauset, Shalizi and Newman (2009): fit a power law above a cutoff <span class="math inline">\(x_\text{min}\)</span> by maximum likelihood, choose <span class="math inline">\(x_\text{min}\)</span> by the smallest Kolmogorov–Smirnov distance <span class="math inline">\(D\)</span>, and compare against four alternatives above the same cutoff by likelihood ratio (Vuong 1989). The usual software refits at every distinct value, which does not finish on 12 million waits; <code>rplace17.tails</code> does the same computation with sorted arrays and running sums, in seconds. First, the method is checked on data whose answer we know.</p>
-<div id="8f3f2164" class="cell" data-execution_count="17">
+<div id="b11437fc" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rplace17 <span class="im">import</span> tails</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>rng_c <span class="op">=</span> np.random.default_rng(<span class="dv">1</span>)</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>body <span class="op">=</span> rng_c.lognormal(<span class="fl">2.5</span>, <span class="fl">0.6</span>, <span class="dv">400_000</span>)<span class="op">;</span> body <span class="op">=</span> body[body <span class="op">&lt;</span> <span class="dv">60</span>][:<span class="dv">150_000</span>]</span>
@@ -1091,7 +1100,7 @@ Figure&nbsp;2.6: Burstiness of accounts with at least 10 gaps, against a null of
 <span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    rows.append({<span class="st">"control"</span>: label, <span class="st">"xmin"</span>: <span class="ss">f"</span><span class="sc">{</span>f<span class="sc">.</span>xmin<span class="sc">:.0f}</span><span class="ss">"</span>, <span class="st">"alpha"</span>: <span class="ss">f"</span><span class="sc">{</span>f<span class="sc">.</span>alpha<span class="sc">:.2f}</span><span class="ss">"</span>, <span class="st">"xmin at search edge"</span>: f.at_boundary,</span>
 <span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"R vs lognormal"</span>: <span class="ss">f"</span><span class="sc">{</span>get(<span class="st">'lognormal'</span>, <span class="st">'normalised R'</span>)<span class="sc">:+.1f}</span><span class="ss">"</span>, <span class="st">"R vs stretched exp."</span>: <span class="ss">f"</span><span class="sc">{</span>get(<span class="st">'stretched exponential'</span>, <span class="st">'normalised R'</span>)<span class="sc">:+.1f}</span><span class="ss">"</span>})</span>
 <span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(rows))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="17">
+<div class="cell-output cell-output-display cell-output-markdown">
 <table class="table table-sm table-striped small">
 <colgroup>
 <col style="width: 16%">
@@ -1134,7 +1143,7 @@ Figure&nbsp;2.6: Burstiness of accounts with at least 10 gaps, against a null of
 </div>
 <p>On the power-law control the fit recovers <span class="math inline">\(\alpha\)</span> and the alternatives do not beat it (a normalised <span class="math inline">\(R\)</span> near zero means the two cannot be told apart; negative favours the alternative). On the lognormal control the cutoff runs to the edge of the search, a sign that no stable power-law region exists, and the alternatives win.</p>
 <p>Now the data, split by cooldown period, by account activity, and by time of day. For each split, the same fit on a <strong>null</strong>: every account’s extra waits replaced by exponential draws with that account’s own mean, cut off at the length of the event as the real waits are. The null contains the differences in rate between accounts and nothing else, so a tail it also produces is not evidence of heavy-tailed people.</p>
-<div id="d25f1459" class="cell" data-execution_count="18">
+<div id="9bb7e82a" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>k_acc <span class="op">=</span> d.group_by(<span class="st">"user_id"</span>).<span class="bu">len</span>().rename({<span class="st">"len"</span>: <span class="st">"k"</span>})</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>clean <span class="op">=</span> (gaps.<span class="bu">filter</span>(pl.col(<span class="st">"wait_start"</span>) <span class="op">==</span> pl.col(<span class="st">"wait_end"</span>))</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>             .with_columns((pl.col(<span class="st">"gap_s"</span>) <span class="op">-</span> pl.col(<span class="st">"wait_end"</span>)).alias(<span class="st">"e"</span>),</span>
@@ -1166,7 +1175,7 @@ Figure&nbsp;2.6: Burstiness of accounts with at least 10 gaps, against a null of
 <span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"R str. exp."</span>: <span class="ss">f"</span><span class="sc">{</span>get(<span class="st">'stretched exponential'</span>)[<span class="st">'normalised R'</span>][<span class="dv">0</span>]<span class="sc">:+.0f}</span><span class="ss">"</span>,</span>
 <span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"p trunc. PL"</span>: <span class="ss">f"</span><span class="sc">{</span>get(<span class="st">'truncated power law'</span>)[<span class="st">'p'</span>][<span class="dv">0</span>]<span class="sc">:.1g}</span><span class="ss">"</span>})</span>
 <span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(rows))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="18">
+<div class="cell-output cell-output-display cell-output-markdown">
 <table class="table table-sm table-striped small">
 <colgroup>
 <col style="width: 7%">
@@ -1493,7 +1502,7 @@ Figure&nbsp;2.8: The fitted exponent at every candidate cutoff. A real power-law
 </div>
 </div>
 </div>
-<div id="41e2dc47" class="cell" data-execution_count="21">
+<div id="e4f5d87e" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>boot_rows <span class="op">=</span> []</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name <span class="kw">in</span> (<span class="st">"5 min, busiest 8 hours"</span>, <span class="st">"5 min, 100-249 placements"</span>):</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    sub <span class="op">=</span> <span class="bu">dict</span>(splits)[name]</span>
@@ -1501,7 +1510,7 @@ Figure&nbsp;2.8: The fitted exponent at every candidate cutoff. A real power-law
 <span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    boot_rows.append({<span class="st">"split"</span>: name, <span class="st">"alpha [95% CI, accounts resampled]"</span>: <span class="ss">f"</span><span class="sc">{</span>fits[(name, <span class="st">'data'</span>)][<span class="dv">1</span>]<span class="sc">.</span>alpha<span class="sc">:.2f}</span><span class="ss"> [</span><span class="sc">{</span>b[<span class="st">'alpha_ci'</span>][<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss">, </span><span class="sc">{</span>b[<span class="st">'alpha_ci'</span>][<span class="dv">1</span>]<span class="sc">:.2f}</span><span class="ss">]"</span>,</span>
 <span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"xmin s [95% CI]"</span>: <span class="ss">f"</span><span class="sc">{</span>fits[(name, <span class="st">'data'</span>)][<span class="dv">1</span>]<span class="sc">.</span>xmin<span class="sc">:,.0f}</span><span class="ss"> [</span><span class="sc">{</span>b[<span class="st">'xmin_ci'</span>][<span class="dv">0</span>]<span class="sc">:,.0f}</span><span class="ss">, </span><span class="sc">{</span>b[<span class="st">'xmin_ci'</span>][<span class="dv">1</span>]<span class="sc">:,.0f}</span><span class="ss">]"</span>})</span>
 <span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(boot_rows))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="21">
+<div class="cell-output cell-output-display cell-output-markdown">
 <table class="table table-sm table-striped small">
 <thead>
 <tr class="header">
@@ -1525,6 +1534,60 @@ Figure&nbsp;2.8: The fitted exponent at every candidate cutoff. A real power-law
 </table>
 </div>
 </div>
+<p>The same machinery answers the other heavy-tail question of this chapter: is the number of placements per account power-law distributed?</p>
+<div id="797800c7" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>ks_sorted <span class="op">=</span> np.sort(k).astype(<span class="bu">float</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>gini <span class="op">=</span> <span class="bu">float</span>((<span class="dv">2</span> <span class="op">*</span> np.arange(<span class="dv">1</span>, <span class="bu">len</span>(ks_sorted) <span class="op">+</span> <span class="dv">1</span>) <span class="op">-</span> <span class="bu">len</span>(ks_sorted) <span class="op">-</span> <span class="dv">1</span>) <span class="op">@</span> ks_sorted <span class="op">/</span> (<span class="bu">len</span>(ks_sorted) <span class="op">*</span> ks_sorted.<span class="bu">sum</span>()))</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>fk <span class="op">=</span> tails.fit(ks_sorted)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>ck <span class="op">=</span> tails.compare(ks_sorted, fk)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Gini coefficient of placements per account: </span><span class="sc">{</span>gini<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"tail: xmin </span><span class="sc">{</span>fk<span class="sc">.</span>xmin<span class="sc">:.0f}</span><span class="ss">, alpha </span><span class="sc">{</span>fk<span class="sc">.</span>alpha<span class="sc">:.2f}</span><span class="ss">, </span><span class="sc">{</span>fk<span class="sc">.</span>decades<span class="sc">:.2f}</span><span class="ss"> decades, cutoff at the search edge: </span><span class="sc">{</span>fk<span class="sc">.</span>at_boundary<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>r.table(ck.select(<span class="st">"model"</span>, pl.col(<span class="st">"normalised R"</span>).map_elements(<span class="kw">lambda</span> v: <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:+.1f}</span><span class="ss">"</span>, return_dtype<span class="op">=</span>pl.Utf8),</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>                  pl.col(<span class="st">"p"</span>).map_elements(<span class="kw">lambda</span> v: <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:.1g}</span><span class="ss">"</span>, return_dtype<span class="op">=</span>pl.Utf8)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Gini coefficient of placements per account: 0.73
+tail: xmin 150, alpha 4.30, 0.64 decades, cutoff at the search edge: True</code></pre>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th>model</th>
+<th>normalised R</th>
+<th>p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>power law</td>
+<td>+nan</td>
+<td>nan</td>
+</tr>
+<tr class="even">
+<td>exponential</td>
+<td>-9.3</td>
+<td>2e-20</td>
+</tr>
+<tr class="odd">
+<td>lognormal</td>
+<td>-12.5</td>
+<td>7e-36</td>
+</tr>
+<tr class="even">
+<td>stretched exponential</td>
+<td>-12.9</td>
+<td>3e-38</td>
+</tr>
+<tr class="odd">
+<td>truncated power law</td>
+<td>+nan</td>
+<td>2e-96</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Placements per account are very unequal (Gini 0.73), but not power-law: the cutoff runs to the edge of the search and every alternative beats the power law. The cooldown ceiling of 719 placements caps the tail, so a power law could not span much range here even if the habit behind it were scale-free.</p>
 <p>What the fits say:</p>
 <ul>
 <li><strong>There is no power law.</strong> In every split, the lognormal and the stretched exponential describe the tail better than a power law, mostly by a wide margin, and the power law with an exponential cutoff always beats the pure one. The one partial exception, the heaviest accounts, still favours the lognormal.</li>
@@ -1532,15 +1595,236 @@ Figure&nbsp;2.8: The fitted exponent at every candidate cutoff. A real power-law
 <li><strong>Rate differences alone make a heavy-looking tail.</strong> The per-account exponential null, which has no heavy-tailed person in it, itself produces apparent power-law tails, with <span class="math inline">\(\alpha\)</span> of about 2.4 to 5 over about one decade. Where the data find a long tail it is heavier than the null’s, so the data’s waits are broader than rate differences alone produce, which agrees with the burstiness results above.</li>
 <li><strong>The range is short.</strong> The event lasted three days, so extra waits are cut off at a few tens of hours; a truncated form wins partly for that reason alone. Only accounts with at least two placements contribute waits.</li>
 </ul>
-<p><strong>How far this goes.</strong> Exploratory, and descriptive: the waits are broad and heavier than a mixture of exponential waiters, but not power-law; a lognormal or stretched-exponential shape fits better everywhere. This is consistent with the burstiness results and does not add a new mechanism. With more than ten million waits every simple model is rejected by a goodness-of-fit test, so we report the model comparisons and the plots instead of a bootstrap p-value for the fit.</p>
+<p><strong>How far this goes.</strong> Exploratory, and descriptive: the waits, and the placement counts, are broad but not power-law; the waits are heavier than a mixture of exponential waiters; a lognormal or stretched-exponential shape fits better everywhere. This is consistent with the burstiness results and does not add a new mechanism. With more than ten million waits every simple model is rejected by a goodness-of-fit test, so we report the model comparisons and the plots instead of a bootstrap p-value for the fit.</p>
 </section>
-<section id="what-this-chapter-sets-up" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="what-this-chapter-sets-up"><span class="header-section-number">2.5</span> What this chapter sets up</h2>
+<section id="sessions-and-breaks" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="sessions-and-breaks"><span class="header-section-number">2.5</span> Sessions and breaks</h2>
+<p>The tail fits found two separate best cutoffs, a few hundred seconds and about half a day apart. That looks like two processes: the waits inside a session of play, and the breaks between sessions. A simple way to separate them is a <strong>break threshold</strong> <span class="math inline">\(\tau\)</span>: a gap longer than <span class="math inline">\(\tau\)</span> ends one session and starts the next. There is no right <span class="math inline">\(\tau\)</span>, so we use four, from 30 minutes to 4 hours, and look at what does not depend on the choice.</p>
+<div id="54f1b8b9" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>rows_s <span class="op">=</span> []</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tau <span class="kw">in</span> (<span class="dv">1800</span>, <span class="dv">3600</span>, <span class="dv">7200</span>, <span class="dv">14400</span>):</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    sess <span class="op">=</span> (d.sort(<span class="st">"user_id"</span>, <span class="st">"t_us"</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>              .with_columns((pl.col(<span class="st">"t_us"</span>).diff().over(<span class="st">"user_id"</span>) <span class="op">/</span> <span class="fl">1e6</span>).fill_null(<span class="bu">float</span>(<span class="st">"inf"</span>)).alias(<span class="st">"g"</span>))</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>              .with_columns((pl.col(<span class="st">"g"</span>) <span class="op">&gt;</span> tau).cum_sum().over(<span class="st">"user_id"</span>).alias(<span class="st">"session"</span>))</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>              .group_by(<span class="st">"user_id"</span>, <span class="st">"session"</span>).agg(pl.<span class="bu">len</span>().alias(<span class="st">"n"</span>), ((pl.col(<span class="st">"t_us"</span>).<span class="bu">max</span>() <span class="op">-</span> pl.col(<span class="st">"t_us"</span>).<span class="bu">min</span>()) <span class="op">/</span> <span class="fl">6e7</span>).alias(<span class="st">"minutes"</span>)))</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    per_acc <span class="op">=</span> sess.group_by(<span class="st">"user_id"</span>).<span class="bu">len</span>()</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    within <span class="op">=</span> gaps.<span class="bu">filter</span>(pl.col(<span class="st">"gap_s"</span>) <span class="op">&lt;=</span> tau)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    accw <span class="op">=</span> within.group_by(<span class="st">"user_id"</span>).agg(pl.col(<span class="st">"gap_s"</span>), pl.col(<span class="st">"wait_end"</span>)).<span class="bu">filter</span>(pl.col(<span class="st">"gap_s"</span>).<span class="bu">list</span>.<span class="bu">len</span>() <span class="op">&gt;=</span> <span class="dv">10</span>)</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    Bw, Bw0 <span class="op">=</span> [], []</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> gs, ws <span class="kw">in</span> <span class="bu">zip</span>(accw[<span class="st">"gap_s"</span>].to_list(), accw[<span class="st">"wait_end"</span>].to_list()):</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>        gs, ws <span class="op">=</span> np.asarray(gs), np.asarray(ws)</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>        extra <span class="op">=</span> <span class="bu">max</span>(gs.mean() <span class="op">-</span> ws.mean(), <span class="fl">1e-9</span>)</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>        Bw.append(burstiness(gs))</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>        Bw0.append(burstiness(ws <span class="op">+</span> np.minimum(rng.exponential(extra, <span class="bu">len</span>(gs)), tau <span class="op">-</span> ws)))   <span class="co"># random waiting, kept inside the session</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>    Bw, Bw0 <span class="op">=</span> np.array(Bw), np.array(Bw0)</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>    multi <span class="op">=</span> sess.<span class="bu">filter</span>(pl.col(<span class="st">"n"</span>) <span class="op">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>    rows_s.append({<span class="st">"break threshold"</span>: <span class="ss">f"</span><span class="sc">{</span>tau <span class="op">//</span> <span class="dv">60</span><span class="sc">}</span><span class="ss"> min"</span>, <span class="st">"sessions per account (median)"</span>: <span class="ss">f"</span><span class="sc">{</span>per_acc[<span class="st">'len'</span>]<span class="sc">.</span>median()<span class="sc">:.0f}</span><span class="ss">"</span>,</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"placements per session (mean)"</span>: <span class="ss">f"</span><span class="sc">{</span>sess[<span class="st">'n'</span>]<span class="sc">.</span>mean()<span class="sc">:.1f}</span><span class="ss">"</span>,</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"length of multi-placement sessions (median, min)"</span>: <span class="ss">f"</span><span class="sc">{</span>multi[<span class="st">'minutes'</span>]<span class="sc">.</span>median()<span class="sc">:.0f}</span><span class="ss">"</span>,</span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"accounts"</span>: <span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(Bw)<span class="sc">:,}</span><span class="ss">"</span>, <span class="st">"median B within sessions"</span>: <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>median(Bw)<span class="sc">:+.2f}</span><span class="ss">"</span>,</span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"null"</span>: <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>median(Bw0)<span class="sc">:+.2f}</span><span class="ss">"</span>, <span class="st">"data &gt; null"</span>: <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>mean(Bw <span class="op">&gt;</span> Bw0)<span class="sc">:.0%}</span><span class="ss">"</span>})</span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(rows_s))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>break threshold</th>
+<th>sessions per account (median)</th>
+<th>placements per session (mean)</th>
+<th>length of multi-placement sessions (median, min)</th>
+<th>accounts</th>
+<th>median B within sessions</th>
+<th>null</th>
+<th>data &gt; null</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>30 min</td>
+<td>2</td>
+<td>3.8</td>
+<td>26</td>
+<td>256,741</td>
+<td>-0.31</td>
+<td>-0.47</td>
+<td>90%</td>
+</tr>
+<tr class="even">
+<td>60 min</td>
+<td>2</td>
+<td>4.7</td>
+<td>40</td>
+<td>270,140</td>
+<td>-0.12</td>
+<td>-0.38</td>
+<td>94%</td>
+</tr>
+<tr class="odd">
+<td>120 min</td>
+<td>2</td>
+<td>5.6</td>
+<td>65</td>
+<td>281,914</td>
+<td>+0.04</td>
+<td>-0.29</td>
+<td>96%</td>
+</tr>
+<tr class="even">
+<td>240 min</td>
+<td>2</td>
+<td>6.8</td>
+<td>119</td>
+<td>292,944</td>
+<td>+0.16</td>
+<td>-0.22</td>
+<td>97%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Two things hold at every threshold. Most of the burstiness of <a href="#fig-burstiness" class="quarto-xref">Figure&nbsp;<span>2.6</span></a> is the alternation of sessions and breaks: inside sessions, the median <span class="math inline">\(B\)</span> falls from about 0.4 to between −0.3 and +0.2. But waits <em>inside</em> sessions are still more irregular than random waiting would make them, for 90% or more of accounts. (The null here draws random extra time capped at the threshold, so that it stays inside a session; its mean is therefore slightly below the account’s, which makes the comparison slightly conservative.)</p>
+<div id="4c6dcd42" class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>tau <span class="op">=</span> <span class="dv">3600</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>wfit_rows <span class="op">=</span> []</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> label, x <span class="kw">in</span> ((<span class="st">"waits inside sessions (extra wait, s)"</span>, gaps.<span class="bu">filter</span>((pl.col(<span class="st">"gap_s"</span>) <span class="op">&lt;=</span> tau)).with_columns((pl.col(<span class="st">"gap_s"</span>) <span class="op">-</span> pl.col(<span class="st">"wait_end"</span>)).alias(<span class="st">"e"</span>)).<span class="bu">filter</span>(pl.col(<span class="st">"e"</span>) <span class="op">&gt;</span> <span class="dv">0</span>)[<span class="st">"e"</span>].to_numpy()),</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>                 (<span class="st">"breaks between sessions (gap, s)"</span>, gaps.<span class="bu">filter</span>(pl.col(<span class="st">"gap_s"</span>) <span class="op">&gt;</span> tau)[<span class="st">"gap_s"</span>].to_numpy())):</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    fw <span class="op">=</span> tails.fit(x)<span class="op">;</span> cw <span class="op">=</span> tails.compare(x, fw)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    g_ <span class="op">=</span> <span class="kw">lambda</span> m: cw.<span class="bu">filter</span>(pl.col(<span class="st">"model"</span>) <span class="op">==</span> m)[<span class="st">"normalised R"</span>][<span class="dv">0</span>]</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    wfit_rows.append({<span class="st">"with a 1-hour threshold"</span>: label, <span class="st">"n"</span>: <span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(x)<span class="sc">:,}</span><span class="ss">"</span>, <span class="st">"xmin"</span>: <span class="ss">f"</span><span class="sc">{</span>fw<span class="sc">.</span>xmin<span class="sc">:,.0f}</span><span class="ss">"</span>, <span class="st">"alpha"</span>: <span class="ss">f"</span><span class="sc">{</span>fw<span class="sc">.</span>alpha<span class="sc">:.2f}</span><span class="ss">"</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"decades"</span>: <span class="ss">f"</span><span class="sc">{</span>fw<span class="sc">.</span>decades<span class="sc">:.2f}</span><span class="ss">"</span>, <span class="st">"R lognormal"</span>: <span class="ss">f"</span><span class="sc">{</span>g_(<span class="st">'lognormal'</span>)<span class="sc">:+.0f}</span><span class="ss">"</span>, <span class="st">"R str. exp."</span>: <span class="ss">f"</span><span class="sc">{</span>g_(<span class="st">'stretched exponential'</span>)<span class="sc">:+.0f}</span><span class="ss">"</span>})</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(wfit_rows))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>with a 1-hour threshold</th>
+<th>n</th>
+<th>xmin</th>
+<th>alpha</th>
+<th>decades</th>
+<th>R lognormal</th>
+<th>R str. exp.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>waits inside sessions (extra wait, s)</td>
+<td>12,933,067</td>
+<td>182</td>
+<td>1.82</td>
+<td>1.26</td>
+<td>-588</td>
+<td>-624</td>
+</tr>
+<tr class="even">
+<td>breaks between sessions (gap, s)</td>
+<td>2,382,347</td>
+<td>67,954</td>
+<td>3.52</td>
+<td>0.58</td>
+<td>-82</td>
+<td>-85</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Fitted separately, neither the waits inside sessions nor the breaks between them is a power law; the lognormal and stretched exponential win both. Waits inside sessions are cut off at the threshold by construction, which a fit cannot see beyond. (Exploratory.)</p>
+</section>
+<section id="do-very-regular-accounts-drive-any-of-this" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="do-very-regular-accounts-drive-any-of-this"><span class="header-section-number">2.6</span> Do very regular accounts drive any of this?</h2>
+<p>Scripts that place on a timer would have almost constant gaps, a strongly negative <span class="math inline">\(B\)</span>. Wu and Silva (2024) filter bot-like accounts by their rate; here we use regularity, with a threshold chosen before looking at the result: at least 20 gaps and <span class="math inline">\(B &lt; -0.5\)</span>.</p>
+<div id="6f821ccd" class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>reg <span class="op">=</span> acc.with_columns(pl.Series(<span class="st">"B"</span>, B)).<span class="bu">filter</span>((pl.col(<span class="st">"gap_s"</span>).<span class="bu">list</span>.<span class="bu">len</span>() <span class="op">&gt;=</span> <span class="dv">20</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"B"</span>) <span class="op">&lt;</span> <span class="op">-</span><span class="fl">0.5</span>))</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>bot_ids <span class="op">=</span> reg.select(<span class="st">"user_id"</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>kept <span class="op">=</span> d.join(bot_ids, on<span class="op">=</span><span class="st">"user_id"</span>, how<span class="op">=</span><span class="st">"anti"</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>k2 <span class="op">=</span> kept.group_by(<span class="st">"user_id"</span>).<span class="bu">len</span>()[<span class="st">"len"</span>].to_numpy()</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>desc2 <span class="op">=</span> np.sort(k2)[::<span class="op">-</span><span class="dv">1</span>]<span class="op">;</span> cum2 <span class="op">=</span> np.cumsum(desc2) <span class="op">/</span> desc2.<span class="bu">sum</span>()</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>keep_mask <span class="op">=</span> <span class="op">~</span>acc[<span class="st">"user_id"</span>].is_in(bot_ids[<span class="st">"user_id"</span>]).to_numpy()</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame([</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    {<span class="st">""</span>: <span class="st">"all accounts"</span>, <span class="st">"accounts"</span>: <span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(k)<span class="sc">:,}</span><span class="ss">"</span>, <span class="st">"top 1</span><span class="sc">% s</span><span class="st">hare"</span>: <span class="ss">f"</span><span class="sc">{</span>share(<span class="fl">0.01</span>)<span class="sc">:.1%}</span><span class="ss">"</span>,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>     <span class="st">"median B, accounts with ≥ 10 gaps"</span>: <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>median(B)<span class="sc">:.2f}</span><span class="ss">"</span>, <span class="st">"data &gt; first null"</span>: <span class="ss">f"</span><span class="sc">{</span>(B <span class="op">&gt;</span> B_null)<span class="sc">.</span>mean()<span class="sc">:.0%}</span><span class="ss">"</span>},</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    {<span class="st">""</span>: <span class="st">"very regular accounts removed"</span>, <span class="st">"accounts"</span>: <span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(k2)<span class="sc">:,}</span><span class="ss">"</span>, <span class="st">"top 1</span><span class="sc">% s</span><span class="st">hare"</span>: <span class="ss">f"</span><span class="sc">{</span>cum2[<span class="bu">int</span>(<span class="fl">0.01</span> <span class="op">*</span> <span class="bu">len</span>(desc2)) <span class="op">-</span> <span class="dv">1</span>]<span class="sc">:.1%}</span><span class="ss">"</span>,</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>     <span class="st">"median B, accounts with ≥ 10 gaps"</span>: <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>median(B[keep_mask])<span class="sc">:.2f}</span><span class="ss">"</span>, <span class="st">"data &gt; first null"</span>: <span class="ss">f"</span><span class="sc">{</span>(B[keep_mask] <span class="op">&gt;</span> B_null[keep_mask])<span class="sc">.</span>mean()<span class="sc">:.0%}</span><span class="ss">"</span>}]))</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"very regular accounts: </span><span class="sc">{</span>reg<span class="sc">.</span>height<span class="sc">:,}</span><span class="ss">, with </span><span class="sc">{</span>d<span class="sc">.</span>join(bot_ids, on<span class="op">=</span><span class="st">'user_id'</span>, how<span class="op">=</span><span class="st">'semi'</span>)<span class="sc">.</span>height<span class="sc">:,}</span><span class="ss"> placements"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>accounts</th>
+<th>top 1% share</th>
+<th>median B, accounts with ≥ 10 gaps</th>
+<th>data &gt; first null</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>all accounts</td>
+<td>1,166,794</td>
+<td>14.8%</td>
+<td>0.41</td>
+<td>99%</td>
+</tr>
+<tr class="even">
+<td>very regular accounts removed</td>
+<td>1,164,612</td>
+<td>14.9%</td>
+<td>0.41</td>
+<td>99%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>very regular accounts: 2,182, with 132,542 placements</code></pre>
+</div>
+</div>
+<p>There are 2,182 such accounts, under 1% of placements, and removing them leaves the headline numbers essentially unchanged. Very regular accounts, bots or not, do not drive the results of this chapter.</p>
+</section>
+<section id="what-this-chapter-sets-up" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="what-this-chapter-sets-up"><span class="header-section-number">2.7</span> What this chapter sets up</h2>
 <ul>
 <li><strong>Activity is uneven but capped.</strong> No account can do much, so anything large on the canvas needs many accounts.</li>
-<li><strong>People act in bursts, and nearly everyone does.</strong> A pixel held “all day” is held by a relay of people, not by one person.</li>
+<li><strong>People act in bursts, and nearly everyone does.</strong> A pixel held “all day” is held by a relay of people, not by one person. Most of the burstiness is sessions and breaks, but waits inside sessions are irregular too.</li>
+<li><strong>Waits are broad, not power-law,</strong> and have weak memory, about half of it the daily rhythm.</li>
 <li><strong>The speed limit changed seven times, for everyone at once</strong> (three tightenings, four loosenings), on a schedule that Reddit’s own code history records. Later chapters compare conflict and repair in short windows around those switches.</li>
 </ul>
+</section>
+<section id="exercises" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="exercises"><span class="header-section-number">2.8</span> Exercises</h2>
+<ol type="1">
+<li>Change the burstiness threshold from 10 to 50 gaps. Which conclusions change?</li>
+<li>The crowd null redraws waits from the same cooldown and hour of day. Redraw them from the same cooldown only. How much of the remaining gap to the data does the hour of day explain?</li>
+<li>Use the session threshold that makes within-session burstiness closest to zero. What does that threshold say about how long people step away?</li>
+</ol>
 
 
 </section>

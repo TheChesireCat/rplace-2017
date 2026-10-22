@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../chapters/04-interactions.html" rel="next">
+<link href="../chapters/05-interactions.html" rel="next">
 <link href="../chapters/03-pixels.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -260,7 +260,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/04-interactions.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/05-interactions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Interactions</span></span></a>
   </div>
 </li>
@@ -277,7 +277,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/05-borders.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/06-borders.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Domains and borders</span></span></a>
   </div>
 </li>
@@ -294,19 +294,19 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/06-cascades.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/07-cascades.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Cascades</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/07-groups.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/08-groups.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Groups</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/08-baselines.html" class="sidebar-item-text sidebar-link">
+  <a href="../chapters/09-baselines.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Baselines</span></span></a>
   </div>
 </li>
@@ -333,6 +333,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Reading list</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/a3-glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -346,9 +352,13 @@ window.Quarto = {
    
   <ul>
   <li><a href="#what-a-jump-is" id="toc-what-a-jump-is" class="nav-link active" data-scroll-target="#what-a-jump-is"><span class="header-section-number">4.1</span> What a jump is</a></li>
-  <li><a href="#is-there-a-lévy-like-tail" id="toc-is-there-a-lévy-like-tail" class="nav-link" data-scroll-target="#is-there-a-lévy-like-tail"><span class="header-section-number">4.2</span> Is there a Lévy-like tail?</a></li>
+  <li><a href="#is-there-a-lévy-like-tail" id="toc-is-there-a-lévy-like-tail" class="nav-link" data-scroll-target="#is-there-a-lévy-like-tail"><span class="header-section-number">4.2</span> Is there a Lévy-like tail?</a>
+  <ul class="collapse">
+  <li><a href="#checks-on-the-decision" id="toc-checks-on-the-decision" class="nav-link" data-scroll-target="#checks-on-the-decision"><span class="header-section-number">4.2.1</span> Checks on the decision</a></li>
+  </ul></li>
   <li><a href="#how-far-does-each-account-range" id="toc-how-far-does-each-account-range" class="nav-link" data-scroll-target="#how-far-does-each-account-range"><span class="header-section-number">4.3</span> How far does each account range?</a></li>
   <li><a href="#do-people-come-back" id="toc-do-people-come-back" class="nav-link" data-scroll-target="#do-people-come-back"><span class="header-section-number">4.4</span> Do people come back?</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">4.5</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/TheChesireCat/rplace-2017/blob/main/chapters/04-movement.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/TheChesireCat/rplace-2017/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -376,7 +386,7 @@ window.Quarto = {
 
 <p><a href="02-actors.html" class="quarto-xref"><span>Chapter 2</span></a> asked <em>when</em> people act. This chapter asks <em>where</em>: when an account places a pixel and then another, how far away is the second one? Studies of human travel report heavy-tailed jump lengths, often called Lévy-flight-like, and a strong pull back to places already visited (<em>studied under another name</em>; Brockmann et al.&nbsp;2006, González et al.&nbsp;2008, Song et al.&nbsp;2010, see <a href="a2-reading.html" class="quarto-xref"><span>Appendix B</span></a>; not yet read for this book). r/place is a clean place to look, with one caveat that shapes everything: the canvas is a bounded square 1001 pixels across, so no jump can exceed about 1,415 pixels.</p>
 <p>The test was written down before any jump was computed: <a href="https://github.com/TheChesireCat/rplace-2017/blob/analysis/prereg/04-movement.md"><code>prereg/04-movement.md</code></a>.</p>
-<div id="ac3a7036" class="cell" data-execution_count="1">
+<div id="9e9eefb2" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -401,7 +411,7 @@ window.Quarto = {
 <li><strong>time block</strong> (five-minute periods): <strong>A</strong>, the first hours after launch; <strong>B</strong>, 04-01 21:30 to 04-02 21:30; <strong>C</strong>, the last day.</li>
 </ul>
 <p>The primary strata are prompt jumps in blocks A, B and C.</p>
-<div id="5630fdfe" class="cell" data-execution_count="2">
+<div id="52f92224" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>strata <span class="op">=</span> [(<span class="ss">f"block </span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">, prompt"</span>, clean.<span class="bu">filter</span>((pl.col(<span class="st">"block"</span>) <span class="op">==</span> b) <span class="op">&amp;</span> (pl.col(<span class="st">"gap_class"</span>) <span class="op">==</span> <span class="st">"prompt"</span>))) <span class="cf">for</span> b <span class="kw">in</span> <span class="st">"ABC"</span>]</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>strata <span class="op">+=</span> [(<span class="ss">f"5 min, </span><span class="sc">{</span>g<span class="sc">}</span><span class="ss">"</span>, clean.<span class="bu">filter</span>((pl.col(<span class="st">"period"</span>) <span class="op">==</span> <span class="dv">300</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"gap_class"</span>) <span class="op">==</span> g))) <span class="cf">for</span> g <span class="kw">in</span> (<span class="st">"later"</span>, <span class="st">"break"</span>)]</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>strata <span class="op">+=</span> [(<span class="st">"10 min, prompt"</span>, clean.<span class="bu">filter</span>((pl.col(<span class="st">"period"</span>) <span class="op">==</span> <span class="dv">600</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"gap_class"</span>) <span class="op">==</span> <span class="st">"prompt"</span>)))]</span>
@@ -413,7 +423,7 @@ window.Quarto = {
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"r ≤ 20 px"</span>: <span class="ss">f"</span><span class="sc">{</span>(rr <span class="op">&lt;=</span> <span class="dv">20</span>)<span class="sc">.</span>mean()<span class="sc">:.0%}</span><span class="ss">"</span>, <span class="st">"sd of dx (px)"</span>: <span class="ss">f"</span><span class="sc">{</span>dx<span class="sc">.</span>std()<span class="sc">:.0f}</span><span class="ss">"</span>,</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"excess kurtosis dx, dy"</span>: <span class="ss">f"</span><span class="sc">{</span>stats<span class="sc">.</span>kurtosis(dx)<span class="sc">:.1f}</span><span class="ss">, </span><span class="sc">{</span>stats<span class="sc">.</span>kurtosis(dy)<span class="sc">:.1f}</span><span class="ss">"</span>})</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(rows))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="2">
+<div class="cell-output cell-output-display cell-output-markdown">
 <table class="table table-sm table-striped small">
 <colgroup>
 <col style="width: 12%">
@@ -536,7 +546,7 @@ Figure&nbsp;4.1: Share of jumps longer than r (log scales): prompt jumps in each
 <li><strong>N2 own places, random order:</strong> each account’s placements in the block are shuffled in time and the jumps recomputed; the account’s footprint stays, its sequence goes.</li>
 <li><strong>N3 two scales:</strong> each account keeps its share of local jumps (r ≤ 20 px); local jumps are redrawn from an exponential with the account’s own mean local length (capped at 20 px, a detail the pre-registration did not specify), far ones as in N1. It mixes two scales with no heavy tail in either.</li>
 </ul>
-<div id="6a9e109a" class="cell" data-execution_count="4">
+<div id="66dfab62" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>R_LOC, NREP <span class="op">=</span> <span class="dv">20</span>, <span class="dv">20</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -607,7 +617,7 @@ Figure&nbsp;4.1: Share of jumps longer than r (log scales): prompt jumps in each
 <span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"KS data vs N3"</span>: <span class="ss">f"</span><span class="sc">{</span>D_data<span class="sc">:.3f}</span><span class="ss">"</span>, <span class="st">"largest KS N3 vs N3"</span>: <span class="ss">f"</span><span class="sc">{</span>D_null<span class="sc">:.3f}</span><span class="ss">"</span>,</span>
 <span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"Lévy-flight-like"</span>: yes(c1 <span class="kw">and</span> c2 <span class="kw">and</span> c3 <span class="kw">and</span> c4)})</span>
 <span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(fit_rows))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
+<div class="cell-output cell-output-display cell-output-markdown">
 <table class="table table-sm table-striped small">
 <colgroup>
 <col style="width: 10%">
@@ -785,9 +795,9 @@ Figure&nbsp;4.1: Share of jumps longer than r (log scales): prompt jumps in each
 </div>
 </div>
 <p>The pre-registered decision, for each block:</p>
-<div id="1beb4b1a" class="cell" data-execution_count="5">
+<div id="8c2fd363" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(decision_rows))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="5">
+<div class="cell-output cell-output-display cell-output-markdown">
 <table class="table table-sm table-striped small">
 <colgroup>
 <col style="width: 12%">
@@ -853,26 +863,272 @@ Figure&nbsp;4.1: Share of jumps longer than r (log scales): prompt jumps in each
 <li>But it is not a power law: the lognormal and the stretched exponential describe it much better, and a power law with a cutoff beats the pure one. Condition 1 fails.</li>
 </ul>
 <p>So jump lengths are broad, far broader than geometry, a shuffled footprint, or a simple local-plus-random mixture would give, but their shape is not a power law.</p>
+<section id="checks-on-the-decision" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="checks-on-the-decision"><span class="header-section-number">4.2.1</span> Checks on the decision</h3>
+<p><strong>The local radius.</strong> The two-scale null splits jumps at R_loc = 20 px; the pre-registration named 10 and 40 px as sensitivity checks, and we add 50. Condition 4 (data far from the two-scale null) is recomputed for each:</p>
+<div id="425ca73c" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rows_rl <span class="op">=</span> []</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (name, a, b), (label, s) <span class="kw">in</span> <span class="bu">zip</span>(r.BLOCKS, strata[:<span class="dv">3</span>]):</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    sp <span class="op">=</span> s.<span class="bu">filter</span>(pl.col(<span class="st">"r"</span>) <span class="op">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    data_r, x0, y0 <span class="op">=</span> sp[<span class="st">"r"</span>].to_numpy(), sp[<span class="st">"x0"</span>].to_numpy(), sp[<span class="st">"y0"</span>].to_numpy()</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> R <span class="kw">in</span> (<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">40</span>, <span class="dv">50</span>):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        far <span class="op">=</span> data_r[data_r <span class="op">&gt;</span> R]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        reps <span class="op">=</span> []</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>            keep <span class="op">=</span> rng.random(<span class="bu">len</span>(data_r)) <span class="op">&gt;=</span> np.mean(data_r <span class="op">&lt;=</span> R)       <span class="co"># the account-level local share, pooled</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>            reps.append(far_uniform(x0[keep], y0[keep], R))</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        D_d <span class="op">=</span> stats.ks_2samp(far, np.concatenate(reps)).statistic</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        D_n <span class="op">=</span> <span class="bu">max</span>(stats.ks_2samp(reps[i], reps[j]).statistic <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>) <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(i <span class="op">+</span> <span class="dv">1</span>, <span class="dv">5</span>))</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        rows_rl.append({<span class="st">"block"</span>: name, <span class="st">"R_loc (px)"</span>: R, <span class="st">"KS data vs null (far jumps)"</span>: <span class="ss">f"</span><span class="sc">{</span>D_d<span class="sc">:.3f}</span><span class="ss">"</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"largest KS null vs null"</span>: <span class="ss">f"</span><span class="sc">{</span>D_n<span class="sc">:.4f}</span><span class="ss">"</span>, <span class="st">"condition 4"</span>: <span class="st">"holds"</span> <span class="cf">if</span> D_d <span class="op">&gt;</span> D_n <span class="cf">else</span> <span class="st">"fails"</span>})</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(rows_rl))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>block</th>
+<th>R_loc (px)</th>
+<th>KS data vs null (far jumps)</th>
+<th>largest KS null vs null</th>
+<th>condition 4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>10</td>
+<td>0.492</td>
+<td>0.0054</td>
+<td>holds</td>
+</tr>
+<tr class="even">
+<td>A</td>
+<td>20</td>
+<td>0.387</td>
+<td>0.0061</td>
+<td>holds</td>
+</tr>
+<tr class="odd">
+<td>A</td>
+<td>40</td>
+<td>0.279</td>
+<td>0.0056</td>
+<td>holds</td>
+</tr>
+<tr class="even">
+<td>A</td>
+<td>50</td>
+<td>0.242</td>
+<td>0.0071</td>
+<td>holds</td>
+</tr>
+<tr class="odd">
+<td>B</td>
+<td>10</td>
+<td>0.707</td>
+<td>0.0012</td>
+<td>holds</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>20</td>
+<td>0.600</td>
+<td>0.0014</td>
+<td>holds</td>
+</tr>
+<tr class="odd">
+<td>B</td>
+<td>40</td>
+<td>0.429</td>
+<td>0.0015</td>
+<td>holds</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>50</td>
+<td>0.363</td>
+<td>0.0023</td>
+<td>holds</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>10</td>
+<td>0.729</td>
+<td>0.0015</td>
+<td>holds</td>
+</tr>
+<tr class="even">
+<td>C</td>
+<td>20</td>
+<td>0.633</td>
+<td>0.0019</td>
+<td>holds</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>40</td>
+<td>0.470</td>
+<td>0.0024</td>
+<td>holds</td>
+</tr>
+<tr class="even">
+<td>C</td>
+<td>50</td>
+<td>0.405</td>
+<td>0.0029</td>
+<td>holds</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Condition 4 holds at every radius (here the local share is pooled over each block rather than kept per account, a simplification for the sensitivity check). The verdict, which fails on condition 1, does not depend on R_loc.</p>
+<p><strong>Is it where the crowd is?</strong> A different explanation of broad jumps is attraction: people jump to wherever things are happening. This null, not in the pre-registration and so exploratory, lands each jump on the place of a random placement by anyone in the ten minutes before it.</p>
+<div id="aa19ad26" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>t_all, x_all, y_all <span class="op">=</span> d[<span class="st">"t_us"</span>].to_numpy(), d[<span class="st">"x"</span>].to_numpy(), d[<span class="st">"y"</span>].to_numpy()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>rows_at <span class="op">=</span> []</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (name, a, b), (label, s) <span class="kw">in</span> <span class="bu">zip</span>(r.BLOCKS[<span class="dv">1</span>:], strata[<span class="dv">1</span>:<span class="dv">3</span>]):</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    sp <span class="op">=</span> s.<span class="bu">filter</span>(pl.col(<span class="st">"r"</span>) <span class="op">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    t1 <span class="op">=</span> sp[<span class="st">"t_us"</span>].to_numpy()</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    lo, hi <span class="op">=</span> np.searchsorted(t_all, t1 <span class="op">-</span> <span class="dv">600_000_000</span>), np.searchsorted(t_all, t1)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    pick <span class="op">=</span> lo <span class="op">+</span> (rng.random(<span class="bu">len</span>(t1)) <span class="op">*</span> (hi <span class="op">-</span> lo)).astype(np.int64)            <span class="co"># a random recent placement, anywhere</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    r_attr <span class="op">=</span> np.hypot(x_all[pick] <span class="op">-</span> sp[<span class="st">"x0"</span>].to_numpy(), y_all[pick] <span class="op">-</span> sp[<span class="st">"y0"</span>].to_numpy())</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    data_r <span class="op">=</span> sp[<span class="st">"r"</span>].to_numpy()</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    rows_at.append({<span class="st">"block"</span>: name, <span class="st">"median jump, data (px)"</span>: <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>median(data_r)<span class="sc">:.0f}</span><span class="ss">"</span>, <span class="st">"attraction null (px)"</span>: <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>median(r_attr)<span class="sc">:.0f}</span><span class="ss">"</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"jumps ≤ 20 px, data"</span>: <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>mean(data_r <span class="op">&lt;=</span> <span class="dv">20</span>)<span class="sc">:.0%}</span><span class="ss">"</span>, <span class="st">"attraction null"</span>: <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>mean(r_attr <span class="op">&lt;=</span> <span class="dv">20</span>)<span class="sc">:.1%}</span><span class="ss">"</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"KS, jumps &gt; 20 px"</span>: <span class="ss">f"</span><span class="sc">{</span>stats<span class="sc">.</span>ks_2samp(data_r[data_r <span class="op">&gt;</span> <span class="dv">20</span>], r_attr[r_attr <span class="op">&gt;</span> <span class="dv">20</span>])<span class="sc">.</span>statistic<span class="sc">:.2f}</span><span class="ss">"</span>})</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(rows_at))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>block</th>
+<th>median jump, data (px)</th>
+<th>attraction null (px)</th>
+<th>jumps ≤ 20 px, data</th>
+<th>attraction null</th>
+<th>KS, jumps &gt; 20 px</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>B</td>
+<td>8</td>
+<td>509</td>
+<td>69%</td>
+<td>0.3%</td>
+<td>0.60</td>
+</tr>
+<tr class="even">
+<td>C</td>
+<td>9</td>
+<td>510</td>
+<td>66%</td>
+<td>0.4%</td>
+<td>0.63</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Attraction to the crowd’s recent activity reproduces nothing: recent activity is spread over the whole canvas, so jumps drawn towards it are as long as random ones. A <em>local</em> attraction null (towards recent activity near the origin) would need a radius, and choosing one builds in the locality it is meant to explain, so we do not fit it.</p>
+<p><strong>Direction.</strong> Straight-edged artworks such as flags would make jumps along rows and columns more common.</p>
+<div id="e201f23b" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>rows_dir <span class="op">=</span> []</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> label, s <span class="kw">in</span> strata[<span class="dv">1</span>:<span class="dv">3</span>]:</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    sp <span class="op">=</span> s.<span class="bu">filter</span>(pl.col(<span class="st">"r"</span>) <span class="op">&gt;</span> <span class="dv">20</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    ang <span class="op">=</span> np.degrees(np.arctan2(np.<span class="bu">abs</span>(sp[<span class="st">"dy"</span>].to_numpy()), np.<span class="bu">abs</span>(sp[<span class="st">"dx"</span>].to_numpy())))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    x1u, y1u <span class="op">=</span> rng.integers(<span class="dv">0</span>, <span class="dv">1001</span>, sp.height), rng.integers(<span class="dv">0</span>, <span class="dv">1001</span>, sp.height)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    dxu, dyu <span class="op">=</span> x1u <span class="op">-</span> sp[<span class="st">"x0"</span>].to_numpy(), y1u <span class="op">-</span> sp[<span class="st">"y0"</span>].to_numpy()</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    far_u <span class="op">=</span> np.hypot(dxu, dyu) <span class="op">&gt;</span> <span class="dv">20</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    ang_u <span class="op">=</span> np.degrees(np.arctan2(np.<span class="bu">abs</span>(dyu[far_u]), np.<span class="bu">abs</span>(dxu[far_u])))</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    near_axis <span class="op">=</span> <span class="kw">lambda</span> a_: np.mean((a_ <span class="op">&lt;</span> <span class="dv">5</span>) <span class="op">|</span> (a_ <span class="op">&gt;</span> <span class="dv">85</span>))</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    rows_dir.append({<span class="st">"stratum (jumps &gt; 20 px)"</span>: label, <span class="st">"within 5° of an axis, data"</span>: <span class="ss">f"</span><span class="sc">{</span>near_axis(ang)<span class="sc">:.1%}</span><span class="ss">"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"geometry null"</span>: <span class="ss">f"</span><span class="sc">{</span>near_axis(ang_u)<span class="sc">:.1%}</span><span class="ss">"</span>, <span class="st">"exactly along a row or column, data"</span>: <span class="ss">f"</span><span class="sc">{</span>((sp[<span class="st">'dx'</span>] <span class="op">==</span> <span class="dv">0</span>) <span class="op">|</span> (sp[<span class="st">'dy'</span>] <span class="op">==</span> <span class="dv">0</span>))<span class="sc">.</span>mean()<span class="sc">:.1%}</span><span class="ss">"</span>})</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(rows_dir))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>stratum (jumps &gt; 20 px)</th>
+<th>within 5° of an axis, data</th>
+<th>geometry null</th>
+<th>exactly along a row or column, data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>block B, prompt</td>
+<td>20.8%</td>
+<td>11.2%</td>
+<td>3.7%</td>
+</tr>
+<tr class="even">
+<td>block C, prompt</td>
+<td>22.0%</td>
+<td>11.3%</td>
+<td>3.9%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>About twice as many far jumps run within 5° of a row or column as random destinations would give: consistent with people working along straight edges, though this check cannot say whose edges.</p>
+<p><strong>Do long jumps follow long jumps?</strong></p>
+<div id="9ca05465" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sb_ <span class="op">=</span> (strata[<span class="dv">1</span>][<span class="dv">1</span>].<span class="bu">filter</span>(pl.col(<span class="st">"r"</span>) <span class="op">&gt;</span> <span class="dv">0</span>).sort(<span class="st">"user_id"</span>, <span class="st">"t_us"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>       .with_columns(pl.col(<span class="st">"r"</span>).log().alias(<span class="st">"lr"</span>)).with_columns(pl.col(<span class="st">"lr"</span>).shift(<span class="dv">1</span>).over(<span class="st">"user_id"</span>).alias(<span class="st">"lr_prev"</span>)).drop_nulls(<span class="st">"lr_prev"</span>))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>rho <span class="op">=</span> np.corrcoef(sb_[<span class="st">"lr"</span>], sb_[<span class="st">"lr_prev"</span>])[<span class="dv">0</span>, <span class="dv">1</span>]</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>sb_shuf <span class="op">=</span> sb_.with_columns(pl.col(<span class="st">"lr_prev"</span>).shuffle(seed<span class="op">=</span><span class="dv">1</span>).over(<span class="st">"user_id"</span>))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>rho_shuf <span class="op">=</span> np.corrcoef(sb_shuf[<span class="st">"lr"</span>], sb_shuf[<span class="st">"lr_prev"</span>])[<span class="dv">0</span>, <span class="dv">1</span>]</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"block B, prompt: correlation of consecutive log jump lengths </span><span class="sc">{</span>rho<span class="sc">:.2f}</span><span class="ss">; with each account's jumps shuffled </span><span class="sc">{</span>rho_shuf<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>block B, prompt: correlation of consecutive log jump lengths 0.41; with each account's jumps shuffled 0.29</code></pre>
+</div>
+</div>
+<p>Consecutive jump lengths are correlated (0.41). Part of that is that accounts differ, some mostly local and some roaming: shuffling each account’s own jumps keeps that and leaves 0.29. The rest is sequence: a long jump makes another long one more likely. One reading, not tested here, is someone moving to a new area and looking around.</p>
+</section>
 </section>
 <section id="how-far-does-each-account-range" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="how-far-does-each-account-range"><span class="header-section-number">4.3</span> How far does each account range?</h2>
 <p>The <strong>radius of gyration</strong> of an account is the root-mean-square distance of its placements from their centre: how spread out its footprint is over the whole event.</p>
-<div id="cell-fig-rg" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>live <span class="op">=</span> d.<span class="bu">filter</span>(pl.col(<span class="st">"t_us"</span>) <span class="op">&gt;=</span> r.LAUNCH_US)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>rg <span class="op">=</span> live.group_by(<span class="st">"user_id"</span>).agg(</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    pl.<span class="bu">len</span>().alias(<span class="st">"k"</span>),</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    (((pl.col(<span class="st">"x"</span>) <span class="op">-</span> pl.col(<span class="st">"x"</span>).mean()).cast(pl.Float64) <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span> (pl.col(<span class="st">"y"</span>) <span class="op">-</span> pl.col(<span class="st">"y"</span>).mean()).cast(pl.Float64) <span class="op">**</span> <span class="dv">2</span>).mean().sqrt()).alias(<span class="st">"rg"</span>))</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>bands <span class="op">=</span> ((<span class="dv">2</span>, <span class="dv">5</span>), (<span class="dv">5</span>, <span class="dv">20</span>), (<span class="dv">20</span>, <span class="dv">50</span>), (<span class="dv">50</span>, <span class="dv">100</span>), (<span class="dv">100</span>, <span class="dv">250</span>), (<span class="dv">250</span>, <span class="va">None</span>))</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>mid, q1, q3, labels <span class="op">=</span> [], [], [], []</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lo, hi <span class="kw">in</span> bands:</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> rg.<span class="bu">filter</span>((pl.col(<span class="st">"k"</span>) <span class="op">&gt;=</span> lo) <span class="op">&amp;</span> (pl.col(<span class="st">"k"</span>) <span class="op">&lt;</span> (hi <span class="kw">or</span> <span class="dv">10</span><span class="op">**</span><span class="dv">9</span>)))[<span class="st">"rg"</span>]</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    mid.append(s.median())<span class="op">;</span> q1.append(s.quantile(<span class="fl">0.25</span>))<span class="op">;</span> q3.append(s.quantile(<span class="fl">0.75</span>))</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    labels.append(<span class="ss">f"</span><span class="sc">{</span>lo<span class="sc">}</span><span class="ss">+"</span> <span class="cf">if</span> hi <span class="kw">is</span> <span class="va">None</span> <span class="cf">else</span> <span class="ss">f"</span><span class="sc">{</span>lo<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>hi <span class="op">-</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">3.5</span>))</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="bu">len</span>(bands))</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>ax.errorbar(x, mid, yerr<span class="op">=</span>[np.subtract(mid, q1), np.subtract(q3, mid)], fmt<span class="op">=</span><span class="st">"o"</span>, capsize<span class="op">=</span><span class="dv">3</span>)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(x, labels)<span class="op">;</span> ax.set_xlabel(<span class="st">"placements per account"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"radius of gyration (px)"</span>)</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-fig-rg" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>live <span class="op">=</span> d.<span class="bu">filter</span>(pl.col(<span class="st">"t_us"</span>) <span class="op">&gt;=</span> r.LAUNCH_US)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>rg <span class="op">=</span> live.group_by(<span class="st">"user_id"</span>).agg(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    pl.<span class="bu">len</span>().alias(<span class="st">"k"</span>),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    (((pl.col(<span class="st">"x"</span>) <span class="op">-</span> pl.col(<span class="st">"x"</span>).mean()).cast(pl.Float64) <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span> (pl.col(<span class="st">"y"</span>) <span class="op">-</span> pl.col(<span class="st">"y"</span>).mean()).cast(pl.Float64) <span class="op">**</span> <span class="dv">2</span>).mean().sqrt()).alias(<span class="st">"rg"</span>))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>bands <span class="op">=</span> ((<span class="dv">2</span>, <span class="dv">5</span>), (<span class="dv">5</span>, <span class="dv">20</span>), (<span class="dv">20</span>, <span class="dv">50</span>), (<span class="dv">50</span>, <span class="dv">100</span>), (<span class="dv">100</span>, <span class="dv">250</span>), (<span class="dv">250</span>, <span class="va">None</span>))</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>mid, q1, q3, labels <span class="op">=</span> [], [], [], []</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lo, hi <span class="kw">in</span> bands:</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> rg.<span class="bu">filter</span>((pl.col(<span class="st">"k"</span>) <span class="op">&gt;=</span> lo) <span class="op">&amp;</span> (pl.col(<span class="st">"k"</span>) <span class="op">&lt;</span> (hi <span class="kw">or</span> <span class="dv">10</span><span class="op">**</span><span class="dv">9</span>)))[<span class="st">"rg"</span>]</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    mid.append(s.median())<span class="op">;</span> q1.append(s.quantile(<span class="fl">0.25</span>))<span class="op">;</span> q3.append(s.quantile(<span class="fl">0.75</span>))</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    labels.append(<span class="ss">f"</span><span class="sc">{</span>lo<span class="sc">}</span><span class="ss">+"</span> <span class="cf">if</span> hi <span class="kw">is</span> <span class="va">None</span> <span class="cf">else</span> <span class="ss">f"</span><span class="sc">{</span>lo<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>hi <span class="op">-</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">3.5</span>))</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="bu">len</span>(bands))</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>ax.errorbar(x, mid, yerr<span class="op">=</span>[np.subtract(mid, q1), np.subtract(q3, mid)], fmt<span class="op">=</span><span class="st">"o"</span>, capsize<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(x, labels)<span class="op">;</span> ax.set_xlabel(<span class="st">"placements per account"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"radius of gyration (px)"</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="fig-rg" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -890,32 +1146,97 @@ Figure&nbsp;4.2: Radius of gyration of accounts against their number of placemen
 </section>
 <section id="do-people-come-back" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="do-people-come-back"><span class="header-section-number">4.4</span> Do people come back?</h2>
-<div id="99ac149a" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_share(df):</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Share of placements within 5 px of one of the account's own previous 10 placements."""</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    o <span class="op">=</span> df.sort(<span class="st">"user_id"</span>, <span class="st">"t_us"</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    dmin <span class="op">=</span> <span class="va">None</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>):</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        dk <span class="op">=</span> ((pl.col(<span class="st">"x"</span>).cast(pl.Float64) <span class="op">-</span> pl.col(<span class="st">"x"</span>).shift(k).over(<span class="st">"user_id"</span>)) <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>              (pl.col(<span class="st">"y"</span>).cast(pl.Float64) <span class="op">-</span> pl.col(<span class="st">"y"</span>).shift(k).over(<span class="st">"user_id"</span>)) <span class="op">**</span> <span class="dv">2</span>).sqrt()</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        dmin <span class="op">=</span> dk <span class="cf">if</span> dmin <span class="kw">is</span> <span class="va">None</span> <span class="cf">else</span> pl.min_horizontal(dmin, dk)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    o <span class="op">=</span> o.with_columns(dmin.alias(<span class="st">"dmin"</span>)).drop_nulls(<span class="st">"dmin"</span>)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (o[<span class="st">"dmin"</span>] <span class="op">&lt;=</span> <span class="dv">5</span>).mean(), (o[<span class="st">"dmin"</span>] <span class="op">==</span> <span class="dv">0</span>).mean()</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>ret, exact <span class="op">=</span> return_share(live)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># each account's own placements, in random order</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>shuffled <span class="op">=</span> (live.with_columns(pl.Series(<span class="st">"u"</span>, rng.random(live.height))).sort(<span class="st">"user_id"</span>, <span class="st">"u"</span>)</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                .with_columns(pl.int_range(pl.<span class="bu">len</span>()).over(<span class="st">"user_id"</span>).alias(<span class="st">"t_us"</span>)))</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>ret_null, exact_null <span class="op">=</span> return_share(shuffled)</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"within 5 px of one of the previous 10: </span><span class="sc">{</span>ret<span class="sc">:.1%}</span><span class="ss"> (own places in random order: </span><span class="sc">{</span>ret_null<span class="sc">:.1%}</span><span class="ss">)"</span>)</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"exactly the same pixel as one of the previous 10: </span><span class="sc">{</span>exact<span class="sc">:.1%}</span><span class="ss"> (random order: </span><span class="sc">{</span>exact_null<span class="sc">:.1%}</span><span class="ss">)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="a35cda63" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> return_share(df):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Share of placements within 5 px of one of the account's own previous 10 placements."""</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    o <span class="op">=</span> df.sort(<span class="st">"user_id"</span>, <span class="st">"t_us"</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    dmin <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>):</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        dk <span class="op">=</span> ((pl.col(<span class="st">"x"</span>).cast(pl.Float64) <span class="op">-</span> pl.col(<span class="st">"x"</span>).shift(k).over(<span class="st">"user_id"</span>)) <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>              (pl.col(<span class="st">"y"</span>).cast(pl.Float64) <span class="op">-</span> pl.col(<span class="st">"y"</span>).shift(k).over(<span class="st">"user_id"</span>)) <span class="op">**</span> <span class="dv">2</span>).sqrt()</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        dmin <span class="op">=</span> dk <span class="cf">if</span> dmin <span class="kw">is</span> <span class="va">None</span> <span class="cf">else</span> pl.min_horizontal(dmin, dk)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    o <span class="op">=</span> o.with_columns(dmin.alias(<span class="st">"dmin"</span>)).drop_nulls(<span class="st">"dmin"</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (o[<span class="st">"dmin"</span>] <span class="op">&lt;=</span> <span class="dv">5</span>).mean(), (o[<span class="st">"dmin"</span>] <span class="op">==</span> <span class="dv">0</span>).mean()</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>ret, exact <span class="op">=</span> return_share(live)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co"># each account's own placements, in random order</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>shuffled <span class="op">=</span> (live.with_columns(pl.Series(<span class="st">"u"</span>, rng.random(live.height))).sort(<span class="st">"user_id"</span>, <span class="st">"u"</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>                .with_columns(pl.int_range(pl.<span class="bu">len</span>()).over(<span class="st">"user_id"</span>).alias(<span class="st">"t_us"</span>)))</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>ret_null, exact_null <span class="op">=</span> return_share(shuffled)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"within 5 px of one of the previous 10: </span><span class="sc">{</span>ret<span class="sc">:.1%}</span><span class="ss"> (own places in random order: </span><span class="sc">{</span>ret_null<span class="sc">:.1%}</span><span class="ss">)"</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"exactly the same pixel as one of the previous 10: </span><span class="sc">{</span>exact<span class="sc">:.1%}</span><span class="ss"> (random order: </span><span class="sc">{</span>exact_null<span class="sc">:.1%}</span><span class="ss">)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>within 5 px of one of the previous 10: 46.7% (own places in random order: 34.7%)
 exactly the same pixel as one of the previous 10: 6.2% (random order: 3.6%)</code></pre>
 </div>
 </div>
 <p>About 47% of placements land within five pixels of one of the account’s own previous ten, against 35% if the same places were visited in random order. People come back to where they just were more often than their own footprint alone would make them, by about a third: the sequence is local in time, not only in space.</p>
+<p><strong>Distinct places.</strong> Song et al.&nbsp;(2010) describe returns, as we understand it (the paper is not yet read here), by how fast the number of distinct places grows with the number of visits. Here a “place” can be a pixel:</p>
+<div id="4ecd4737" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>big <span class="op">=</span> live.group_by(<span class="st">"user_id"</span>).<span class="bu">len</span>().<span class="bu">filter</span>(pl.col(<span class="st">"len"</span>) <span class="op">&gt;=</span> <span class="dv">200</span>).select(<span class="st">"user_id"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> (live.join(big, on<span class="op">=</span><span class="st">"user_id"</span>, how<span class="op">=</span><span class="st">"semi"</span>).sort(<span class="st">"user_id"</span>, <span class="st">"t_us"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>         .with_columns(pl.int_range(pl.<span class="bu">len</span>()).over(<span class="st">"user_id"</span>).alias(<span class="st">"n"</span>), (pl.col(<span class="st">"x"</span>).cast(pl.Int32) <span class="op">*</span> r.SIZE <span class="op">+</span> pl.col(<span class="st">"y"</span>).cast(pl.Int32)).alias(<span class="st">"pix"</span>)))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>Ls <span class="op">=</span> (L.with_columns(pl.Series(<span class="st">"u"</span>, rng.random(L.height))).sort(<span class="st">"user_id"</span>, <span class="st">"u"</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>       .with_columns(pl.int_range(pl.<span class="bu">len</span>()).over(<span class="st">"user_id"</span>).alias(<span class="st">"n"</span>)))</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>rows_S <span class="op">=</span> []</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> (<span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>):</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    S_d <span class="op">=</span> L.group_by(<span class="st">"user_id"</span>, <span class="st">"pix"</span>).agg(pl.col(<span class="st">"n"</span>).<span class="bu">min</span>().alias(<span class="st">"f"</span>)).<span class="bu">filter</span>(pl.col(<span class="st">"f"</span>) <span class="op">&lt;</span> n).group_by(<span class="st">"user_id"</span>).<span class="bu">len</span>()[<span class="st">"len"</span>]</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    S_s <span class="op">=</span> Ls.group_by(<span class="st">"user_id"</span>, <span class="st">"pix"</span>).agg(pl.col(<span class="st">"n"</span>).<span class="bu">min</span>().alias(<span class="st">"f"</span>)).<span class="bu">filter</span>(pl.col(<span class="st">"f"</span>) <span class="op">&lt;</span> n).group_by(<span class="st">"user_id"</span>).<span class="bu">len</span>()[<span class="st">"len"</span>]</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    rows_S.append({<span class="st">"placements so far"</span>: n, <span class="st">"distinct pixels (median), data"</span>: <span class="ss">f"</span><span class="sc">{</span>S_d<span class="sc">.</span>median()<span class="sc">:.0f}</span><span class="ss">"</span>, <span class="st">"same placements in random order"</span>: <span class="ss">f"</span><span class="sc">{</span>S_s<span class="sc">.</span>median()<span class="sc">:.0f}</span><span class="ss">"</span>})</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>big<span class="sc">.</span>height<span class="sc">:,}</span><span class="ss"> accounts with at least 200 placements"</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>r.table(pl.DataFrame(rows_S))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>4,983 accounts with at least 200 placements</code></pre>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>placements so far</th>
+<th>distinct pixels (median), data</th>
+<th>same placements in random order</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>10</td>
+<td>10</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td>50</td>
+<td>48</td>
+<td>48</td>
+</tr>
+<tr class="odd">
+<td>100</td>
+<td>92</td>
+<td>92</td>
+</tr>
+<tr class="even">
+<td>200</td>
+<td>174</td>
+<td>174</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>At the scale of single pixels people rarely come back: after 200 placements, a typical heavy account has touched almost 200 different pixels, and random order makes little difference. The returns of the previous section are to <em>areas</em>, within a few pixels, not to the same pixel. Which scale is the right “place” for a preferential-return model is itself a question for later.</p>
 <p><strong>How far this goes.</strong> The pre-registered test found no Lévy-flight-like jumps in any block. The jump lengths are broad and far from all three nulls, but lognormal-like rather than power-law; prompt jumps are mostly local, jumps after a break span the canvas, footprints are wide and narrow with activity, and people return to recent places far more than chance. The moments, footprints and returns are descriptive, as pre-registered. A natural model to test next is the one the mobility literature uses, exploration plus preferential return (Song et al.&nbsp;2010), fitted per account, against these same nulls.</p>
+</section>
+<section id="exercises" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">4.5</span> Exercises</h2>
+<ol type="1">
+<li>Define a “place” as a 10 × 10 block instead of a pixel and redo the distinct-places table. At what block size do people start to look like they return?</li>
+<li>The direction check compares far jumps with random destinations. Restrict it to jumps that start on a pixel that is part of a straight edge in the final canvas. Does the axis excess grow?</li>
+<li>Fit the jump lengths of block B with a mixture of two lognormals. How much of the “broad stretch” does a second scale absorb?</li>
+</ol>
 
 
 </section>
@@ -1481,7 +1802,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../chapters/04-interactions.html" class="pagination-link" aria-label="Interactions">
+      <a href="../chapters/05-interactions.html" class="pagination-link" aria-label="Interactions">
         <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Interactions</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
