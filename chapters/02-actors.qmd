@@ -176,11 +176,17 @@ cov_acc, cov_pl = coverage(heavy)
 print(f"accounts with ≥ 20 gaps inside five-minute periods: {heavy.height:,} "
       f"({cov_acc:.0%} of accounts, {cov_pl:.0%} of placements)")
 print(f"  never faster than 10 minutes: {never10}")
+
+in20 = gaps.filter((pl.col("wait_end") == 1200) & (pl.col("wait_start") == 1200))
+under20 = (in20["gap_s"] < 1195).mean()
+print(f"gaps inside twenty-minute periods: {in20.height:,};  shorter than 20 minutes: {under20:.2%}")
 ```
 
 Of the `{python} f"{heavy.height:,}"` accounts with at least 20 such gaps, only `{python} never10` never placed
 faster than every ten minutes. For these accounts a personal ten-minute wait is ruled out. They are
-`{python} f"{cov_acc:.0%}"` of accounts but made `{python} f"{cov_pl:.0%}"` of all placements.
+`{python} f"{cov_acc:.0%}"` of accounts but made `{python} f"{cov_pl:.0%}"` of all placements. The same holds in the other direction:
+inside the twenty-minute period only `{python} f"{under20:.1%}"` of gaps are shorter than twenty minutes, so no group
+of accounts kept a shorter wait there either.
 
 Lighter accounts are harder to test: with few gaps, an account can miss every five-minute chance by accident. So we ask
 how many light accounts (5 to 19 gaps) *would* never go faster than ten minutes by chance if everyone shared the
@@ -341,10 +347,13 @@ B2 = np.array([burstiness(np.asarray(g)) for g in acc2["gap_s"].to_list()])
 match = sim["mu"].to_numpy() / np.array([np.mean(g) for g in acc2["gap_s"].to_list()])
 print(f"null mean gap / observed mean gap: median {np.median(match):.2f} (IQR {np.quantile(match, .25):.2f}-{np.quantile(match, .75):.2f})")
 
+BANDS = ((11, 20), (20, 50), (50, 100), (100, 250), (250, None))   # placements per account (= gaps + 1)
+def band_name(lo, hi):
+    return f"{lo}+" if hi is None else f"{lo}-{hi - 1}"
 rows = []
-for lo, hi in ((10, 20), (20, 50), (50, 100), (100, None)):
-    m = (n_g >= lo) & (n_g < (hi or 10**9))
-    rows.append({"gaps": f"{lo}+" if hi is None else f"{lo}-{hi - 1}", "accounts": int(m.sum()),
+for lo, hi in BANDS:
+    m = (n_g + 1 >= lo) & (n_g + 1 < (hi or 10**9))
+    rows.append({"placements": band_name(lo, hi), "accounts": int(m.sum()),
                  "median B, data": round(float(np.median(B2[m])), 2),
                  "median B, activity null": round(float(np.median(B_act[m])), 2),
                  "data > null": f"{(B2[m] > B_act[m]).mean():.0%}"})
@@ -354,19 +363,82 @@ r.table(pl.DataFrame(rows))
 The activity-following null matches each account's mean gap (median ratio `{python} f"{np.median(match):.2f}"`), and
 it barely moves: its median $B$ is `{python} f"{np.median(B_act):.2f}"`, against `{python} f"{np.median(B2):.2f}"` in
 the data. The data are burstier in every band of history length, and more so for longer histories. The crowd's
-rhythm is far too gentle to explain the silences of individuals. People place quickly while engaged, then go quiet
-for long stretches: the familiar pattern of human activity, surviving a hard rate limit.
+rhythm is far too gentle to explain the silences of individuals.
 
-**How far this goes.** The result beats two nulls and holds across history lengths. It has not been checked across the
-cooldown regimes or day and night, nor for other thresholds (the 10-gap minimum). The likely mechanism, each person's
-own sessions broken by sleep and the rest of life, is a hypothesis. Note that the activity null removes the *crowd's*
-rhythm, not each person's own; a person's sleep is part of the mechanism to be tested, not a confound to remove. The
-next step is to split each account's history into sessions and look at session lengths and the gaps between them.
+### Is each account as bursty as the crowd?
+
+Both nulls so far ask whether accounts are burstier than *random* waiting. A different question is whether each
+account is burstier than the *crowd*. A third null answers it. Each account keeps its number of placements and its
+start time, and each of its gaps is redrawn as the cooldown in force plus an extra wait drawn from everyone's extra
+waits at the same cooldown and the same hour of day. This null carries the crowd's own burstiness, its daily cycle
+and the launch surge, so it tests "this account waits like everybody does", not "this account waits at random". We
+draw 20 null histories per account, for accounts with at least 20 placements.
+
+```{python}
+g2 = gaps.with_columns(((pl.col("t_prev") // 3_600_000_000) % 24).alias("hour"),
+                       (pl.col("gap_s") - pl.col("wait_end")).alias("extra"))
+pools = {key: grp["extra"].to_numpy()                          # extra waits, by (cooldown, hour of day)
+         for key, grp in g2.filter(pl.col("wait_start") == pl.col("wait_end")).group_by(["wait_end", "hour"])}
+
+acc3 = (gaps.group_by("user_id")
+            .agg(pl.len().alias("n"), pl.col("t_prev").min().alias("t0"),
+                 pl.col("gap_s").mean().alias("mu"), pl.col("gap_s").std().alias("sd"))
+            .filter(pl.col("n") + 1 >= 20))
+B3 = ((acc3["sd"] - acc3["mu"]) / (acc3["sd"] + acc3["mu"])).to_numpy()
+n3 = acc3["n"].to_numpy()
+
+K = 20
+t = np.repeat(acc3["t0"].to_numpy(), K)                       # K null histories per account, run side by side
+n_rep = np.repeat(n3, K)
+S, SS = np.zeros(len(t)), np.zeros(len(t))                     # running sums, enough for the mean and sd
+for j in range(n3.max()):
+    live = np.nonzero(n_rep > j)[0]
+    c = r.cooldown_at(t[live])
+    h = (t[live] // 3_600_000_000) % 24
+    gap = np.empty(len(live))
+    for (cv, hv), pool in pools.items():
+        m = np.nonzero((c == cv) & (h == hv))[0]
+        gap[m] = cv + pool[rng.integers(len(pool), size=len(m))]
+    S[live] += gap; SS[live] += gap * gap
+    t[live] += (gap * 1e6).astype(np.int64)
+mu = S / n_rep
+sd = np.sqrt(np.maximum(SS / n_rep - mu * mu, 0) * n_rep / (n_rep - 1))
+B3_null = ((sd - mu) / (sd + mu)).reshape(-1, K)               # one row per account
+
+rows = []
+for lo, hi in BANDS[1:]:
+    m = (n3 + 1 >= lo) & (n3 + 1 < (hi or 10**9))
+    diff = B3[m] - B3_null[m].mean(axis=1)                     # paired: each account against its own null
+    boot = [np.median(rng.choice(diff, len(diff))) for _ in range(1000)]
+    rows.append({"placements": band_name(lo, hi), "accounts": f"{m.sum():,}",
+                 "median B, data": f"{np.median(B3[m]):.2f}", "median B, crowd null": f"{np.median(B3_null[m]):.2f}",
+                 "paired difference [95% CI]": f"{np.median(diff):+.3f} [{np.quantile(boot, .025):+.3f}, {np.quantile(boot, .975):+.3f}]",
+                 "above own null's 95th pct": f"{np.mean(B3[m] > np.quantile(B3_null[m], .95, axis=1)):.0%}",
+                 "below own null's 5th pct": f"{np.mean(B3[m] < np.quantile(B3_null[m], .05, axis=1)):.0%}"})
+crowd = pl.DataFrame(rows)
+r.table(crowd)
+```
+
+Against the crowd, the gap almost disappears: in every band the median account is within a few hundredths of its own
+crowd null. So each account is about as bursty as the crowd as a whole. Burstiness is a trait nearly everyone shares,
+not a property of a few unusual accounts; and since an account whose waits were simply slower or faster than others'
+would come out *less* bursty than the pooled crowd, this suggests that most of the crowd's burstiness lies within
+people rather than between them. What remains individual is spread: in each band about twice the expected 5% of accounts fall above their
+own null's 95th percentile, and as many below its 5th, and the busiest accounts lean less bursty than the crowd.
+
+**How far this goes.** Accounts are far burstier than random waiting (two nulls, every history length), and about as
+bursty as the crowd (a third null). Both results beat a null and hold across history lengths; they are provisional
+until checked across the cooldown regimes and day and night. The likely mechanism, each person's sessions broken by
+sleep and the rest of life, is a hypothesis; a person's own sleep is part of the mechanism, not a confound to remove.
+The next step is to split each account's history into sessions and look at session lengths and the gaps between them.
+Whether the waits have a heavy tail, and of what kind, is a separate question with its own nulls, left for a later
+section.
 
 ## What this chapter sets up
 
 - **Activity is uneven but capped.** No account can do much, so anything large on the canvas needs many accounts.
-- **People act in bursts.** A pixel held "all day" is held by a relay of people, not by one person.
+- **People act in bursts, and nearly everyone does.** A pixel held "all day" is held by a relay of people, not by one
+  person.
 - **The speed limit changed seven times, for everyone at once** (three tightenings, four loosenings), on a schedule
   that Reddit's own code history records. Later chapters compare conflict and repair in short windows around those
   switches.
