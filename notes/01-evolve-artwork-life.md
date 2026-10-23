@@ -161,4 +161,15 @@ and a front-speed measurement. Before either becomes a pre-registered chapter te
 | Coordination inefficiency also contributes | UNRESOLVED (positive participants coefficient) |
 | Repair deficits precede losses | REPRODUCES KNOWN RESULT (Falmagne et al.) |
 | Lifecycle mix shift with completion | EXPLAINED BY CONSTRUCTION (partly) |
-| Labour-limited front growth (offspring B) | UNTESTED |
+| Labour-limited growth (offspring B) | UNRESOLVED: builds scale one for one with placements (+1.06), but equally at placebo times (+1.06), so the switches do not discriminate (`prereg/07-*`) |
+
+### Literature, OpenAlex (2026-10-22)
+
+172 works matching r/place, scanned by title; relevant abstracts read. No work found that tests redundant placements
+as spare defensive capacity, in r/place or, by a semantic search, in peer production generally (closest:
+over-contribution in shared databases; coordination-efficiency models). Unread gaps: Israeli and Tsur 2024 (ICWSM,
+community success in 2022), Eisenmann and Winters 2026 (closed), Vachher et al. 2020 (closed). Müller and Winters 2018
+(PLoS ONE) already describe the 2017 canvas moving from an unstructured to a structured state, so that whole-canvas
+stage is known. The hinge test stays POTENTIALLY NEW in the searched scope.
+
+The 2022 replication was pre-registered and then withdrawn unrun: the book uses only the 2017 log.
