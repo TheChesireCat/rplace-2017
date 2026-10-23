@@ -40,3 +40,8 @@ landed in it.
 32 colours instead of 16; a larger, expanding canvas; a different crowd; template overlays more widely used. None is
 expected to remove the hinge if spare capacity is a general property of defended artworks; any of them could, and a
 failure will be reported as a failure, not explained away.
+
+## Withdrawn, 2026-10-22 (not run)
+
+Withdrawn by the author's decision, before any 2022 data was loaded: this book uses the 2017 log only, and no newer
+data. No 2022 placement was read. The 2017 hinge result therefore stays a post-hoc result without a blind replication.
