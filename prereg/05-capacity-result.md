@@ -13,3 +13,19 @@ data (+0.060 [0.055, 0.064] and +0.020 [0.015, 0.026]) do not decide between the
 [0.0195, 0.0206], with attacks in the next window controlled (−0.75 [−0.86, −0.64]), n = 621,049 region-windows.
 Repair deficits precede losses in 2017 beyond the persistence of attacks: this reproduces, in another edition, what
 Falmagne et al. (2026) report for 2022-23.
+
+## Amendment 1 (hinge test) — result
+
+Controls: positive (simulated capacity) H = +0.206; negative (random targeting, seeds 10-12) H = −0.021, −0.023,
+−0.022. Data (20 px regions, 3 h reference): slope below the knot −0.0002, above +0.061, **H = +0.061 [0.054, 0.069]**,
+above the largest random-targeting H. **Verdict: spare capacity supported**, by a test written after seeing a
+descriptive table (post hoc), not a blind one.
+
+Robustness (not pre-registered): 10 px regions H = +0.099 [0.081, 0.113]; 1 h reference +0.130 [0.120, 0.143]; 6 h
+reference +0.054 [0.045, 0.064]; **50 px regions +0.005 [−0.006, +0.017], not supported.** The effect holds at the
+scale of single artworks and disappears when a region mixes several; one reading (untested) is that spare labour is
+local to an artwork. The participants coefficient stays positive throughout, so coordination inefficiency (or another
+size-related motive) may operate alongside.
+
+**Status: SUPPORTED WITH LIMITATIONS** — post hoc, one edition, regions of 20 px or less, causal reference colour as a
+proxy for an artwork's design.

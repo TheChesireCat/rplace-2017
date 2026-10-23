@@ -141,3 +141,24 @@ placements, and should be slower for longer fronts.
 
 One round. A and B are new offspring; a second round would run them through steps 1–2 again after the capacity test
 and a front-speed measurement. Before either becomes a pre-registered chapter test, it needs the full claim gate.
+
+## Follow-up, 2026-10-22: chasing the leads
+
+- **Falmagne et al. (2026), read further** (Methods and SI via arXiv HTML): their 19 predictors include attack fraction,
+  return rate (defence), redundant changes (= wasted) and users; "low defense activity in the past is a transition
+  signal". So *deficit → loss* is **KNOWN** for 2022-23; in 2017 it replicates with attack persistence controlled
+  (`prereg/05-capacity-result.md`). They read redundant changes as users attaching their name to pixels.
+- **Capacity test** (`prereg/05-capacity.md`): **not informative as pre-registered** (the random-targeting control gave
+  +0.029, a mechanical within-window effect). A **post-hoc hinge test** (amendment 1, committed before fitting) finds
+  the capacity shape: flat while placements are fewer than wrong pixels, rising once they exceed them (H = +0.061
+  [0.054, 0.069]; random targeting −0.02). Holds at 10 and 20 px and at 1-6 h references; **fails at 50 px**.
+  Status: SUPPORTED WITH LIMITATIONS.
+- **Half B is spent** as a holdout (`prereg/03-wasted-holdout.md`, note).
+
+| Claim | Status now |
+|---|---|
+| Wasted placements are (partly) spare defensive capacity | SUPPORTED WITH LIMITATIONS (post hoc; ≤ 20 px) |
+| Coordination inefficiency also contributes | UNRESOLVED (positive participants coefficient) |
+| Repair deficits precede losses | REPRODUCES KNOWN RESULT (Falmagne et al.) |
+| Lifecycle mix shift with completion | EXPLAINED BY CONSTRUCTION (partly) |
+| Labour-limited front growth (offspring B) | UNTESTED |

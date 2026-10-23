@@ -14,7 +14,8 @@ import polars as pl
 import rplace17 as r
 
 T0 = time.time()
-REGION, WIN_US, MEMORY = 20, 900_000_000, 12          # 20 x 20 px, 15 min, reference over the previous 12 windows
+import os
+REGION = int(os.environ.get("REGION", 20)); MEMORY = int(os.environ.get("MEMORY", 12)); WIN_US = 900_000_000   # defaults: 20 px, 3 h
 NB = (r.SIZE + REGION - 1) // REGION
 rng = np.random.default_rng(0)
 
@@ -97,7 +98,7 @@ for w in range(n_win):
 
 rw = pl.concat(rows).with_columns((pl.col("wasted") / pl.col("L")).alias("wasted_share"))
 Path("data/scratch").mkdir(parents=True, exist_ok=True)
-rw.write_parquet("data/scratch/05-region-windows.parquet")
+rw.write_parquet(os.environ.get("OUT", "data/scratch/05-region-windows.parquet"))
 use = rw.filter((pl.col("L") >= 20) & (pl.col("completion") >= 0.5))
 coef = fit(use)
 regions = use["region"].unique().to_numpy()
