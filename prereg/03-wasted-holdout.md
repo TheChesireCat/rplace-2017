@@ -23,3 +23,10 @@ canvas, and no breakdown of wasted placements (by account, by own versus others'
    committed and pushed, citing this file. It states the hypothesis, the statistic, the threshold and the N.
 3. Analyses that do not look at wasted placements may use the whole canvas.
 4. If rule 1 or 2 is broken, half B stops being a holdout, and this file gets a dated note saying so.
+
+## Note, 2026-10-22: the holdout is spent
+
+Rule 1 was broken after the half-B test (`03-wasted-halfB.md`) had been run: the exploratory artwork-life analysis
+(`notes/01-evolve-artwork-life.md`, scripts in `notes/scripts/`) computed wasted (reinforcement) shares on the whole
+canvas. The half-B test stands, because it was pre-registered and run before; but half B is no longer unseen for
+wasted placements, and is not a holdout for any later test.
